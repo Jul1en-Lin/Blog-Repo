@@ -28,84 +28,30 @@
     {{ end }}
     {{ $notHidden := where $rawPages "Params.hidden" "!=" true }}
     {{ $posts := sort $notHidden "Date" "desc" }}
-    {{ $featuredPages := where $posts "Params.featured" true }}
-    {{ $featured := "" }}
-    {{ if gt (len $featuredPages) 0 }}
-        {{ $featured = index $featuredPages 0 }}
-    {{ else }}
-        {{ range $posts }}
-            {{ if and (not $featured) (or (.Params.image) (gt (len (.Resources.ByType "image")) 0)) }}
-                {{ $featured = . }}
-            {{ end }}
-        {{ end }}
-        {{ if and (not $featured) (gt (len $posts) 0) }}
-            {{ $featured = index $posts 0 }}
-        {{ end }}
-    {{ end }}
-    {{ $rest := $posts }}
-    {{ with $featured }}
-        {{ $rest = $posts | complement (slice .) }}
-    {{ end }}
 
-    {{ if $isTermPage }}
-        {{ partial "hero-section.html" (dict
-            "context" .
-            "title" (printf "%s <span class=\"script-accent\">stories</span>." .Title)
-            "description" "A quiet index of posts collected under this category."
-            "avatar" false
-            "class" "hero-section--page"
-        ) }}
+    <section class="blog-index blog-index--timeline" aria-labelledby="blog-index-title">
+        <h1 class="sr-only" id="blog-index-title">{{ if $isTermPage }}{{ .Title }}{{ else }}Blog{{ end }}</h1>
 
-        {{ with $featured }}
-        <section class="featured-section" aria-label="Featured post">
-            {{ partial "featured-post.html" (dict "page" .) }}
-        </section>
-        {{ end }}
-    {{ else }}
-        <section class="blog-preview-composition" aria-label="Blog preview">
-            <div class="blog-preview-composition__intro">
-                {{ partial "hero-section.html" (dict
-                    "context" .
-                    "title" "Technical notes in <span class=\"script-accent\">rhythm.</span>"
-                    "description" "Backend notes, testing records, tool experiments, and small lessons from building."
-                    "primaryLabel" "Explore the blog"
-                    "primaryURL" "#blog-index"
-                    "avatar" false
-                    "class" "hero-section--page hero-section--blog"
-                ) }}
-            </div>
-
-            {{ with $featured }}
-            <section class="featured-section featured-section--blog" aria-label="Featured post">
-                <p class="featured-section__label">Featured Post</p>
-                {{ partial "featured-post.html" (dict "page" . "moreLabel" "Read more" "variant" "editorial" "showMedia" false) }}
-            </section>
-            {{ end }}
-
-            <div class="blog-preview-composition__aside">
-                {{ partial "quote-block.html" (dict
-                    "context" .
-                    "quote" "Every note here is a build log, a reminder, or a question."
-                    "signature" "Jul1en"
-                    "class" "quote-block--blog"
-                ) }}
-            </div>
-        </section>
-    {{ end }}
-
-    <section class="blog-index" aria-labelledby="blog-index-title">
-        <h2 id="blog-index-title" class="sr-only">All stories</h2>
-
-        {{ partial "category-tabs.html" (dict "context" . "pages" $rest) }}
-
-        <div class="post-grid" data-blog-grid>
-            {{ range $rest }}
-                {{ partial "blog-card.html" (dict "page" . "variant" "editorial" "showMedia" false) }}
-            {{ end }}
+        <div class="blog-index__music-decor" aria-hidden="true">
+            <span class="blog-index__staff blog-index__staff--one"></span>
+            <span class="blog-index__staff blog-index__staff--two"></span>
+            <span class="blog-index__note">{{ partial "helper/icon" "music-note" }}</span>
         </div>
 
-        <p class="post-grid__empty" data-blog-empty hidden aria-live="polite">No posts found in this category.</p>
-        <p class="post-index-note">More notes, more context.</p>
+        <div class="post-timeline" data-blog-timeline>
+            {{ range $posts.GroupByDate "2006" }}
+            <section class="post-year" data-blog-year-group>
+                <h2 class="post-year__label">
+                    <a href="#year-{{ .Key }}">{{ .Key }}</a>
+                </h2>
+                <div class="post-year__list" id="year-{{ .Key }}">
+                    {{ range .Pages }}
+                        {{ partial "blog-timeline-row.html" . }}
+                    {{ end }}
+                </div>
+            </section>
+            {{ end }}
+        </div>
     </section>
 {{ end }}
 

@@ -4,7 +4,7 @@
 <header class="site-header" role="banner">
     <div class="site-header__inner">
         <a class="site-brand" href="{{ .Site.Home.RelPermalink }}" aria-label="{{ $brand }} home">
-            <span class="site-brand__text">{{ $brand }}</span>
+            {{ partial "brand-signature.html" (dict "brand" $brand) }}
         </a>
 
         <div class="site-header__right">

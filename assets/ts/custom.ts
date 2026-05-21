@@ -5,6 +5,7 @@ function initPostFilters() {
     const buttons = Array.from(document.querySelectorAll<HTMLButtonElement>('[data-blog-filter]'));
     const search = document.querySelector<HTMLInputElement>('[data-blog-search]');
     const cards = Array.from(document.querySelectorAll<HTMLElement>('[data-blog-card]'));
+    const yearGroups = Array.from(document.querySelectorAll<HTMLElement>('[data-blog-year-group]'));
     const empty = document.querySelector<HTMLElement>('[data-blog-empty]');
     const count = document.querySelector<HTMLElement>('[data-blog-count]');
 
@@ -28,6 +29,11 @@ function initPostFilters() {
 
             card.hidden = !shouldShow;
             if (shouldShow) visible += 1;
+        });
+
+        yearGroups.forEach((group) => {
+            const groupCards = Array.from(group.querySelectorAll<HTMLElement>('[data-blog-card]'));
+            group.hidden = groupCards.length > 0 && groupCards.every((card) => card.hidden);
         });
 
         if (empty) empty.hidden = visible !== 0;

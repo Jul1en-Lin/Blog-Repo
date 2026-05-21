@@ -1,10 +1,12 @@
 # Project Status
 
-Last updated: 2026-05-05
+Last updated: 2026-05-22
 
 ## Current State
 
 Phase 6 is complete. Home, Blog preview, Blog detail, About, Journal, Music, and Contact have all been refined or implemented against the provided concept images. The latest visual pass tightened Home, Contact, and About against their concept screenshots, reduced oversized portrait/avatar presentation, widened the header rail, and recentered the theme-toggle icon. The project now has the target homepage structure, a concept-aligned Blog list composition, a wider Blog detail reading layout without a right sidebar, cleaner code blocks without visible line numbers, larger Blog detail tables constrained to the main reading column, a Codex-docs-inspired syntax palette, standalone editorial layouts for the remaining primary pages, reusable post/media presentation components, category filters, search input, modular styling for hero/cards/article/page surfaces, responsive breakpoints, lightweight motion, refined Blog card hover interactions, project-level SEO metadata, WebP image processing, keyboard-accessible Blog filtering, stronger focus states, and a Music page that uses dedicated music content plus page-bundle album covers instead of Blog post content. Real images now render in their original colors by default.
+
+The current Blog timeline preview pass keeps preview titles and metadata on the blog typography system instead of the temporary body/mono overrides.
 
 The project still depends on `hugo-theme-stack`, but the visual shell is now controlled from project-level templates instead of the theme sidebar layout.
 

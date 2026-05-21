@@ -27,6 +27,94 @@
   color: var(--color-text);
 }
 
+.site-brand__signature {
+  display: inline-flex;
+  width: clamp(112px, 9vw, 128px);
+  height: 42px;
+  align-items: center;
+  color: #fff;
+  mix-blend-mode: difference;
+}
+
+.site-signature {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.site-signature__path {
+  stroke: currentColor;
+  stroke-width: 2.85;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  opacity: 0;
+  animation: site-signature-path-draw 960ms cubic-bezier(0.62, 0.02, 0.17, 1) both;
+  animation-delay: var(--signature-delay, 0ms);
+}
+
+.site-signature__path--j {
+  --signature-delay: 0ms;
+}
+
+.site-signature__path--u {
+  --signature-delay: 360ms;
+}
+
+.site-signature__path--l {
+  --signature-delay: 620ms;
+}
+
+.site-signature__path--one {
+  --signature-delay: 880ms;
+}
+
+.site-signature__path--e {
+  --signature-delay: 1120ms;
+}
+
+.site-signature__path--n {
+  --signature-delay: 1360ms;
+}
+
+.site-brand:hover .site-signature__path,
+.site-brand:focus-visible .site-signature__path {
+  animation-name: site-signature-hover-draw;
+}
+
+@keyframes site-signature-path-draw {
+  0% {
+    stroke-dashoffset: 1;
+    opacity: 0;
+  }
+
+  12% {
+    opacity: 1;
+  }
+
+  100% {
+    stroke-dashoffset: 0;
+    opacity: 1;
+  }
+}
+
+@keyframes site-signature-hover-draw {
+  0% {
+    stroke-dashoffset: 1;
+    opacity: 0;
+  }
+
+  12% {
+    opacity: 1;
+  }
+
+  100% {
+    stroke-dashoffset: 0;
+    opacity: 1;
+  }
+}
+
 .site-header__right {
   display: inline-flex;
   align-items: center;
@@ -53,11 +141,25 @@
   height: 18px;
 }
 
-.site-brand__text {
-  font-family: var(--font-script);
-  font-size: 28px;
-  font-weight: 600;
-  line-height: 1;
+@media (prefers-reduced-motion: reduce) {
+  .site-signature__path {
+    stroke-dashoffset: 0 !important;
+    opacity: 1 !important;
+    animation: none !important;
+  }
+}
+
+@media print {
+  .site-brand__signature {
+    color: var(--color-text);
+    mix-blend-mode: normal;
+  }
+
+  .site-signature__path {
+    stroke-dashoffset: 0 !important;
+    opacity: 1 !important;
+    animation: none !important;
+  }
 }
 
 .site-nav {

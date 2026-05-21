@@ -85,8 +85,9 @@
     width: unquote("min(100% - 28px, var(--layout-wide))");
   }
 
-  .site-brand__text {
-    font-size: 24px;
+  .site-brand__signature {
+    width: 104px;
+    height: 38px;
   }
 
   .site-brand__mark {
@@ -176,8 +177,9 @@ body.template-home .main-content {
 }
 
 @media (max-width: 520px) {
-  .site-brand__text {
-    font-size: 22px;
+  .site-brand__signature {
+    width: 94px;
+    height: 34px;
   }
 
   .site-menu-toggle,

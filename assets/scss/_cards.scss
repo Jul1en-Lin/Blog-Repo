@@ -576,11 +576,79 @@
   padding-top: 0;
 }
 
+.template-blog-list .blog-index--timeline {
+  width: unquote("min(720px, 100%)");
+  padding: clamp(112px, 12vw, 152px) 0 var(--space-8);
+}
+
+.blog-index__music-decor {
+  position: absolute;
+  top: clamp(52px, 7vw, 86px);
+  right: clamp(10px, 2.5vw, 34px);
+  width: 188px;
+  height: 70px;
+  color: var(--color-text);
+  opacity: 0.045;
+  transform: rotate(-7deg);
+}
+
+.blog-index__staff {
+  position: absolute;
+  right: 0;
+  left: 0;
+  height: 1px;
+  background: currentColor;
+}
+
+.blog-index__staff::before,
+.blog-index__staff::after {
+  position: absolute;
+  right: 0;
+  left: 0;
+  height: 1px;
+  content: "";
+  background: currentColor;
+}
+
+.blog-index__staff::before {
+  top: 8px;
+}
+
+.blog-index__staff::after {
+  top: 16px;
+}
+
+.blog-index__staff--one {
+  top: 16px;
+}
+
+.blog-index__staff--two {
+  top: 44px;
+  width: 132px;
+  margin-left: auto;
+}
+
+.blog-index__note {
+  position: absolute;
+  top: 18px;
+  right: 32px;
+  display: inline-grid;
+  width: 28px;
+  height: 28px;
+  place-items: center;
+}
+
+.blog-index__note svg {
+  display: block;
+  width: 28px;
+  height: 28px;
+}
+
 .template-blog-list .post-tools {
   grid-template-columns: minmax(0, 1fr) minmax(300px, 420px);
   gap: var(--space-7);
   align-items: end;
-  margin-bottom: var(--space-4);
+  margin-bottom: clamp(var(--space-7), 7vw, var(--space-9));
 }
 
 .category-tabs {
@@ -694,6 +762,181 @@
 
 .template-blog-list .post-search input:focus {
   border-color: var(--color-text);
+}
+
+.post-timeline {
+  position: relative;
+  display: grid;
+  gap: clamp(76px, 9vw, 116px);
+  --timeline-hover-bg: color-mix(in srgb, var(--color-text) 4.5%, transparent);
+  --timeline-hover-line: color-mix(in srgb, var(--color-text) 48%, transparent);
+  --timeline-hover-meta: color-mix(in srgb, var(--color-text) 68%, var(--color-text-muted));
+}
+
+:root[data-scheme="dark"] .post-timeline {
+  --timeline-hover-bg: color-mix(in srgb, var(--color-text) 7%, transparent);
+  --timeline-hover-line: color-mix(in srgb, var(--color-text) 58%, transparent);
+  --timeline-hover-meta: color-mix(in srgb, var(--color-text) 76%, var(--color-text-muted));
+}
+
+.post-year {
+  position: relative;
+  isolation: isolate;
+}
+
+.post-year .post-year__label {
+  position: absolute;
+  z-index: -1;
+  top: -56px;
+  left: clamp(-38px, -4vw, -20px);
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(12rem, 16vw, 15.5rem);
+  font-weight: 800;
+  letter-spacing: 0;
+  line-height: 0.8;
+  pointer-events: none;
+}
+
+.post-year .post-year__label a {
+  color: color-mix(in srgb, var(--color-text) 7%, transparent);
+  text-decoration: none;
+}
+
+.post-year__list {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  gap: 17px;
+  padding-top: 6px;
+}
+
+.post-timeline__item {
+  position: relative;
+}
+
+.post-timeline__link {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 var(--space-3);
+  align-items: baseline;
+  min-height: 28px;
+  color: var(--color-text);
+  isolation: isolate;
+  text-decoration: none;
+}
+
+.post-timeline__link::before,
+.post-timeline__link::after {
+  position: absolute;
+  content: "";
+  pointer-events: none;
+}
+
+.post-timeline__link::before {
+  inset: -7px 0 -8px;
+  z-index: -1;
+  background: var(--timeline-hover-bg);
+  opacity: 0;
+  transform: translateX(-4px);
+  transition:
+    opacity var(--duration-normal) var(--ease-out),
+    transform var(--duration-normal) var(--ease-out);
+}
+
+.post-timeline__link::after {
+  right: 0;
+  bottom: -5px;
+  left: 0;
+  height: 1px;
+  background: linear-gradient(90deg, var(--timeline-hover-line), color-mix(in srgb, var(--color-text) 18%, transparent));
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform var(--duration-normal) var(--ease-out);
+}
+
+.post-timeline__title {
+  min-width: 0;
+  color: var(--color-text);
+  font-family: var(--font-display), "Noto Sans SC", serif;
+  font-size: clamp(1.56rem, 1.62vw, 1.88rem);
+  font-weight: 600;
+  line-height: 1.18;
+  overflow-wrap: anywhere;
+  transition: color var(--duration-normal) var(--ease-out), transform var(--duration-normal) var(--ease-out);
+}
+
+.post-timeline__meta {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  justify-content: flex-start;
+  color: var(--color-text-muted);
+  font-family: var(--font-body);
+  font-size: 0.94rem;
+  font-weight: 400;
+  line-height: 1.2;
+  white-space: nowrap;
+  transition: color var(--duration-normal) var(--ease-out);
+}
+
+.post-timeline__meta span::before {
+  margin-right: 7px;
+  content: "·";
+  color: color-mix(in srgb, var(--color-text) 32%, transparent);
+  transition: color var(--duration-normal) var(--ease-out);
+}
+
+.post-timeline__link:hover .post-timeline__title,
+.post-timeline__link:focus-visible .post-timeline__title {
+  color: var(--color-link-hover);
+  transform: translateX(4px);
+}
+
+.post-timeline__link:hover::before,
+.post-timeline__link:focus-visible::before {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.post-timeline__link:hover::after,
+.post-timeline__link:focus-visible::after {
+  transform: scaleX(1);
+}
+
+.post-timeline__link:hover .post-timeline__meta,
+.post-timeline__link:focus-visible .post-timeline__meta {
+  color: var(--timeline-hover-meta);
+}
+
+.post-timeline__link:hover .post-timeline__meta span::before,
+.post-timeline__link:focus-visible .post-timeline__meta span::before {
+  color: var(--timeline-hover-line);
+}
+
+.post-timeline__link:focus-visible {
+  outline: 2px solid var(--color-text);
+  outline-offset: 5px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .post-timeline__link::before,
+  .post-timeline__link::after,
+  .post-timeline__title,
+  .post-timeline__meta,
+  .post-timeline__meta span::before {
+    transition: none;
+  }
+
+  .post-timeline__link::before {
+    transform: none;
+  }
+
+  .post-timeline__link:hover .post-timeline__title,
+  .post-timeline__link:focus-visible .post-timeline__title {
+    transform: none;
+  }
 }
 
 .template-blog-list .post-grid {
@@ -883,6 +1126,10 @@
   text-align: center;
 }
 
+.post-timeline__empty {
+  margin-top: 0;
+}
+
 .taxonomy-list {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -989,6 +1236,57 @@
 
   .template-blog-list .post-tools {
     gap: var(--space-5);
+  }
+
+  .template-blog-list .blog-index--timeline {
+    padding-top: clamp(88px, 22vw, 124px);
+  }
+
+  .blog-index__music-decor {
+    top: clamp(38px, 12vw, 58px);
+    right: 4px;
+    width: 104px;
+    height: 48px;
+    opacity: 0.045;
+  }
+
+  .blog-index__staff--two {
+    width: 86px;
+  }
+
+  .blog-index__note,
+  .blog-index__note svg {
+    width: 22px;
+    height: 22px;
+  }
+
+  .post-timeline {
+    gap: var(--space-7);
+  }
+
+  .post-year .post-year__label {
+    top: -34px;
+    left: -2px;
+    font-size: clamp(6.7rem, 28vw, 8.6rem);
+  }
+
+  .post-timeline__link {
+    display: flex;
+    gap: 3px 8px;
+    min-height: 0;
+    padding: 0;
+  }
+
+  .post-timeline__title {
+    font-size: clamp(1.26rem, 3.8vw, 1.48rem);
+  }
+
+  .post-timeline__meta {
+    font-size: 0.84rem;
+  }
+
+  .post-timeline__meta {
+    justify-content: flex-start;
   }
 
   .blog-card__body {

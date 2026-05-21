@@ -1,0 +1,25 @@
+{{- $page := . -}}
+{{- $terms := $page.GetTerms "categories" -}}
+{{- $categoryKeys := slice -}}
+{{- range $terms -}}
+    {{- $categoryKeys = $categoryKeys | append (.LinkTitle | urlize) -}}
+{{- end -}}
+{{- $summary := "" -}}
+{{- with $page.Params.description -}}
+    {{- $summary = . -}}
+{{- else -}}
+    {{- $summary = $page.Summary | plainify | truncate 140 -}}
+{{- end -}}
+
+<article class="post-timeline__item" data-blog-card data-blog-row data-categories="{{ delimit $categoryKeys ` ` }}" data-title="{{ $page.Title | plainify }}" data-summary="{{ $summary | plainify }}">
+    <a class="post-timeline__link" href="{{ $page.RelPermalink }}">
+        <span class="post-timeline__title">{{ $page.Title }}</span>
+
+        <span class="post-timeline__meta">
+            {{- if not $page.Date.IsZero -}}
+            <time datetime="{{ $page.Date.Format `2006-01-02T15:04:05Z07:00` }}">{{ $page.Date | time.Format (or $page.Site.Params.dateFormat.published "2006-01-02") }}</time>
+            {{- end -}}
+            <span>{{ $page.ReadingTime }}min</span>
+        </span>
+    </a>
+</article>

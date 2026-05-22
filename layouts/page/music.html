@@ -1,144 +1,41 @@
 {{ define "body-class" }}template-music{{ end }}
 
 {{ define "main" }}
-{{- $lyrics := .Params.lyrics -}}
-{{- $favorites := .Params.favorites -}}
-{{- $songwriters := .Params.songwriters -}}
-{{- $records := .Params.records -}}
-{{- $inspirations := .Params.inspirations -}}
+{{- $albums := .Params.albums | default slice -}}
 
 <section class="phase4-page music-page">
-    <section class="music-hero" aria-labelledby="music-title">
-        <div class="music-hero__copy">
-            <h1 id="music-title">Music, in <span class="script-accent">quiet</span> time.</h1>
-            <p>Thoughts on the music that moves me.<br>Pieces, people, and the stories between the notes.</p>
-        </div>
-        {{- with resources.Get "img/avatar.png" -}}
-            {{- $avatar := .Fill "420x420 Center webp q86" -}}
-            <figure class="music-hero__portrait">
-                <img src="{{ $avatar.RelPermalink }}" width="{{ $avatar.Width }}" height="{{ $avatar.Height }}" alt="{{ $.Site.Title }}" loading="eager" decoding="async" fetchpriority="high">
-            </figure>
-        {{- end -}}
-    </section>
+    <header class="music-gallery-hero" aria-labelledby="music-title">
+        <h1 id="music-title">
+            <span>Music</span>
+            <span class="music-gallery-hero__wave" aria-hidden="true">
+                <i></i>
+                <i></i>
+                <i></i>
+                <i></i>
+                <i></i>
+            </span>
+        </h1>
+        <p>My favorite albums, songs, and the music that inspires me.</p>
+    </header>
 
-    <section class="music-columns" aria-label="Music collections">
-        <article class="music-panel listening-notes" id="lyric-fragments">
-            <h2>Lyric Fragments <span aria-hidden="true">♪</span></h2>
-            <p>Original lines, half-hooks, and phrases waiting for melody.</p>
-            <div class="music-list">
-                {{ range $lyrics }}
-                <a class="music-list__item" href="#lyric-fragments">
-                    <span class="music-list__media">
-                        <span class="music-art music-art--lyric" aria-hidden="true">
-                            <span class="music-art__mark">{{ .mark }}</span>
-                            <span class="music-art__caption">lyrics</span>
-                        </span>
-                    </span>
-                    <span>
-                        <strong>{{ .title }}</strong>
-                        <span class="music-list__meta">{{ .type }}</span>
-                        <span class="music-list__detail">{{ .detail }}</span>
-                    </span>
-                </a>
-                {{ end }}
-            </div>
-            <a class="phase4-text-link" href="#lyric-fragments">View lyric archive {{ partial "helper/icon" "arrow-right" }}</a>
-        </article>
-
-        <article class="music-panel album-panel" id="favorite-albums">
-            <h2>Favorite Albums &amp; Composers</h2>
-            <p>Timeless works I return to again and again.</p>
-            <div class="album-grid">
-                {{ range $favorites }}
-                <figure class="album-card">
-                    {{ partial "music-cover.html" (dict
-                        "page" $
-                        "image" .image
-                        "size" "260x260 Center"
-                        "alt" .alt
-                        "imageClass" "music-cover-image music-cover-image--album"
-                        "fallbackClass" "music-art music-art--album"
-                        "mark" .mark
-                        "caption" "album"
-                    ) }}
-                    <figcaption>
-                        <strong>{{ .name }}</strong>
-                        <span>{{ .work }}</span>
-                        <small>{{ .note }}</small>
-                    </figcaption>
-                </figure>
-                {{ end }}
-            </div>
-            <a class="phase4-text-link" href="#favorite-albums">See more favorites {{ partial "helper/icon" "arrow-right" }}</a>
-        </article>
-
-        <article class="music-panel songwriter-panel" id="songwriter-notes">
-            <h2>Songwriter Notes <span aria-hidden="true">♪</span></h2>
-            <p>Writers whose phrasing, silence, and structure keep teaching me.</p>
-            <div class="songwriter-stack">
-                {{ range $songwriters }}
-                <a class="songwriter-card" href="#songwriter-notes">
-                    <span class="music-art music-art--songwriter" aria-hidden="true">
-                        <span class="music-art__mark">{{ .mark }}</span>
-                        <span class="music-art__caption">writer</span>
-                    </span>
-                    <span class="songwriter-card__body">
-                        <small>{{ .focus }}</small>
-                        <strong>{{ .name }}</strong>
-                        <span>{{ .note }}</span>
-                    </span>
-                </a>
-                {{ end }}
-            </div>
-            <a class="phase4-text-link" href="#songwriter-notes">Read songwriter notes {{ partial "helper/icon" "arrow-right" }}</a>
-        </article>
-
-        <article class="music-panel recommended-records" id="recommended-records">
-            <h2>Recommended Records</h2>
-            <p>Records I love, beautifully made, thoughtfully listened to.</p>
-            <div class="record-list">
-                {{ range $records }}
-                <a class="record-item" href="#recommended-records">
-                    <span class="record-item__media">
-                        {{ partial "music-cover.html" (dict
-                            "page" $
-                            "image" .image
-                            "size" "160x160 Center"
-                            "alt" .alt
-                            "imageClass" "music-cover-image music-cover-image--record"
-                            "fallbackClass" "music-art music-art--record"
-                            "mark" .mark
-                            "caption" "record"
-                        ) }}
-                    </span>
-                    <span>
-                        <strong>{{ .artist }}</strong>
-                        <em>{{ .album }}</em>
-                        <small>{{ .label }}</small>
-                    </span>
-                </a>
-                {{ end }}
-            </div>
-            <a class="phase4-text-link" href="#recommended-records">See all records {{ partial "helper/icon" "arrow-right" }}</a>
-        </article>
-    </section>
-
-    <section class="curated-inspirations" aria-labelledby="curated-title">
-        <div>
-            <h2 id="curated-title">Curated Inspirations <span aria-hidden="true">♪</span></h2>
-            <p>Lyrics, credits, and small studio rituals that shape the way I listen.</p>
-        </div>
-        <div class="curated-strip">
-            {{ range $inspirations }}
-            <a class="curated-card" href="#curated-title">
-                <span class="music-art music-art--curated" aria-hidden="true">
-                    <span class="music-art__mark">{{ .mark }}</span>
-                    <span class="music-art__caption">{{ .subtitle }}</span>
-                </span>
-                <span>{{ .title }}</span>
-            </a>
-            {{ end }}
-        </div>
+    <section class="music-album-gallery" aria-label="Favorite albums">
+        {{ range $album := $albums }}
+            {{- $layout := $album.layout | default "standard" -}}
+            <article class="music-album-card music-album-card--{{ $layout }}">
+                {{ partial "music-cover.html" (dict
+                    "page" $
+                    "image" $album.image
+                    "size" "900x900"
+                    "alt" $album.alt
+                    "title" $album.title
+                    "artist" $album.artist
+                ) }}
+                <div class="music-album-card__overlay">
+                    <h2>{{ $album.title }}</h2>
+                    <p>{{ $album.artist }}</p>
+                </div>
+            </article>
+        {{ end }}
     </section>
 </section>
 

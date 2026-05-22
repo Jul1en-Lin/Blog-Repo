@@ -13,7 +13,7 @@ Current user-facing state:
 - Blog list includes featured content, category filter buttons, search, responsive cards, accessible keyboard filtering, and restrained hover motion.
 - Blog detail uses a wide no-right-sidebar reading layout, header quote, larger readable body text, line-number-free code blocks, improved table readability, and bottom related posts.
 - About, Journal, Music, and Contact are standalone editorial pages with dedicated project-level layouts.
-- Music uses Music-specific front matter data and page-bundle album covers; it intentionally has no audio, video, playback button, playlist, progress, or media-player UI.
+- Music uses a static album gallery backed by `[[albums]]` front matter and page-bundle album covers; card text is limited to album title and artist inside the image surface, and the page intentionally has no audio, video, playback button, playlist, progress, sorting, filtering, or media-player UI.
 - Project-level SEO metadata, responsive WebP image processing, focus states, semantic heading cleanup, and accessibility refinements are in place.
 - Real images and portraits render in original color by default; grayscale is no longer applied globally to image surfaces.
 
@@ -40,6 +40,39 @@ Latest verification snapshot:
   - Blog detail: Performance 97, Accessibility 100, Best Practices 100, SEO 100.
 
 ## Condensed History
+
+### 2026-05-22 - Music Album Gallery
+
+- Reworked the Music page from a four-column editorial collection into a static responsive album gallery.
+- Added `[[albums]]` as the Music page front matter source for title, artist, year, genre, label, cover image, alt text, and the retained layout label.
+- Changed Music cover rendering to preserve full album artwork with `.Fit` derivatives and `object-fit: contain`, with the image itself as the card surface.
+- Moved visible card metadata into a bottom in-image overlay and reduced it to album title plus artist.
+- Adjusted the album gallery to use fixed-size square card slots with subtle row-by-row left offsets, so fitted square covers no longer show side bands or masonry gaps.
+- Kept existing `layout` values in content for compatibility, but the current visual wall intentionally renders album cards at the same size.
+- Lifted and tightened the Music hero title group to match the concept direction, and added the small waveform accent beside the title.
+- Removed Music page category tools, sorting, view switching, fake playback, and player-style controls from the planned surface.
+
+### 2026-05-22 - Header Theme Toggle Contrast
+
+- Aligned the header theme toggle's default icon contrast with the neighboring GitHub and Instagram actions in both site schemes.
+
+### 2026-05-22 - Article Theme Toggle Bugfix
+
+- Fixed the theme toggle on Blog detail pages by binding the project-level toggle earlier while preserving Stack's circular View Transition animation.
+
+### 2026-05-22 - Dark Mode Article Images
+
+- Added a restrained dark-mode filter for Blog article content images so bright images sit more comfortably on dark reading pages.
+- Scoped the treatment to article body images and left site portraits, covers, list thumbnails, and Music artwork unchanged.
+
+### 2026-05-22 - Signature Favicon
+
+- Replaced the browser tab icon with a transparent `Jul1en` signature favicon.
+- Added an adaptive SVG favicon for light/dark browser chrome and a transparent ICO fallback.
+
+### 2026-05-22 - Blog Detail Opening Layout
+
+- Simplified Blog detail openings to title metadata followed by the article body, removing the summary preview, header quote, cover image, and title underline while keeping the music divider.
 
 ### 2026-05-22 - Blog List Hover Motion
 

@@ -53,10 +53,7 @@
     transform: translate(2px, -2px) rotate(-10deg);
   }
 
-  .music-list__item,
-  .record-item,
-  .songwriter-card,
-  .curated-card,
+  .music-album-card,
   .phase4-text-link {
     transition:
       border-color var(--duration-normal) var(--ease-out),
@@ -65,20 +62,9 @@
       transform var(--duration-normal) var(--ease-out);
   }
 
-  .music-list__item:hover,
-  .record-item:hover,
-  .songwriter-card:hover,
-  .curated-card:hover,
+  .music-album-card:hover,
   .phase4-text-link:hover {
     transform: translateY(-2px);
-  }
-
-  .album-card img {
-    transition: transform var(--duration-slow) var(--ease-out);
-  }
-
-  .album-card:hover img {
-    transform: scale(1.025);
   }
 
   .journal-entry__dot {

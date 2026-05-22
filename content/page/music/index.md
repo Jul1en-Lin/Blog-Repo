@@ -2,107 +2,65 @@
 title = "Music"
 slug = "music"
 layout = "music"
-description = "Thoughts on the music that moves me."
+description = "My favorite albums, songs, and the music that inspires me."
 
-[[lyrics]]
-title = "Moonlit Chorus"
-type = "Original lyric sketch"
-detail = "A quiet refrain for late windows."
-mark = "LC"
-
-[[lyrics]]
-title = "Rain On The Staff"
-type = "Lyric fragment"
-detail = "Soft syllables, slow piano, open air."
-mark = "RS"
-
-[[lyrics]]
-title = "Three Lines For Dawn"
-type = "Notebook verse"
-detail = "A small morning hook still looking for harmony."
-mark = "TD"
-
-[[favorites]]
-name = "SZA"
-work = "Ctrl"
-note = "Top Dawg / RCA"
-mark = "SZ"
+[[albums]]
+title = "Ctrl"
+artist = "SZA"
+year = "2017"
+genre = "R&B"
+label = "Top Dawg / RCA"
 image = "album-1.jpg"
 alt = "SZA Ctrl album cover"
+layout = "large"
 
-[[favorites]]
-name = "IU"
-work = "A Flower Bookmark"
-note = "Kakao M"
-mark = "IU"
+[[albums]]
+title = "A Flower Bookmark"
+artist = "IU"
+year = "2014"
+genre = "K-pop"
+label = "Kakao M"
 image = "album-2.jpg"
 alt = "IU A Flower Bookmark album cover"
+layout = "standard"
 
-[[favorites]]
-name = "SZA"
-work = "SOS"
-note = "Top Dawg / RCA"
-mark = "SZ"
+[[albums]]
+title = "SOS"
+artist = "SZA"
+year = "2022"
+genre = "R&B"
+label = "Top Dawg / RCA"
 image = "album-3.jpg"
 alt = "SZA SOS album cover"
+layout = "wide"
 
-[[songwriters]]
-name = "Joni Mitchell"
-focus = "Blue"
-note = "Plainspoken images, restless harmony, and melody that feels hand-written."
-mark = "JM"
-
-[[songwriters]]
-name = "Leonard Cohen"
-focus = "Songs of Leonard Cohen"
-note = "Severe lines, close attention, and a voice that leaves room for silence."
-mark = "LC"
-
-[[songwriters]]
-name = "Nina Simone"
-focus = "Little Girl Blue"
-note = "Phrasing as truth-telling, with every pause carrying its own weight."
-mark = "NS"
-
-[[records]]
+[[albums]]
+title = "Dawn FM"
 artist = "The Weeknd"
-album = "Dawn FM"
+year = "2022"
+genre = "Pop"
 label = "XO / Republic"
-mark = "TW"
 image = "album-4.jpg"
 alt = "The Weeknd Dawn FM album cover"
+layout = "standard"
 
-[[records]]
+[[albums]]
+title = "Leshan Street"
 artist = "City Skyline"
-album = "Leshan Street"
+year = ""
+genre = ""
 label = "Personal collection"
-mark = "CS"
 image = "album-5.jpg"
 alt = "Album cover with a figure above city street signs"
+layout = "wide"
 
-[[records]]
+[[albums]]
+title = "Re:member"
 artist = "Olafur Arnalds"
-album = "Re:member"
+year = "2018"
+genre = "Modern classical"
 label = "Mercury Classics"
-mark = "OA"
-
-[[inspirations]]
-title = "Lyric notebooks"
-subtitle = "phrases, crossings-out, and small discoveries"
-mark = "LN"
-
-[[inspirations]]
-title = "Liner notes"
-subtitle = "record sleeves, credits, and quiet context"
-mark = "LR"
-
-[[inspirations]]
-title = "Piano sketches"
-subtitle = "four chords before breakfast"
-mark = "PS"
-
-[[inspirations]]
-title = "Listening rooms"
-subtitle = "places where records ask for patience"
-mark = "LR"
+image = ""
+alt = "Olafur Arnalds Re:member album cover"
+layout = "standard"
 +++

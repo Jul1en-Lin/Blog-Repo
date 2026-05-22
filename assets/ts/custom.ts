@@ -71,6 +71,82 @@ function initPostFilters() {
     applyFilters();
 }
 
+function initThemeToggle() {
+    const toggle = document.getElementById('dark-mode-toggle') as HTMLButtonElement | null;
+    if (!toggle || toggle.dataset.projectThemeToggleReady === 'true') return;
+
+    toggle.dataset.projectThemeToggleReady = 'true';
+
+    type ColorScheme = 'light' | 'dark';
+
+    function getCurrentScheme() {
+        return document.documentElement.dataset.scheme === 'dark' ? 'dark' : 'light';
+    }
+
+    function getSystemScheme(): ColorScheme {
+        return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    }
+
+    function saveScheme(scheme: ColorScheme) {
+        try {
+            window.localStorage.setItem('StackColorScheme', scheme === getSystemScheme() ? 'auto' : scheme);
+        } catch {
+            // Theme switching should still work when storage is unavailable.
+        }
+    }
+
+    function applyScheme(scheme: ColorScheme) {
+        document.documentElement.dataset.scheme = scheme;
+        saveScheme(scheme);
+        window.dispatchEvent(new CustomEvent('onColorSchemeChange', { detail: scheme }));
+    }
+
+    toggle.addEventListener('click', (event) => {
+        event.preventDefault();
+        event.stopImmediatePropagation();
+
+        const x = event.clientX;
+        const y = event.clientY;
+        const willBeDark = getCurrentScheme() !== 'dark';
+        const nextScheme: ColorScheme = willBeDark ? 'dark' : 'light';
+        const endRadius = Math.hypot(
+            Math.max(x, window.innerWidth - x),
+            Math.max(y, window.innerHeight - y)
+        );
+
+        if (!('startViewTransition' in document)) {
+            applyScheme(nextScheme);
+            return;
+        }
+
+        const transition = (document as Document & {
+            startViewTransition: (callback: () => void) => {
+                ready: Promise<void>;
+            };
+        }).startViewTransition(() => {
+            applyScheme(nextScheme);
+        });
+
+        transition.ready.then(() => {
+            const clipPath = willBeDark
+                ? [`circle(${endRadius}px at ${x}px ${y}px)`, `circle(0px at ${x}px ${y}px)`]
+                : [`circle(0px at ${x}px ${y}px)`, `circle(${endRadius}px at ${x}px ${y}px)`];
+
+            document.documentElement.animate(
+                { clipPath },
+                {
+                    duration: 500,
+                    easing: 'ease-in-out',
+                    fill: 'forwards',
+                    pseudoElement: willBeDark
+                        ? '::view-transition-old(root)'
+                        : '::view-transition-new(root)'
+                }
+            );
+        });
+    }, { capture: true });
+}
+
 function initCodeCopyButtons() {
     const content = document.querySelector<HTMLElement>('.article-detail__content');
     if (!content) return;
@@ -149,6 +225,7 @@ function initCodeCopyButtons() {
 }
 
 function initCustomScripts() {
+    initThemeToggle();
     initPostFilters();
     initCodeCopyButtons();
 }

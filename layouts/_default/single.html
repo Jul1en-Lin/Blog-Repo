@@ -2,18 +2,7 @@
 
 {{ define "main" }}
 {{- $terms := .GetTerms "categories" -}}
-{{- $image := partialCached "helper/image" (dict "Context" . "Type" "articleList") .RelPermalink "articleDetail" -}}
-{{- $resourceImage := "" -}}
-{{- with .Resources.ByType "image" -}}
-    {{- $resourceImage = index . 0 -}}
-{{- end -}}
 {{- $escapedTitle := .Title | plainify | replaceRE `([\\\^\$\.\|\?\*\+\(\)\[\]\{\}])` `\\$1` -}}
-{{- $summary := "" -}}
-{{- with .Params.description -}}
-    {{- $summary = . -}}
-{{- else -}}
-    {{- $summary = .Summary | plainify | replaceRE (printf `^\s*%s\s*` $escapedTitle) "" | truncate 88 -}}
-{{- end -}}
 {{- $wrappedTable := printf `<div class="table-wrapper">${1}</div>` -}}
 {{- $content := .Content -}}
 {{- $content = $content | replaceRE (printf `(?s)^\s*<h1[^>]*>\s*%s\s*</h1>` $escapedTitle) "" -}}
@@ -40,34 +29,6 @@
                     <span>{{ .Title }}</span>
                     <span class="article-detail__title-note" aria-hidden="true">♪</span>
                 </h1>
-                {{- with $summary -}}
-                <p class="article-detail__summary">{{ . }}</p>
-                {{- end -}}
-
-                <div class="article-detail__header-quote">
-                    {{ partial "quote-block.html" (dict
-                        "context" .
-                        "quote" "Document the path while the idea is still warm."
-                        "signature" "Jul1en"
-                        "class" "quote-block--article"
-                    ) }}
-                </div>
-
-                {{- if or (and $image.exists (not $image.isDefault)) $resourceImage -}}
-                <figure class="article-detail__cover">
-                    {{- if and $image.exists (not $image.isDefault) -}}
-                        {{- if $image.resource -}}
-                            {{- $cover := $image.resource.Fill "1120x520 Center webp q86" -}}
-                            <img src="{{ $cover.RelPermalink }}" width="{{ $cover.Width }}" height="{{ $cover.Height }}" alt="{{ .Title }}" loading="eager" decoding="async" fetchpriority="high">
-                        {{- else -}}
-                            <img src="{{ $image.permalink }}" alt="{{ .Title }}" loading="eager" decoding="async" fetchpriority="high">
-                        {{- end -}}
-                    {{- else if $resourceImage -}}
-                        {{- $cover := $resourceImage.Fill "1120x520 Center webp q86" -}}
-                        <img src="{{ $cover.RelPermalink }}" width="{{ $cover.Width }}" height="{{ $cover.Height }}" alt="{{ .Title }}" loading="eager" decoding="async" fetchpriority="high">
-                    {{- end -}}
-                </figure>
-                {{- end -}}
             </header>
 
             <section class="article-content article-detail__content">

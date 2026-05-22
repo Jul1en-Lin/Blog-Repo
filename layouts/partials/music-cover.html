@@ -1,21 +1,18 @@
 {{- $page := .page -}}
 {{- $imageName := .image -}}
-{{- $size := .size | default "220x160 Center" -}}
+{{- $size := .size | default "720x720" -}}
 {{- $alt := .alt | default "Album cover" -}}
-{{- $imageClass := .imageClass | default "music-cover-image" -}}
-{{- $fallbackClass := .fallbackClass | default "music-art music-art--album" -}}
-{{- $mark := .mark | default "♪" -}}
-{{- $caption := .caption | default "album" -}}
+{{- $title := .title | default "Album" -}}
+{{- $artist := .artist | default "Music" -}}
 {{- $image := "" -}}
 {{- with $imageName -}}
     {{- $image = $page.Resources.GetMatch . -}}
 {{- end -}}
 {{- if $image -}}
-    {{- $cover := $image.Fill (printf "%s webp q86" $size) -}}
-    <img class="{{ $imageClass }}" src="{{ $cover.RelPermalink }}" width="{{ $cover.Width }}" height="{{ $cover.Height }}" alt="{{ $alt }}" loading="lazy" decoding="async">
+    {{- $cover := $image.Fit (printf "%s webp q88" $size) -}}
+    <img class="music-cover-image music-cover-image--contain" src="{{ $cover.RelPermalink }}" width="{{ $cover.Width }}" height="{{ $cover.Height }}" alt="{{ $alt }}" loading="lazy" decoding="async">
 {{- else -}}
-    <span class="{{ $fallbackClass }}" aria-hidden="true">
-        <span class="music-art__mark">{{ $mark }}</span>
-        <span class="music-art__caption">{{ $caption }}</span>
+    <span class="music-cover-fallback" role="img" aria-label="{{ $alt }}">
+        <span class="music-cover-fallback__mark">{{ substr $title 0 1 }}</span>
     </span>
 {{- end -}}

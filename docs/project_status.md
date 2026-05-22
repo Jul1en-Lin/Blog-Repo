@@ -4,9 +4,11 @@ Last updated: 2026-05-22
 
 ## Current State
 
-Phase 6 is complete. Home, Blog preview, Blog detail, About, Journal, Music, and Contact have all been refined or implemented against the provided concept images. The latest visual pass tightened Home, Contact, and About against their concept screenshots, reduced oversized portrait/avatar presentation, widened the header rail, and recentered the theme-toggle icon. The project now has the target homepage structure, a concept-aligned Blog list composition, a wider Blog detail reading layout without a right sidebar, cleaner code blocks without visible line numbers, larger Blog detail tables constrained to the main reading column, a Codex-docs-inspired syntax palette, standalone editorial layouts for the remaining primary pages, reusable post/media presentation components, category filters, search input, modular styling for hero/cards/article/page surfaces, responsive breakpoints, lightweight motion, refined Blog card hover interactions, project-level SEO metadata, WebP image processing, keyboard-accessible Blog filtering, stronger focus states, and a Music page that uses dedicated music content plus page-bundle album covers instead of Blog post content. Real images now render in their original colors by default.
+Phase 6 is complete. Home, Blog preview, Blog detail, About, Journal, Music, and Contact have all been refined or implemented against the provided concept images. The latest visual pass tightened Home, Contact, and About against their concept screenshots, reduced oversized portrait/avatar presentation, widened the header rail, recentered the theme-toggle icon, and aligned the mode toggle's default contrast with the neighboring social actions. The project now has the target homepage structure, a concept-aligned Blog list composition, a wider Blog detail reading layout without a right sidebar, cleaner code blocks without visible line numbers, larger Blog detail tables constrained to the main reading column, a Codex-docs-inspired syntax palette, standalone editorial layouts for the remaining primary pages, reusable post/media presentation components, category filters, search input, modular styling for hero/cards/article/page surfaces, responsive breakpoints, lightweight motion, refined Blog card hover interactions, project-level SEO metadata, WebP image processing, keyboard-accessible Blog filtering, stronger focus states, and a Music page that uses a static album gallery backed by dedicated `[[albums]]` front matter plus page-bundle album covers. Real images now render in their original colors by default.
 
-The current Blog timeline preview pass keeps preview titles and metadata on the blog typography system instead of the temporary body/mono overrides.
+The current Blog timeline preview pass keeps preview titles and metadata on the blog typography system instead of the temporary body/mono overrides. Blog detail openings now use a cleaner title-and-body structure: summary preview, header quote, cover image, and the title underline are removed while the music divider remains before the article content. Blog detail theme toggling is handled by an early project-level listener so the mode button responds before Stack's window-load initializer finishes while preserving the circular View Transition animation.
+
+The current Music page is a static responsive album wall rather than a four-column editorial collection. It follows the site theme in both light and dark modes, avoids sorting/filtering/view-switch/player controls, preserves complete cover artwork by using fitted image derivatives plus `object-fit: contain`, uses fixed-size square cards with subtle row-by-row left offsets to avoid masonry gaps and side bands on square album covers, lifts the title/subtitle group with a small title waveform accent to align with the concept direction, and keeps visible card text inside the image surface as album title plus artist only.
 
 The project still depends on `hugo-theme-stack`, but the visual shell is now controlled from project-level templates instead of the theme sidebar layout.
 
@@ -196,6 +198,9 @@ Modified:
 - Treat `docs/blog-refactor-plan.md` as the accepted design specification for staged implementation.
 - Keep homepage and Blog list free of music playback controls; music remains visual language only.
 - Keep the Music page editorial and recommendation-oriented; do not add playback controls, progress UI, or media-player modules.
+- Use `[[albums]]` in `content/page/music/index.md` as the Music page gallery data source; future albums should be added there with title, artist, year, genre, label, page-bundle cover image, alt text, and the retained layout label.
+- Preserve full album artwork on Music cards by fitting images rather than cropping the primary cover.
+- Render the current Music album wall as fixed-size square cards; existing `layout` values are kept for data compatibility but do not change visual card size in the current concept-aligned layout.
 - Do not apply global grayscale filters to real images or portraits; decorative music shapes and code-native panels can remain monochrome.
 - Use light mode as the default visual baseline so the Home page matches the current concept direction; dark mode remains manually toggleable.
 - Keep Phase 5 motion below 500ms and respect `prefers-reduced-motion`.
@@ -220,8 +225,8 @@ Modified:
 - Blog list has been rewritten and refined against the current concept direction; client-side filtering currently operates on the rendered post set.
 - Blog detail has been rewritten and refined against the current concept direction.
 - About, Journal, Music, and Contact have been implemented as static editorial pages using current site content/media resources.
-- Music has been refined to use Music-specific front matter data for lyric fragments, albums, songwriters, records, and inspirations instead of querying Blog posts.
-- Music album and record entries now support real page-bundle cover images through `layouts/partials/music-cover.html`; uploaded covers preserve their original colors and Favorite Albums covers render as square album crops.
+- Music has been refined into a static album gallery that uses `[[albums]]` front matter instead of the previous lyric/songwriter/record/inspiration columns.
+- Music album entries support real page-bundle cover images through `layouts/partials/music-cover.html`; uploaded covers preserve their original colors, primary artwork renders fully with a fitted non-cropping image, fixed-size square card slots avoid side bands on square covers, and visible text is overlaid inside the card image.
 - Project-level real image styles have been reset so newly added images and portraits are not forced to grayscale.
 - Phase 5 responsive and motion refinements are complete.
 - Phase 6 performance, SEO, and accessibility review is complete.
@@ -233,15 +238,15 @@ Modified:
 
 Command:
 
-```powershell
-.\hugo.exe -D --cleanDestinationDir --printI18nWarnings --printPathWarnings
+```bash
+hugo -D --cleanDestinationDir --printI18nWarnings --printPathWarnings
 ```
 
 Result:
 
-- Build passed.
-- Generated 96 pages.
-- Processed 701 images.
+- Build passed with existing Hugo deprecation warnings.
+- Generated 114 pages.
+- Processed 757 images.
 
 Local preview:
 
@@ -269,11 +274,16 @@ Local preview:
 - About, Journal, Music, and Contact active navigation states render correctly.
 - Contact renders one form and three FAQ rows.
 - Playwright fallback screenshots checked Home, Contact, and About at `1670x950` against the provided concept images; theme-toggle icon centering, smaller portrait dimensions, first-viewport positions, and no horizontal overflow were verified.
-- Music content area renders no `/post/` links and no Blog post images.
-- Music renders 3 Favorite Album cover images and 2 Recommended Record cover images from `content/page/music/`, with uploaded covers displayed in original color.
-- Favorite Albums covers render as square crops and no longer stretch vertically.
+- Music now renders 6 static album cards from `[[albums]]`: 5 real page-bundle cover images and 1 no-image fallback.
+- Music hero browser checks at desktop `1440x900`, tablet `820x1180`, and mobile `390x844` confirmed the lifted title/subtitle rhythm, no remaining `Album gallery` eyebrow, and the five-bar waveform beside `Music`.
+- Music scheme checks on a fresh Hugo preview confirmed the theme toggle renders the gallery readably in both light and dark modes with no horizontal overflow.
+- Music cover images compute `object-fit: contain`, appear as direct card children without the previous cover frame/backdrop/body/meta wrappers, and stay visible at desktop `1440x900`, tablet `820x1180`, and mobile `390x844`.
+- Music album cards measured at a 1:1 rendered ratio on desktop `1440x900`, tablet `820x1180`, and mobile `390x844`; rendered square cover images matched the square card slots without the previous left/right side bands, and desktop rows use fixed-size cards with subtle left offsets instead of varied masonry sizing.
+- Music card overlays stay inside the card and display only album title plus artist.
+- Music responsive checks showed no horizontal overflow at desktop, tablet, or mobile widths.
+- Music renders no `audio`, `video`, `progress`, sorting, filtering, view-switching, playlist, or playback-control UI.
+- Header theme-toggle checks confirmed the sun and moon default contrast now aligns with the GitHub and Instagram action group while keeping the existing hover/focus motion.
 - Home, Blog, Blog detail, About, Journal, Music, and Contact rendered images all compute `filter: none` in browser verification.
-- Music renders no `audio`, `video`, player, progress, or playback-control UI.
 - Blog and featured card hover checks confirmed transform, image movement, arrow movement, and bottom hairline reveal while keeping image filters disabled.
 - Blog detail code-block verification confirmed line numbers are disabled, old Chroma line-number elements are hidden as a fallback, code text is larger, and the copy bubble is hidden.
 - Blog detail code palette verification confirmed differentiated token colors for comments, keywords, strings, numbers, functions, types, attributes, punctuation, and diff tokens.

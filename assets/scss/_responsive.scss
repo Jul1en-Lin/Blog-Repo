@@ -144,32 +144,6 @@
     aspect-ratio: 1.65 / 1;
   }
 
-  body.template-music .album-grid {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: var(--space-3);
-  }
-
-  body.template-music .album-card figcaption {
-    min-height: 0;
-  }
-
-  body.template-music .album-card small {
-    font-size: 0.72rem;
-  }
-
-  body.template-music .music-panel .phase4-text-link {
-    margin-top: var(--space-5);
-  }
-
-  .music-list__item,
-  .record-item {
-    grid-template-columns: 92px minmax(0, 1fr);
-  }
-
-  .songwriter-card {
-    grid-template-columns: 86px minmax(0, 1fr);
-  }
-
 }
 
 body.template-home .main-content {
@@ -216,17 +190,7 @@ body.template-home .main-content {
     width: unquote("min(100% - 28px, var(--layout-wide))");
   }
 
-  body.template-music .album-grid {
-    gap: 10px;
-  }
-
-  .music-list__item,
-  .record-item {
-    grid-template-columns: 82px minmax(0, 1fr);
-  }
-
-  .journal-hero,
-  .music-hero {
+  .journal-hero {
     min-height: 0;
   }
 }

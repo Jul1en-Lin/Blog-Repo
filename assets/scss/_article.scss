@@ -267,15 +267,6 @@ body.is-article-toc-visible .article-detail__toc-staff,
   text-wrap: balance;
 }
 
-.article-detail__title::after {
-  display: block;
-  width: 38px;
-  height: 2px;
-  margin-top: var(--space-5);
-  content: "";
-  background: var(--color-text);
-}
-
 .article-detail__title-note {
   display: inline-block;
   margin-left: var(--space-3);
@@ -404,6 +395,11 @@ body.is-article-toc-visible .article-detail__toc-staff,
   height: auto;
   margin: var(--space-6) auto;
   border-radius: var(--radius-sm);
+  transition: filter var(--duration-normal) var(--ease-out);
+}
+
+:root[data-scheme="dark"] .article-detail__content img:not(.image-no-dim) {
+  filter: brightness(0.84) contrast(0.96) saturate(0.92);
 }
 
 .article-detail__content blockquote {

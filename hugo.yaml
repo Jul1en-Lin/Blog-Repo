@@ -61,7 +61,7 @@ params:
           url: /music/
     featuredImageField: image
     rssFullContent: true
-    favicon: # e.g.: favicon placed in `static/favicon.ico` of your site folder, then set this field to `/favicon.ico` (`/` is necessary)
+    favicon: /favicon-signature.svg
 
     footer:
         since: 2025

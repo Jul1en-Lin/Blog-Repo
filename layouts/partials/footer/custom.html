@@ -12,6 +12,76 @@
         const nav = document.getElementById('primary-navigation');
         const reduceMotionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
 
+        function initThemeToggle() {
+            const toggle = document.getElementById('dark-mode-toggle');
+            if (!toggle || toggle.dataset.projectThemeToggleReady === 'true') return;
+
+            toggle.dataset.projectThemeToggleReady = 'true';
+
+            function getCurrentScheme() {
+                return document.documentElement.dataset.scheme === 'dark' ? 'dark' : 'light';
+            }
+
+            function getSystemScheme() {
+                return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+            }
+
+            function saveScheme(scheme) {
+                try {
+                    window.localStorage.setItem('StackColorScheme', scheme === getSystemScheme() ? 'auto' : scheme);
+                } catch (error) {
+                    return;
+                }
+            }
+
+            function applyScheme(scheme) {
+                document.documentElement.dataset.scheme = scheme;
+                saveScheme(scheme);
+                window.dispatchEvent(new CustomEvent('onColorSchemeChange', { detail: scheme }));
+            }
+
+            toggle.addEventListener('click', function (event) {
+                event.preventDefault();
+                event.stopImmediatePropagation();
+
+                const x = event.clientX;
+                const y = event.clientY;
+                const willBeDark = getCurrentScheme() !== 'dark';
+                const nextScheme = willBeDark ? 'dark' : 'light';
+                const endRadius = Math.hypot(
+                    Math.max(x, window.innerWidth - x),
+                    Math.max(y, window.innerHeight - y)
+                );
+
+                if (!document.startViewTransition) {
+                    applyScheme(nextScheme);
+                    return;
+                }
+
+                const transition = document.startViewTransition(function () {
+                    applyScheme(nextScheme);
+                });
+
+                transition.ready.then(function () {
+                    const clipPath = willBeDark
+                        ? [`circle(${endRadius}px at ${x}px ${y}px)`, `circle(0px at ${x}px ${y}px)`]
+                        : [`circle(0px at ${x}px ${y}px)`, `circle(${endRadius}px at ${x}px ${y}px)`];
+
+                    document.documentElement.animate(
+                        { clipPath },
+                        {
+                            duration: 500,
+                            easing: 'ease-in-out',
+                            fill: 'forwards',
+                            pseudoElement: willBeDark
+                                ? '::view-transition-old(root)'
+                                : '::view-transition-new(root)'
+                        }
+                    );
+                });
+            }, { capture: true });
+        }
+
         function setMenuOpen(open) {
             if (!menuToggle || !nav) return;
             menuToggle.classList.toggle('is-open', open);
@@ -67,29 +137,6 @@
 
             window.addEventListener('scroll', updateBackToTop, { passive: true });
             updateBackToTop();
-        }
-
-        function initStaffParallax() {
-            const staff = document.querySelector('.music-staff-bg');
-            if (!staff || reduceMotionQuery.matches) return;
-
-            let ticking = false;
-
-            function updateStaffPosition() {
-                const shift = Math.max(-5, Math.min(5, window.scrollY * -0.012));
-                staff.style.transform = 'translate3d(0, ' + shift.toFixed(2) + 'px, 0)';
-                ticking = false;
-            }
-
-            function requestStaffUpdate() {
-                if (ticking) return;
-                ticking = true;
-                window.requestAnimationFrame(updateStaffPosition);
-            }
-
-            staff.classList.add('is-parallax-ready');
-            window.addEventListener('scroll', requestStaffUpdate, { passive: true });
-            updateStaffPosition();
         }
 
         function initArticleTocHover() {
@@ -176,7 +223,6 @@
                 '.post-tools',
                 '.article-detail__content > *',
                 '.article-detail__footer',
-                '.journal-entry',
                 '.music-album-card'
             ];
 
@@ -201,7 +247,7 @@
             });
         }
 
-        initStaffParallax();
+        initThemeToggle();
         initArticleTocHover();
         initRevealOnScroll();
 

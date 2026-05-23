@@ -1,15 +1,7 @@
 {{- $tocManuallyDisabled := or (eq .Params.toc false) (eq .Params.toc "false") -}}
 {{- $tocEnabled := and (not $tocManuallyDisabled) (default true .Site.Params.article.toc) (ge (len .TableOfContents) 100) -}}
 {{- if $tocEnabled -}}
-{{- $brand := default .Site.Title .Site.Params.brandName -}}
 <aside class="article-detail__toc-rail" aria-label="文章目录" data-article-toc>
-    <a class="article-detail__toc-brand" href="{{ .Site.Home.RelPermalink }}" aria-label="{{ $brand }} home">
-        <span class="article-detail__toc-brand-text">{{ $brand }}</span>
-        <span class="article-detail__toc-brand-note" aria-hidden="true">{{ partial "helper/icon" "music-note" }}</span>
-    </a>
-
-    <span class="article-detail__toc-brand-rule" aria-hidden="true"></span>
-
     <button class="article-detail__toc-toggle" type="button" aria-label="显示文章目录" aria-controls="TableOfContents" aria-expanded="false" data-article-toc-toggle>
         <span aria-hidden="true"></span>
         <span aria-hidden="true"></span>

@@ -31,7 +31,7 @@
 
 ### 导航结构
 ```
-Logo (Melody ♪)  ·  Home  ·  About  ·  Blog  ·  Journal  ·  Music  ·  Contact  [🎵 dark-mode]
+Logo (Melody ♪)  ·  Home  ·  About  ·  Blog  ·  Music  ·  Contact  [🎵 dark-mode]
 ```
 - 顶部水平导航，取代当前左侧栏竖向导航
 - 当前页以小圆点 `•` 标记
@@ -44,7 +44,6 @@ Logo (Melody ♪)  ·  Home  ·  About  ·  Blog  ·  Journal  ·  Music  ·  Co
 | About | 个人品牌叙事 | 头像、介绍、价值观 | 无（新建页面） |
 | Blog | 文章浏览与筛选 | 分类筛选、搜索、文章卡片 | 无（新建页面） |
 | Blog Detail | 长文阅读 | 标题/日期/分类/正文/左侧分享/底部相关文章 | 右侧作者/相关文章栏 |
-| Journal | 碎片化日记 | 时间线 | 无（新建页面） |
 | Music | 音乐随笔/推荐 | 听歌笔记、推荐唱片 | ❌播放器/播放按钮/进度条 |
 | Contact | 联系入口 | 表单、社交链接、FAQ | 无（新建页面） |
 
@@ -105,17 +104,7 @@ Logo (Melody ♪)  ·  Home  ·  About  ·  Blog  ·  Journal  ·  Music  ·  Co
 6. **ClosingNote** — 手写体 "Thanks for being here." + ♡
 7. Footer
 
-### 3.5 Journal 日志页
-
-**结构**:
-1. SiteHeader
-2. **JournalHero** — 标题 + 头像 + 引用语
-3. **JournalTimeline** — 纵向时间线，每条：日期 + 星期 + 标题♪ + 正文 + 可选图片 + 可选引用语
-4. Footer
-
-**响应式**: 时间线在移动端取消左右交替，统一居左。
-
-### 3.6 Music 音乐页
+### 3.5 Music 音乐页
 
 **结构**:
 1. SiteHeader
@@ -131,7 +120,7 @@ Logo (Melody ♪)  ·  Home  ·  About  ·  Blog  ·  Journal  ·  Music  ·  Co
 > [!CAUTION]
 > 此页面**禁止**出现播放按钮、音频播放器、进度条、Now Playing 等任何音乐播放控件。
 
-### 3.7 Contact 联系页
+### 3.6 Contact 联系页
 
 **结构**:
 1. SiteHeader
@@ -164,8 +153,6 @@ components/
 ├── RelatedPosts        # 相关文章列表
 ├── ValuesGrid          # 3列价值观卡片
 ├── MilestonesTimeline  # 水平里程碑时间线
-├── JournalTimeline     # 纵向日记时间线
-├── JournalEntry        # 单条日记（日期/标题/正文/图/引用）
 ├── AlbumCard           # 专辑封面 + 作曲家 + 曲目
 ├── RecordItem          # 推荐唱片列表项
 ├── ContactForm         # 联系表单
@@ -282,7 +269,6 @@ layouts/
 ├── index.html               # [REWRITE] 首页（Hero + 最新文章）
 ├── page/
 │   ├── about.html           # [NEW] About 页面布局
-│   ├── journal.html         # [NEW] Journal 页面布局
 │   ├── music.html           # [NEW] Music 页面布局
 │   └── contact.html         # [NEW] Contact 页面布局
 └── partials/
@@ -295,7 +281,6 @@ layouts/
     ├── featured-post.html    # [NEW] 置顶文章卡片
     ├── category-tabs.html    # [NEW] 分类标签
     ├── author-card.html      # [NEW] 作者卡片
-    ├── journal-entry.html    # [NEW] 日记条目
     ├── album-card.html       # [NEW] 专辑卡片
     ├── contact-form.html     # [NEW] 联系表单
     ├── faq-accordion.html    # [NEW] FAQ 折叠
@@ -344,7 +329,6 @@ assets/scss/
 ├── _hero.scss               # [NEW] Hero 区域
 ├── _cards.scss              # [NEW] 卡片组件
 ├── _article.scss            # [NEW] 文章详情
-├── _journal.scss            # [NEW] 日记时间线
 ├── _music.scss              # [NEW] 音乐页
 ├── _contact.scss            # [NEW] 联系页
 ├── _about.scss              # [NEW] 关于页
@@ -364,8 +348,6 @@ content/
 ├── _index.md                # 首页内容配置
 ├── post/                    # [KEEP] 博客文章 (Page Bundle)
 │   └── <文章名>/index.md
-├── journal/                 # [NEW] 日记条目
-│   └── <日记名>/index.md
 ├── music/                   # [NEW] 音乐随笔
 │   ├── _index.md            # Music 页面内容
 │   ├── listening-notes/     # 听歌笔记
@@ -394,17 +376,6 @@ hidden: false
 toc: true
 comments: false
 math: false
----
-
-# Journal 日记
----
-title: "日记标题"
-date: 2025-01-01
-weekday: "Sunday"           # 星期
-quote: "引用语"              # 可选引用
-quoteAuthor: "Melody"       # 引用署名
-image: "photo.jpg"          # 可选配图
-layout: journal-entry
 ---
 
 # Music 随笔
@@ -446,12 +417,11 @@ label: "厂牌"
 - [x] 恢复 `related-content.html`
 - [x] 样式: `_article.scss`
 
-### 第四阶段：About / Journal / Music / Contact (Days 9–13)
+### 第四阶段：About / Music / Contact (Days 9–13)
 - [x] 创建 `page/about.html` + `content/page/about/index.md`
-- [x] 创建 `page/journal.html` + `content/page/journal/index.md`
 - [x] 创建 `page/music.html` + `content/page/music/index.md` + `music-cover.html`
 - [x] 创建 `page/contact.html`，内联 ContactForm + FAQ 结构
-- [x] 样式: `_about.scss`, `_journal.scss`, `_music.scss`, `_contact.scss`
+- [x] 样式: `_about.scss`, `_music.scss`, `_contact.scss`
 
 ### 第五阶段：响应式与动效 (Days 14–15)
 - [x] 完善 `_responsive.scss` (所有断点)
@@ -478,10 +448,9 @@ label: "厂牌"
 - [ ] 暗色模式完整适配所有页面
 
 ### 功能
-- [x] 7 个页面全部可访问 (Home/About/Blog/Detail/Journal/Music/Contact)
+- [x] 6 个页面全部可访问 (Home/About/Blog/Detail/Music/Contact)
 - [x] 博客列表支持分类筛选 + 搜索
 - [x] 博客详情页正文居中，阅读体验舒适
-- [x] Journal 时间线按日期倒序排列
 - [x] Music 页面展示随笔/推荐，**无任何播放控件**
 - [x] Contact 表单可提交（或显示 mailto 链接）
 - [x] 回到顶部按钮正常工作

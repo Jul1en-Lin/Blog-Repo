@@ -9,7 +9,7 @@
   }
 
   .site-header__right {
-    gap: var(--space-3);
+    gap: 8px;
   }
 
   .site-menu-toggle {
@@ -109,15 +109,6 @@
     font-size: clamp(1.55rem, 8vw, 2rem);
   }
 
-  .music-staff-bg {
-    height: 240px;
-    opacity: 0.42;
-  }
-
-  .music-note-decor__note--three {
-    display: none;
-  }
-
   .article-list,
   .article-list--compact {
     grid-template-columns: 1fr;
@@ -156,7 +147,6 @@ body.template-home .main-content {
     height: 34px;
   }
 
-  .site-menu-toggle,
   .back-to-top {
     width: 38px;
     height: 38px;
@@ -166,8 +156,13 @@ body.template-home .main-content {
     gap: 4px;
   }
 
+  .site-header__right {
+    gap: 4px;
+  }
+
   .site-action-link,
-  #dark-mode-toggle.theme-toggle {
+  #dark-mode-toggle.theme-toggle,
+  .site-menu-toggle {
     width: 28px;
     height: 28px;
   }
@@ -184,13 +179,8 @@ body.template-home .main-content {
     display: grid;
   }
 
-  body.template-journal .main-content,
   body.template-music .main-content,
   body.template-article-detail .main-content {
     width: unquote("min(100% - 28px, var(--layout-wide))");
-  }
-
-  .journal-hero {
-    min-height: 0;
   }
 }

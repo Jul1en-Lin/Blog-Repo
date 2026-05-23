@@ -35,45 +35,6 @@ body.template-article-detail .main-content {
   overflow: hidden;
 }
 
-.article-detail__toc-brand {
-  position: absolute;
-  top: calc((var(--header-height) - 24px) / 2);
-  left: var(--article-toc-left);
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-2);
-  color: var(--color-text);
-  opacity: 1;
-  pointer-events: auto;
-  transform: translateX(0);
-  transition:
-    opacity var(--duration-normal) var(--ease-out),
-    transform var(--duration-normal) var(--ease-out);
-}
-
-.article-detail__toc-brand-text {
-  font-family: var(--font-script);
-  font-size: 2.05rem;
-  font-weight: 600;
-  line-height: 1;
-}
-
-.article-detail__toc-brand-note {
-  display: inline-grid;
-  width: 24px;
-  height: 24px;
-  place-items: center;
-}
-
-.article-detail__toc-brand-note svg {
-  width: 18px;
-  height: 18px;
-}
-
-.article-detail__toc-brand-rule {
-  display: none;
-}
-
 .article-detail__toc-toggle {
   position: absolute;
   top: clamp(118px, 14vh, 136px);
@@ -325,6 +286,7 @@ body.is-article-toc-visible .article-detail__toc-staff,
 .article-detail__content {
   max-width: 100%;
   margin-top: var(--space-6);
+  padding: 0;
   color: var(--color-text);
   font-family: var(--font-display), "Noto Sans SC", serif;
   font-size: clamp(16px, 0.95vw, 17px);

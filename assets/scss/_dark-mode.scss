@@ -3,14 +3,6 @@
   color: var(--color-bg);
 }
 
-:root[data-scheme="dark"] .site-header {
-  background: color-mix(in srgb, var(--color-bg) 86%, transparent);
-}
-
-:root[data-scheme="dark"] .music-staff-bg {
-  opacity: 0.32;
-}
-
 ::view-transition-old(root),
 ::view-transition-new(root) {
   animation: none;

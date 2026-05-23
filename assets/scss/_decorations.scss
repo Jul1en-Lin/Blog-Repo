@@ -1,133 +1,34 @@
-.music-staff-bg,
-.music-note-decor {
-  pointer-events: none;
-  user-select: none;
-}
-
-.music-staff-bg {
-  position: fixed;
-  inset: var(--header-height) 0 auto;
-  z-index: var(--z-decor);
-  height: unquote("min(38vh, 360px)");
-  overflow: hidden;
-  opacity: 0.42;
-}
-
-body.template-home .music-staff-bg,
-body.template-home .music-note-decor,
-body.template-blog-list .music-staff-bg,
-body.template-blog-list .music-note-decor,
-body.template-article-detail .music-staff-bg {
-  display: none;
-}
-
-body.template-journal .music-staff-bg {
-  top: 164px;
-  height: 440px;
-  opacity: 0.64;
-}
-
-body.template-journal .music-staff-bg__curve {
-  stroke-width: 1;
-}
-
-body.template-journal .music-staff-bg__lines path {
-  stroke: #d9d9d9;
-}
-
-.music-staff-bg svg {
-  width: 100%;
-  height: 100%;
-}
-
-.music-staff-bg__curve,
-.music-staff-bg__lines path {
-  fill: none;
-  vector-effect: non-scaling-stroke;
-}
-
-.music-staff-bg__curve {
-  stroke: var(--color-border);
-  stroke-width: 1.2;
-}
-
-.music-staff-bg__lines path {
-  stroke: var(--color-border-light);
-  stroke-width: 1;
-}
-
-.music-note-decor {
+.plum-background {
+  --plum-line-color: rgba(23, 23, 23, 0.13);
   position: fixed;
   inset: 0;
   z-index: var(--z-decor);
+  height: 100svh;
   overflow: hidden;
-  color: var(--color-text);
-  opacity: 0.11;
+  pointer-events: none;
+  user-select: none;
+  opacity: 0.92;
+  -webkit-mask-image: radial-gradient(circle at center, transparent 0, rgba(0, 0, 0, 0.32) 24%, #000 74%);
+  mask-image: radial-gradient(circle at center, transparent 0, rgba(0, 0, 0, 0.32) 24%, #000 74%);
 }
 
-.music-note-decor__note {
+:root[data-scheme="dark"] .plum-background {
+  --plum-line-color: rgba(255, 255, 255, 0.12);
+  opacity: 0.84;
+}
+
+.plum-background__canvas {
   position: absolute;
-  font-family: var(--font-display);
-  line-height: 1;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  max-width: none;
 }
 
-.music-note-decor__note--one {
-  top: 24vh;
-  left: 7vw;
-  font-size: clamp(1.25rem, 2vw, 2rem);
-}
-
-.music-note-decor__note--two {
-  right: 11vw;
-  bottom: 24vh;
-  font-size: clamp(1.5rem, 2.6vw, 2.4rem);
-}
-
-.music-note-decor__note--three {
-  top: 48vh;
-  right: 26vw;
-  font-size: clamp(1rem, 1.8vw, 1.6rem);
-}
-
-body.template-journal .music-note-decor {
-  opacity: 0.16;
-}
-
-body.template-journal .music-note-decor__note--one {
-  top: 28vh;
-  left: 37vw;
-  font-size: clamp(1.35rem, 2vw, 2rem);
-}
-
-body.template-journal .music-note-decor__note--two {
-  right: 6vw;
-  bottom: 21vh;
-  font-size: clamp(1.5rem, 2.3vw, 2.2rem);
-}
-
-body.template-journal .music-note-decor__note--three {
-  top: 22vh;
-  right: 20vw;
-  font-size: clamp(1rem, 1.7vw, 1.55rem);
-}
-
-body.template-article-detail .music-note-decor {
-  opacity: 0.16;
-}
-
-body.template-article-detail .music-note-decor__note--one {
-  display: none;
-}
-
-body.template-article-detail .music-note-decor__note--two {
-  top: 24vh;
-  right: 7vw;
-  bottom: auto;
-  font-size: clamp(1.6rem, 2.7vw, 2.5rem);
-}
-
-body.template-article-detail .music-note-decor__note--three {
-  top: 18vh;
-  right: 42vw;
-  font-size: clamp(1.1rem, 1.8vw, 1.7rem);
+@media (max-width: 760px) {
+  .plum-background {
+    opacity: 0.78;
+    -webkit-mask-image: radial-gradient(circle at center, transparent 0, rgba(0, 0, 0, 0.28) 28%, #000 78%);
+    mask-image: radial-gradient(circle at center, transparent 0, rgba(0, 0, 0, 0.28) 28%, #000 78%);
+  }
 }

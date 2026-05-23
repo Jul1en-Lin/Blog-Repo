@@ -28,7 +28,7 @@ body.template-music .main-content {
   align-items: center;
   gap: clamp(10px, 1vw, 16px);
   margin: 0;
-  font-family: var(--font-body);
+  font-family: var(--font-display), "Noto Sans SC", serif;
   font-size: clamp(4.4rem, 5vw, 5.8rem);
   font-weight: 800;
   letter-spacing: 0;
@@ -181,7 +181,8 @@ body.template-music .main-content {
 }
 
 .music-album-card__overlay h2 {
-  font-family: var(--font-body);
+  color: #ffffff;
+  font-family: var(--font-display), "Noto Sans SC", serif;
   font-size: clamp(1.06rem, 1.35vw, 1.38rem);
   font-weight: 700;
   letter-spacing: 0;

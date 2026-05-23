@@ -8,11 +8,11 @@ The Phase 0-6 blog refactor is complete. The site is a Hugo personal blog that s
 
 Current user-facing state:
 
-- Home, Blog list, Blog detail, About, Journal, Music, and Contact have been implemented or refined against the black-and-white minimal editorial music direction.
-- The global shell uses a top navigation, wider header rail, light-mode-first visual baseline, custom typography, music staff decoration, and manually toggleable dark mode.
+- Home, Blog list, Blog detail, About, Music, and Contact have been implemented or refined against the black-and-white minimal editorial music direction.
+- The global shell uses a top navigation, wider header rail, light-mode-first visual baseline, custom typography, a low-opacity Antfu-style plum canvas background on non-article surfaces, and manually toggleable dark mode.
 - Blog list includes featured content, category filter buttons, search, responsive cards, accessible keyboard filtering, and restrained hover motion.
 - Blog detail uses a wide no-right-sidebar reading layout, header quote, larger readable body text, line-number-free code blocks, improved table readability, and bottom related posts.
-- About, Journal, Music, and Contact are standalone editorial pages with dedicated project-level layouts.
+- About, Music, and Contact are standalone editorial pages with dedicated project-level layouts.
 - Music uses a static album gallery backed by `[[albums]]` front matter and page-bundle album covers; card text is limited to album title and artist inside the image surface, and the page intentionally has no audio, video, playback button, playlist, progress, sorting, filtering, or media-player UI.
 - Project-level SEO metadata, responsive WebP image processing, focus states, semantic heading cleanup, and accessibility refinements are in place.
 - Real images and portraits render in original color by default; grayscale is no longer applied globally to image surfaces.
@@ -23,14 +23,14 @@ Current technical state:
 - Do not modify files under `themes/` unless explicitly requested.
 - Use `params.primaryNav` in `hugo.yaml` as the navigation source.
 - Prefer project-level overrides in `layouts/`, `assets/`, `content/`, and `static/`.
-- `static/js/particles.js`, `static/js/fireworks.js`, and `static/js/avatar-colors.js` have been removed.
+- `static/js/particles.js`, `static/js/fireworks.js`, `static/js/avatar-colors.js`, and the old Gemini background images have been removed.
 - Optional future optimization: deeper CSS pruning could reduce unused CSS, but current Lighthouse desktop targets were met.
 
 Latest verification snapshot:
 
 - `hugo -D --cleanDestinationDir --printI18nWarnings --printPathWarnings` / previous Windows equivalent passed.
-- Build generated 96 pages and processed roughly 701 images in the latest recorded pass.
-- Browser checks covered Home, Blog list, Blog detail, About, Journal, Music, and Contact across desktop, tablet, and mobile viewports.
+- Build generated 113 pages and processed 771 images in the latest recorded pass.
+- Browser checks covered Home, Blog list, Blog detail, About, Music, and Contact across desktop, tablet, and mobile viewports.
 - No horizontal overflow was detected on checked routes.
 - Mobile navigation opened, locked body scroll, closed correctly, and restored `aria-expanded`.
 - Music rendered no player, audio, video, progress, playlist, or playback-control UI.
@@ -40,6 +40,64 @@ Latest verification snapshot:
   - Blog detail: Performance 97, Accessibility 100, Best Practices 100, SEO 100.
 
 ## Condensed History
+
+### 2026-05-23 - Article Header Controls
+
+- Removed the duplicate mini brand from the article table-of-contents rail so only the global header signature remains.
+- Added an inline theme-toggle initializer fallback so older article pages keep switching themes even when a stale fingerprinted custom script is referenced during local preview.
+
+### 2026-05-23 - Header Signature Visibility
+
+- Restored the header signature visibility after the transparent header change by removing the fragile blend-mode color treatment.
+
+### 2026-05-23 - Transparent Header
+
+- Removed the header background and blur layer so the plum canvas background remains visible behind the top navigation.
+
+### 2026-05-23 - Blog Timeline Spacing
+
+- Adjusted the Blog timeline column position and spacing to better match the AntfuStyle reference list rhythm.
+- Simplified Blog timeline hover feedback to a title-width underline reveal instead of a full-row highlight bar.
+
+### 2026-05-23 - Article Title Alignment
+
+- Removed the inherited article-content side padding on Blog detail pages so article titles and body text share the same left edge.
+
+### 2026-05-23 - Mobile Menu Button
+
+- Restyled the mobile navigation toggle to match the neighboring header action icons, removing the circular button frame.
+- Matched the hamburger stroke color to the header action icons in both light and dark modes.
+- Matched the mobile menu toggle spacing to the adjacent header action icon spacing.
+
+### 2026-05-23 - Music Typography
+
+- Updated the Music page heading and album titles to use the Blog heading font, with album titles staying white in light mode.
+- Corrected the Music page album metadata for `在雨后醒来` by Asen.
+
+### 2026-05-23 - Music Album Collection
+
+- Replaced the Music gallery data with the visible NetEase Cloud Music collected albums and added local page-bundle covers for each card.
+- Removed the `Re:member` fallback card from the rendered Music gallery.
+- Removed the old unused `album-1.jpg` to `album-5.jpg` page-bundle cover files after switching the gallery to `netease-*` covers.
+
+### 2026-05-23 - Page Removal
+
+- Removed the discontinued page, navigation entry, content file, page layout, SCSS module, reveal selector, and responsive overrides.
+- Updated current project documentation so the removed surface is no longer part of the active site.
+
+### 2026-05-23 - Antfu Plum Background
+
+- Replaced the shell-level ambient music background with the AntfuStyle `plum` canvas animation on non-article surfaces.
+- Added a project-level plum background partial and script hook while keeping Blog article detail pages free of the background layer.
+- Removed the old Gemini background image assets from both `static/background/` and `assets/background/`.
+
+### 2026-05-23 - Ambient Music Background
+
+- Replaced the older global staff/note decoration partials and Blog-local staff doodle with one shell-level ambient music background layer.
+- Added watermark-level staff curves, a waveform line, spectrum dots, and sparse breathing particles for main site surfaces in both light and dark modes.
+- Fixed the ambient layer to the viewport, simplified SVG note shapes, and aligned the upper-right staff geometry between light and dark modes.
+- Refined the ambient note stems with continuous flagged paths and uniform group opacity so line joins no longer brighten at overlaps.
+- Kept the layer inert below page content with article detail pages left free of the ambient background.
 
 ### 2026-05-22 - Music Album Gallery
 
@@ -96,7 +154,7 @@ Latest verification snapshot:
 - Replaced the header text brand with a CSS-only inline SVG `Jul1en` signature reveal.
 - Added a 10-second left-to-right write, hold, and reset loop with reduced-motion and print fallbacks.
 - Tuned desktop, 920px, and 390px sizing so header actions and the mobile menu remain visible.
-- Verified Hugo build passed with only existing deprecation warnings; browser checks covered `/`, `/post/`, `/journal/`, `/music/`, plus currently missing `/about/` and `/contact/`, with no horizontal overflow.
+- Verified Hugo build passed with only existing deprecation warnings; browser checks covered `/`, `/post/`, `/music/`, plus currently missing `/about/` and `/contact/`, with no horizontal overflow.
 
 ### 2026-05-21 - Blog Timeline Index
 
@@ -139,7 +197,7 @@ Latest verification snapshot:
 
 ### 2026-05-04 - Image And Music Page Refinements
 
-- Removed project-level grayscale filters from real image surfaces across cards, covers, author/page portraits, Journal images, related posts, and Music image slots.
+- Removed project-level grayscale filters from real image surfaces across cards, covers, author/page portraits, related posts, and Music image slots.
 - Updated the image styling baseline so newly added real images render in their original colors by default.
 - Refined Music to use Music-specific front matter data instead of Blog post content.
 - Added page-bundle album and record cover support through `layouts/partials/music-cover.html`.
@@ -148,10 +206,10 @@ Latest verification snapshot:
 
 ### 2026-05-04 - Phase 4 Pages
 
-- Added content entries and project-level layouts for About, Journal, Music, and Contact.
-- Added `layouts/partials/page-cover.html` and Phase 4 SCSS modules for About, Journal, Music, and Contact.
+- Added content entries and project-level layouts for About, Music, and Contact.
+- Added `layouts/partials/page-cover.html` and Phase 4 SCSS modules for About, Music, and Contact.
 - Added small line icons for page accents.
-- Matched the provided concept directions with editorial hero layouts, circular author image treatment, Journal timeline entries, multi-column Music sections, and Contact form/FAQ content.
+- Matched the provided concept directions with editorial hero layouts, circular author image treatment, multi-column Music sections, and Contact form/FAQ content.
 
 ### 2026-05-03 - Phase 3 Blog Detail
 

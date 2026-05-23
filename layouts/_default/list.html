@@ -32,12 +32,6 @@
     <section class="blog-index blog-index--timeline" aria-labelledby="blog-index-title">
         <h1 class="sr-only" id="blog-index-title">{{ if $isTermPage }}{{ .Title }}{{ else }}Blog{{ end }}</h1>
 
-        <div class="blog-index__music-decor" aria-hidden="true">
-            <span class="blog-index__staff blog-index__staff--one"></span>
-            <span class="blog-index__staff blog-index__staff--two"></span>
-            <span class="blog-index__note">{{ partial "helper/icon" "music-note" }}</span>
-        </div>
-
         <div class="post-timeline" data-blog-timeline>
             {{ range $posts.GroupByDate "2006" }}
             <section class="post-year" data-blog-year-group>

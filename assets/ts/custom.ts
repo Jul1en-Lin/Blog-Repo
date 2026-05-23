@@ -224,10 +224,190 @@ function initCodeCopyButtons() {
     });
 }
 
+function initPlumBackground() {
+    const root = document.querySelector<HTMLElement>('[data-plum-background]');
+    if (!root || root.dataset.plumBackgroundReady === 'true') return;
+
+    const canvas = root.querySelector<HTMLCanvasElement>('canvas');
+    if (!canvas) return;
+
+    root.dataset.plumBackgroundReady = 'true';
+
+    type DrawStep = () => void;
+
+    const R180 = Math.PI;
+    const R90 = Math.PI / 2;
+    const R15 = Math.PI / 12;
+    const THRESHOLD = 30;
+    const LEN = 6;
+    const INTERVAL = 1000 / 40;
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+    let rafId: number | undefined;
+    let resizeTimer: number | undefined;
+    let pendingSteps: DrawStep[] = [];
+    let lastTime = performance.now();
+    let width = 0;
+    let height = 0;
+    let ctx: CanvasRenderingContext2D | null = null;
+
+    function getStrokeStyle() {
+        return getComputedStyle(root).getPropertyValue('--plum-line-color').trim() || 'rgba(136, 136, 136, 0.145)';
+    }
+
+    function initCanvas() {
+        const context = canvas.getContext('2d');
+        if (!context) return null;
+
+        const dpr = window.devicePixelRatio || 1;
+        width = Math.ceil(window.innerWidth);
+        height = Math.ceil(window.innerHeight);
+
+        canvas.style.width = `${width}px`;
+        canvas.style.height = `${height}px`;
+        canvas.width = Math.ceil(width * dpr);
+        canvas.height = Math.ceil(height * dpr);
+
+        context.setTransform(dpr, 0, 0, dpr, 0, 0);
+        context.lineWidth = 1;
+        context.lineCap = 'round';
+        context.strokeStyle = getStrokeStyle();
+        ctx = context;
+
+        return context;
+    }
+
+    function polarToCartesian(x = 0, y = 0, radius = 0, theta = 0) {
+        return [
+            x + radius * Math.cos(theta),
+            y + radius * Math.sin(theta)
+        ];
+    }
+
+    function stopDrawing() {
+        if (rafId !== undefined) {
+            window.cancelAnimationFrame(rafId);
+            rafId = undefined;
+        }
+
+        pendingSteps = [];
+    }
+
+    // Adapted from lin-stephanie/astro-antfustyle-theme's Plum.astro, MIT.
+    function drawStep(x: number, y: number, rad: number, counter: { value: number } = { value: 0 }) {
+        if (!ctx) return;
+
+        const length = Math.random() * LEN;
+        const [nx, ny] = polarToCartesian(x, y, length, rad);
+
+        ctx.beginPath();
+        ctx.moveTo(x, y);
+        ctx.lineTo(nx, ny);
+        ctx.stroke();
+        counter.value += 1;
+
+        if (nx < -100 || nx > width + 100 || ny < -100 || ny > height + 100) return;
+
+        const rad1 = rad + Math.random() * R15;
+        const rad2 = rad - Math.random() * R15;
+        const rate = counter.value <= THRESHOLD ? 0.8 : 0.5;
+
+        if (Math.random() < rate) pendingSteps.push(() => drawStep(nx, ny, rad1, counter));
+        if (Math.random() < rate) pendingSteps.push(() => drawStep(nx, ny, rad2, counter));
+    }
+
+    function seedDrawing() {
+        const randomMiddle = () => Math.random() * 0.6 + 0.2;
+
+        pendingSteps = [
+            () => drawStep(randomMiddle() * width, -5, R90),
+            () => drawStep(randomMiddle() * width, height + 5, -R90),
+            () => drawStep(-5, randomMiddle() * height, 0),
+            () => drawStep(width + 5, randomMiddle() * height, R180)
+        ];
+
+        if (width < 640) pendingSteps = pendingSteps.slice(0, 2);
+    }
+
+    function drawFrame() {
+        const now = performance.now();
+        if (now - lastTime < INTERVAL) return;
+
+        lastTime = now;
+
+        const steps: DrawStep[] = [];
+        pendingSteps = pendingSteps.filter((step) => {
+            if (Math.random() > 0.5) {
+                steps.push(step);
+                return false;
+            }
+
+            return true;
+        });
+        steps.forEach((step) => step());
+    }
+
+    function startFrameLoop() {
+        rafId = window.requestAnimationFrame(() => {
+            if (!pendingSteps.length) {
+                stopDrawing();
+                return;
+            }
+
+            drawFrame();
+            startFrameLoop();
+        });
+    }
+
+    function drawInstantly() {
+        let guard = 0;
+
+        while (pendingSteps.length && guard < 12000) {
+            const steps = pendingSteps.splice(0, pendingSteps.length);
+            guard += steps.length;
+            steps.forEach((step) => step());
+        }
+
+        pendingSteps = [];
+    }
+
+    function redraw(options: { instant?: boolean } = {}) {
+        stopDrawing();
+        const context = initCanvas();
+        if (!context) return;
+
+        context.clearRect(0, 0, width, height);
+        seedDrawing();
+        lastTime = performance.now();
+
+        if (options.instant || reducedMotion.matches) {
+            drawInstantly();
+            return;
+        }
+
+        startFrameLoop();
+    }
+
+    function scheduleRedraw() {
+        window.requestAnimationFrame(() => redraw({ instant: reducedMotion.matches }));
+    }
+
+    window.addEventListener('resize', () => {
+        window.clearTimeout(resizeTimer);
+        resizeTimer = window.setTimeout(scheduleRedraw, 160);
+    });
+
+    window.addEventListener('onColorSchemeChange', scheduleRedraw);
+    reducedMotion.addEventListener('change', scheduleRedraw);
+
+    redraw({ instant: reducedMotion.matches });
+}
+
 function initCustomScripts() {
     initThemeToggle();
     initPostFilters();
     initCodeCopyButtons();
+    initPlumBackground();
 }
 
 if (document.readyState === 'loading') {

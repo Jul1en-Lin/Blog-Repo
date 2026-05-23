@@ -96,7 +96,6 @@
 尚无：
 
 - `content/page/about/`
-- `content/journal/`
 - `content/music/`
 - `content/page/contact/`
 
@@ -114,7 +113,6 @@
 需要新增：
 
 - About `/about/`
-- Journal `/journal/`
 - Music `/music/`
 - Contact `/contact/`
 
@@ -149,14 +147,14 @@ Music 页面必须保持“音乐作为视觉语言”，禁止播放器、播�
 5. 多数文章缺少 `image`、`description`、`featured` 等字段，新卡片组件必须设计 fallback。
 6. GitHub Actions 使用 `hugo -D`，draft 文章会参与构建和部署，首页/列表逻辑需要明确是否展示 draft。
 7. 当前 `related-content.html` 被项目级 partial 禁用，后续恢复相关文章时需要删除或重写该覆盖。
-8. About / Journal / Music / Contact 目前无内容文件，导航若先出现这些入口，会出现阶段性 404，需要在项目状态文档记录。
+8. About / Music / Contact 目前无内容文件，导航若先出现这些入口，会出现阶段性 404，需要在项目状态文档记录。
 
 ## 7. 建议的阶段执行顺序
 
 1. 基础视觉系统与全局骨架：design tokens、字体、顶部导航、全局容器、暗色模式、音乐装饰 partial、footer custom 清理。
 2. 首页与 Blog 列表：重写首页，新增复用 Hero / BlogCard / QuoteBlock / FeaturedPost / CategoryTabs。
 3. Blog 详情页：重写 single，恢复居中阅读、作者卡、相关文章、封面图。
-4. About / Journal / Music / Contact：新增页面布局、内容骨架和对应样式模块。
+4. About / Music / Contact：新增页面布局、内容骨架和对应样式模块。
 5. 响应式与动效：完善移动端导航、入场动效、克制 parallax，停止加载旧粒子/礼花/头像取色。
 6. 性能、SEO、可访问性：meta、语义结构、图片懒加载、ARIA、键盘导航、Lighthouse 与构建验证。
 

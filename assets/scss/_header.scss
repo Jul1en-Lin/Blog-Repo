@@ -3,9 +3,7 @@
   top: 0;
   z-index: var(--z-header);
   border-bottom: 0;
-  background: color-mix(in srgb, var(--color-bg) 82%, transparent);
-  backdrop-filter: blur(18px);
-  -webkit-backdrop-filter: blur(18px);
+  background: transparent;
 }
 
 .site-header__inner {
@@ -32,8 +30,8 @@
   width: clamp(112px, 9vw, 128px);
   height: 42px;
   align-items: center;
-  color: #fff;
-  mix-blend-mode: difference;
+  color: var(--color-text);
+  mix-blend-mode: normal;
 }
 
 .site-signature {
@@ -239,7 +237,7 @@
   border: 0;
   border-radius: 0;
   background: transparent;
-  color: color-mix(in srgb, var(--color-text) 62%, transparent);
+  color: var(--color-text);
   cursor: pointer;
   line-height: 0;
   transition: color var(--duration-fast) var(--ease-out), transform var(--duration-fast) var(--ease-out);
@@ -273,15 +271,18 @@
 
 .site-menu-toggle {
   display: inline-grid;
-  width: 42px;
-  height: 42px;
-  place-items: center;
+  width: 30px;
+  height: 30px;
+  place-content: center;
+  gap: 4px;
   padding: 0;
-  border: 1px solid var(--color-border);
-  border-radius: 50%;
+  border: 0;
+  border-radius: 0;
   background: transparent;
+  color: var(--color-text);
   cursor: pointer;
-  transition: border-color var(--duration-fast) var(--ease-out), background var(--duration-fast) var(--ease-out), transform var(--duration-fast) var(--ease-out);
+  line-height: 0;
+  transition: color var(--duration-fast) var(--ease-out), transform var(--duration-fast) var(--ease-out);
 }
 
 #dark-mode-toggle.theme-toggle {
@@ -309,21 +310,21 @@
   display: none;
 }
 
-.site-menu-toggle:hover {
-  border-color: var(--color-text);
-  background: var(--color-bg-secondary);
+.site-menu-toggle:hover,
+.site-menu-toggle:focus-visible {
+  color: var(--color-text);
   transform: translateY(-1px);
 }
 
 .site-menu-toggle__bar {
-  width: 17px;
-  height: 1px;
-  background: currentColor;
+  width: 16px;
+  height: 1.5px;
+  background: var(--color-text);
   transition: transform var(--duration-normal) var(--ease-out), opacity var(--duration-fast) var(--ease-out);
 }
 
 .site-menu-toggle.is-open .site-menu-toggle__bar:nth-child(1) {
-  transform: translateY(6px) rotate(45deg);
+  transform: translateY(5.5px) rotate(45deg);
 }
 
 .site-menu-toggle.is-open .site-menu-toggle__bar:nth-child(2) {
@@ -331,5 +332,5 @@
 }
 
 .site-menu-toggle.is-open .site-menu-toggle__bar:nth-child(3) {
-  transform: translateY(-6px) rotate(-45deg);
+  transform: translateY(-5.5px) rotate(-45deg);
 }

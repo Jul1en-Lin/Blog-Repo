@@ -1,14 +1,14 @@
 # Project Status
 
-Last updated: 2026-05-22
+Last updated: 2026-05-23
 
 ## Current State
 
-Phase 6 is complete. Home, Blog preview, Blog detail, About, Journal, Music, and Contact have all been refined or implemented against the provided concept images. The latest visual pass tightened Home, Contact, and About against their concept screenshots, reduced oversized portrait/avatar presentation, widened the header rail, recentered the theme-toggle icon, and aligned the mode toggle's default contrast with the neighboring social actions. The project now has the target homepage structure, a concept-aligned Blog list composition, a wider Blog detail reading layout without a right sidebar, cleaner code blocks without visible line numbers, larger Blog detail tables constrained to the main reading column, a Codex-docs-inspired syntax palette, standalone editorial layouts for the remaining primary pages, reusable post/media presentation components, category filters, search input, modular styling for hero/cards/article/page surfaces, responsive breakpoints, lightweight motion, refined Blog card hover interactions, project-level SEO metadata, WebP image processing, keyboard-accessible Blog filtering, stronger focus states, and a Music page that uses a static album gallery backed by dedicated `[[albums]]` front matter plus page-bundle album covers. Real images now render in their original colors by default.
+Phase 6 is complete. Home, Blog preview, Blog detail, About, Music, and Contact have all been refined or implemented against the provided concept images. The latest visual pass tightened Home, Contact, and About against their concept screenshots, reduced oversized portrait/avatar presentation, widened the header rail, recentered the theme-toggle icon, aligned the mode toggle's default contrast with the neighboring social actions, removed the header mask layer so the plum background remains visible behind navigation, restored the header signature with explicit theme text colors, removed the duplicate article TOC mini brand, added an inline theme-toggle fallback for older article previews, relaxed the Blog timeline column position and spacing against the AntfuStyle reference rhythm, simplified Blog timeline hover feedback to title-width underline reveals, aligned Blog detail titles with the body text edge, restyled the mobile menu toggle to match the header action icons, aligned Music heading typography with the Blog heading font, and replaced the older staff/note and ambient music background treatments with an AntfuStyle plum canvas animation on non-article site surfaces. The project now has the target homepage structure, a concept-aligned Blog list composition, a wider Blog detail reading layout without a right sidebar, cleaner code blocks without visible line numbers, larger Blog detail tables constrained to the main reading column, a Codex-docs-inspired syntax palette, standalone editorial layouts for the remaining primary pages, reusable post/media presentation components, category filters, search input, modular styling for hero/cards/article/page surfaces, responsive breakpoints, lightweight motion, refined Blog card hover interactions, project-level SEO metadata, WebP image processing, keyboard-accessible Blog filtering, stronger focus states, and a Music page that uses a static album gallery backed by dedicated `[[albums]]` front matter plus page-bundle album covers. Real images now render in their original colors by default.
 
 The current Blog timeline preview pass keeps preview titles and metadata on the blog typography system instead of the temporary body/mono overrides. Blog detail openings now use a cleaner title-and-body structure: summary preview, header quote, cover image, and the title underline are removed while the music divider remains before the article content. Blog detail theme toggling is handled by an early project-level listener so the mode button responds before Stack's window-load initializer finishes while preserving the circular View Transition animation.
 
-The current Music page is a static responsive album wall rather than a four-column editorial collection. It follows the site theme in both light and dark modes, avoids sorting/filtering/view-switch/player controls, preserves complete cover artwork by using fitted image derivatives plus `object-fit: contain`, uses fixed-size square cards with subtle row-by-row left offsets to avoid masonry gaps and side bands on square album covers, lifts the title/subtitle group with a small title waveform accent to align with the concept direction, and keeps visible card text inside the image surface as album title plus artist only.
+The current Music page is a static responsive album wall rather than a four-column editorial collection. It follows the site theme in both light and dark modes, avoids sorting/filtering/view-switch/player controls, renders the visible NetEase Cloud Music collected albums from local page-bundle covers, preserves complete cover artwork by using fitted image derivatives plus `object-fit: contain`, uses fixed-size square cards with subtle row-by-row left offsets to avoid masonry gaps and side bands on square album covers, lifts the title/subtitle group with a small title waveform accent to align with the concept direction, and keeps visible card text inside the image surface as album title plus artist only.
 
 The project still depends on `hugo-theme-stack`, but the visual shell is now controlled from project-level templates instead of the theme sidebar layout.
 
@@ -18,7 +18,7 @@ The project still depends on `hugo-theme-stack`, but the visual shell is now con
 - [x] Phase 1: Visual system and global shell
 - [x] Phase 2: Home and Blog list
 - [x] Phase 3: Blog detail
-- [x] Phase 4: About, Journal, Music, Contact
+- [x] Phase 4: About, Music, Contact
 - [x] Phase 5: Responsive refinements and motion
 - [x] Phase 6: Performance, SEO, accessibility
 
@@ -100,29 +100,21 @@ Modified:
 Added:
 
 - `content/page/about/index.md`
-- `content/page/journal/index.md`
 - `content/page/music/index.md`
 - `content/page/contact/index.md`
 - `layouts/page/about.html`
-- `layouts/page/journal.html`
 - `layouts/page/music.html`
 - `layouts/page/contact.html`
 - `layouts/partials/page-cover.html`
 - `layouts/partials/music-cover.html`
 - `assets/scss/_about.scss`
-- `assets/scss/_journal.scss`
 - `assets/scss/_music.scss`
 - `assets/scss/_contact.scss`
 - `assets/icons/leaf.svg`
 - `assets/icons/heart.svg`
-- `assets/icons/pencil.svg`
 - `assets/icons/map-pin.svg`
 - `assets/icons/plus.svg`
-- `content/page/music/album-1.jpg`
-- `content/page/music/album-2.jpg`
-- `content/page/music/album-3.jpg`
-- `content/page/music/album-4.jpg`
-- `content/page/music/album-5.jpg`
+- `content/page/music/netease-*.jpg`
 
 Modified:
 
@@ -171,7 +163,6 @@ Modified:
 - `layouts/_default/single.html`
 - `layouts/page/about.html`
 - `layouts/page/contact.html`
-- `layouts/page/journal.html`
 - `layouts/page/music.html`
 - `layouts/partials/article/components/related-content.html`
 - `layouts/partials/author-card.html`
@@ -217,14 +208,15 @@ Modified:
 - Keep article body Markdown `h1` headings demoted under the article title so detail pages have a single primary `h1`.
 - Keep above-the-fold Blog detail content out of reveal animations to protect LCP.
 - Keep the global header rail wider than the main content rail so the logo and theme toggle match the concept-image edge spacing.
-- Keep hero portraits smaller and lighter across Home, About, Journal, Music, Contact, and article author surfaces.
+- Keep hero portraits smaller and lighter across Home, About, Music, Contact, and article author surfaces.
+- Use one shell-level plum canvas background on main non-article surfaces; keep Blog article detail pages free of that background layer for reading.
 
 ## Known Gaps
 
 - Home has been rewritten and refined against the current concept direction.
 - Blog list has been rewritten and refined against the current concept direction; client-side filtering currently operates on the rendered post set.
 - Blog detail has been rewritten and refined against the current concept direction.
-- About, Journal, Music, and Contact have been implemented as static editorial pages using current site content/media resources.
+- About, Music, and Contact have been implemented as static editorial pages using current site content/media resources.
 - Music has been refined into a static album gallery that uses `[[albums]]` front matter instead of the previous lyric/songwriter/record/inspiration columns.
 - Music album entries support real page-bundle cover images through `layouts/partials/music-cover.html`; uploaded covers preserve their original colors, primary artwork renders fully with a fitted non-cropping image, fixed-size square card slots avoid side bands on square covers, and visible text is overlaid inside the card image.
 - Project-level real image styles have been reset so newly added images and portraits are not forced to grayscale.
@@ -232,6 +224,7 @@ Modified:
 - Phase 6 performance, SEO, and accessibility review is complete.
 - Home, Contact, and About received a post-Phase-6 concept-alignment pass for header edge spacing, portrait scale, theme-toggle centering, and first-viewport rhythm.
 - Legacy visual scripts `static/js/particles.js`, `static/js/fireworks.js`, and `static/js/avatar-colors.js` have been deleted.
+- Main non-article pages now share the fixed AntfuStyle plum canvas background layer; the previous global staff/note partials, ambient music partial, Blog-local staff doodle, and old Gemini background images have been retired.
 - Remaining optional optimization: deeper CSS pruning could reduce unused CSS reported by Lighthouse, but the current desktop Lighthouse targets are met.
 
 ## Latest Verification
@@ -245,19 +238,24 @@ hugo -D --cleanDestinationDir --printI18nWarnings --printPathWarnings
 Result:
 
 - Build passed with existing Hugo deprecation warnings.
-- Generated 114 pages.
-- Processed 757 images.
+- Generated 113 pages.
+- Processed 754 images.
 
 Local preview:
 
-- Hugo server is running at `http://127.0.0.1:1313/`.
-- `/`, `/about/`, `/journal/`, `/music/`, and `/contact/` returned HTTP 200.
-- New global header and music decoration partials are present in rendered HTML.
+- For the latest plum-background check, Hugo server was run at `http://127.0.0.1:1314/` because `1313` was already occupied.
+- Browser DOM checks confirmed Home, Blog list, About, Music, and Contact render the `data-plum-background` layer and a full-viewport canvas.
+- Browser checks confirmed the Blog article detail route `/p/sentinel/` does not render the plum background layer.
+- Mobile Chrome checks at `390x844` confirmed Home and Blog list render the plum layer without horizontal overflow, while `/p/sentinel/` remains background-free.
+- Theme-toggle checks confirmed the plum canvas color variable redraw path switches from the light value to the dark value.
+- Hugo server is normally expected at `http://127.0.0.1:1313/` when the port is free.
+- `/`, `/about/`, `/music/`, and `/contact/` returned HTTP 200; the removed route returns 404.
+- New global header and plum background partials are present in rendered HTML.
 - Old `particles.js` and `fireworks.js` references are absent from rendered HTML.
-- Browser automation checked Home, Blog list, Blog detail, About, Journal, Music, and Contact across desktop, tablet, and mobile viewports.
+- Browser automation checked Home, Blog list, Blog detail, About, Music, and Contact across desktop, tablet, and mobile viewports.
 - Checked routes showed no horizontal overflow.
+- Plum background checks covered Home, Blog list, About, Music, and Contact; Blog article detail pages stayed free of the layer.
 - Mobile navigation opens with `aria-expanded="true"`, locks body scroll, closes on outside click, and restores `aria-expanded="false"`.
-- Staff-line parallax initializes in the browser.
 - Scroll reveal initializes in the browser and respects the reduced-motion CSS fallback.
 - Deleted legacy visual scripts are absent from `static/js/` and rendered HTML.
 - `/post/` renders one featured post, category tabs, search input, and 21 filterable cards.
@@ -269,12 +267,12 @@ Local preview:
 - Blog detail desktop screenshot was checked at `1920x1080` with no horizontal overflow.
 - Blog detail mobile smoke was checked at `390x844` with no horizontal overflow.
 - Blog detail rendered the back link, share rail, article header, cover image, bottom related posts, and article content.
-- About, Journal, Music, and Contact desktop screenshots were checked at `1920x1080` with no horizontal overflow.
-- About, Journal, Music, and Contact mobile smoke screenshots were checked at `390x844` with no horizontal overflow.
-- About, Journal, Music, and Contact active navigation states render correctly.
+- About, Music, and Contact desktop screenshots were checked at `1920x1080` with no horizontal overflow.
+- About, Music, and Contact mobile smoke screenshots were checked at `390x844` with no horizontal overflow.
+- About, Music, and Contact active navigation states render correctly.
 - Contact renders one form and three FAQ rows.
 - Playwright fallback screenshots checked Home, Contact, and About at `1670x950` against the provided concept images; theme-toggle icon centering, smaller portrait dimensions, first-viewport positions, and no horizontal overflow were verified.
-- Music now renders 6 static album cards from `[[albums]]`: 5 real page-bundle cover images and 1 no-image fallback.
+- Music now renders 22 static NetEase Cloud Music collected album cards from `[[albums]]`, all backed by local page-bundle cover images and no no-image fallback card.
 - Music hero browser checks at desktop `1440x900`, tablet `820x1180`, and mobile `390x844` confirmed the lifted title/subtitle rhythm, no remaining `Album gallery` eyebrow, and the five-bar waveform beside `Music`.
 - Music scheme checks on a fresh Hugo preview confirmed the theme toggle renders the gallery readably in both light and dark modes with no horizontal overflow.
 - Music cover images compute `object-fit: contain`, appear as direct card children without the previous cover frame/backdrop/body/meta wrappers, and stay visible at desktop `1440x900`, tablet `820x1180`, and mobile `390x844`.
@@ -283,14 +281,14 @@ Local preview:
 - Music responsive checks showed no horizontal overflow at desktop, tablet, or mobile widths.
 - Music renders no `audio`, `video`, `progress`, sorting, filtering, view-switching, playlist, or playback-control UI.
 - Header theme-toggle checks confirmed the sun and moon default contrast now aligns with the GitHub and Instagram action group while keeping the existing hover/focus motion.
-- Home, Blog, Blog detail, About, Journal, Music, and Contact rendered images all compute `filter: none` in browser verification.
+- Home, Blog, Blog detail, About, Music, and Contact rendered images all compute `filter: none` in browser verification.
 - Blog and featured card hover checks confirmed transform, image movement, arrow movement, and bottom hairline reveal while keeping image filters disabled.
 - Blog detail code-block verification confirmed line numbers are disabled, old Chroma line-number elements are hidden as a fallback, code text is larger, and the copy bubble is hidden.
 - Blog detail code palette verification confirmed differentiated token colors for comments, keywords, strings, numbers, functions, types, attributes, punctuation, and diff tokens.
 - Blog detail proportion tune brought the title, summary, cover image, share rail, and sidebar rhythm closer to the provided concept while retaining larger body/code text.
 - Blog detail table verification confirmed the `执行时间` table uses larger text, larger inline code tags, roomier cells, and no horizontal page overflow.
 - Blog detail wide-layout verification confirmed the right sidebar is removed, the quote appears in the header, related posts render below the article body, and the `执行时间` table stays inside the widened reading column with no horizontal page overflow.
-- Phase 6 browser audit checked Home, Blog, Blog detail, About, Journal, Music, and Contact for stable titles, meta descriptions, semantic landmarks, a single page `h1`, image alt/loading/decoding attributes, WebP output, labeled buttons, duplicate IDs, no horizontal overflow, and no audio/video/progress controls.
+- Phase 6 browser audit checked Home, Blog, Blog detail, About, Music, and Contact for stable titles, meta descriptions, semantic landmarks, a single page `h1`, image alt/loading/decoding attributes, WebP output, labeled buttons, duplicate IDs, no horizontal overflow, and no audio/video/progress controls.
 - Blog category keyboard audit confirmed ArrowRight focus movement, `aria-pressed` state updates, visible focus outlines, and encoded Chinese category matching with visible filtered cards.
 - Lighthouse desktop audit:
   - Home: Performance 90, Accessibility 100, Best Practices 100, SEO 100.

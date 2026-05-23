@@ -9,6 +9,6 @@ homeProfile:
     - 最近常写 Java、Spring、Redis、自动化测试和 AI 工作流。文章不是教程货架，更像边走边整理的工程札记。
   recentLabel: Recently written
   socialLabel: Find me on
-  contactLine: Or keep reading through the journal and the blog archive.
+  contactLine: Or keep reading through the blog archive.
   closingNote: Build quietly. Think clearly. Leave useful notes.
 ---

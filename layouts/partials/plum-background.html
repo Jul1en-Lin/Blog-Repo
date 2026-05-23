@@ -1,0 +1,6 @@
+{{- $isArticleDetail := and .IsPage (in .Site.Params.mainSections .Type) -}}
+{{- if not $isArticleDetail -}}
+<div class="plum-background" data-plum-background aria-hidden="true">
+    <canvas class="plum-background__canvas"></canvas>
+</div>
+{{- end -}}

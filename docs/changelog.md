@@ -50,6 +50,12 @@ Latest verification snapshot:
 
 - Restored the header signature visibility after the transparent header change by removing the fragile blend-mode color treatment.
 
+### 2026-05-23 - Header Single-Line Signature
+
+- Replaced the clipped header signature reveal with a true single center-line SVG path using `currentColor`, thin round strokes, left-to-right dash drawing, and restrained hover/focus replay.
+- Refined the single-line path for better static readability by shortening the `J` entry stroke, reducing the lower loop, spacing `u/l/1/e/n`, clarifying the `e` loop, and shortening the `n` tail.
+- Rebalanced the signature skeleton against the reference image with a broader `J` sweep, clearer low `u`, rounded `l` loop, simpler `1` downstroke, cleaner `e` loop, and shorter `n` exit tail.
+
 ### 2026-05-23 - Transparent Header
 
 - Removed the header background and blur layer so the plum canvas background remains visible behind the top navigation.

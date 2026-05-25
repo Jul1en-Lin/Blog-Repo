@@ -46,6 +46,8 @@ Latest verification snapshot:
 - Replaced the header brand with a single-path `JL` SVG signature designed for center-line stroke animation.
 - Kept the restrained handwriting reveal with `stroke-dasharray`/`stroke-dashoffset`, including hover/focus replay.
 - Tuned the `JL` path closer to the reference signature with a larger left `J` loop, a taller `L` loop, and a longer flatter exit stroke.
+- Repositioned the `L` so the `J` upstroke hooks into a narrow upper loop before dropping into the lower loop and exit stroke.
+- Redrew the `JL` signature against the reference image so the `L` upper loop sits above the `J` upstroke before descending into the small lower loop.
 - Regenerated the browser favicon assets from the same `JL` signature, including SVG, PNG, `favicon-signature.ico`, and the default `favicon.ico`.
 
 ### 2026-05-23 - Article Header Controls

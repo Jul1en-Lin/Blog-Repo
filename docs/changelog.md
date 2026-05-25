@@ -41,6 +41,13 @@ Latest verification snapshot:
 
 ## Condensed History
 
+### 2026-05-25 - JL Signature Logo And Favicon
+
+- Replaced the header brand with a single-path `JL` SVG signature designed for center-line stroke animation.
+- Kept the restrained handwriting reveal with `stroke-dasharray`/`stroke-dashoffset`, including hover/focus replay.
+- Tuned the `JL` path closer to the reference signature with a larger left `J` loop, a taller `L` loop, and a longer flatter exit stroke.
+- Regenerated the browser favicon assets from the same `JL` signature, including SVG, PNG, `favicon-signature.ico`, and the default `favicon.ico`.
+
 ### 2026-05-23 - Article Header Controls
 
 - Removed the duplicate mini brand from the article table-of-contents rail so only the global header signature remains.
@@ -55,6 +62,11 @@ Latest verification snapshot:
 - Replaced the clipped header signature reveal with a true single center-line SVG path using `currentColor`, thin round strokes, left-to-right dash drawing, and restrained hover/focus replay.
 - Refined the single-line path for better static readability by shortening the `J` entry stroke, reducing the lower loop, spacing `u/l/1/e/n`, clarifying the `e` loop, and shortening the `n` tail.
 - Rebalanced the signature skeleton against the reference image with a broader `J` sweep, clearer low `u`, rounded `l` loop, simpler `1` downstroke, cleaner `e` loop, and shorter `n` exit tail.
+- Reworked the `u` stroke order so it falls into a clearer rounded bottom and rises into the next letter instead of collapsing into a tight backtracking knot at logo size.
+- Removed the remaining `u` backtracking loop so the `J` now flows into an open low `u` stroke before rising toward `l`.
+- Lowered the `u` entry and reduced the signature stroke width slightly so the `u` remains readable instead of closing into a knot at header scale.
+- Narrowed the `u` cup and brought its rising exit leftward so it reads as a compact handwritten `u` instead of a wide wave.
+- Retuned the header signature toward the latest concept image by shortening the `J` top sweep, widening the navigation mark slightly, and keeping the single-path handwriting reveal intact.
 
 ### 2026-05-23 - Transparent Header
 

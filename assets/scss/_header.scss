@@ -29,8 +29,8 @@
   display: inline-flex;
   --signature-glow: color-mix(in srgb, var(--color-text) 28%, transparent);
   --signature-duration: 1680ms;
-  width: clamp(124px, 10vw, 148px);
-  height: 44px;
+  width: clamp(108px, 8.6vw, 126px);
+  height: clamp(54px, 4.3vw, 63px);
   align-items: center;
   color: var(--color-text);
   mix-blend-mode: normal;
@@ -54,7 +54,6 @@
   filter: none;
   transition: filter var(--duration-fast) var(--ease-out);
   animation: site-signature-path-draw var(--signature-duration) cubic-bezier(0.62, 0.02, 0.17, 1) both;
-  animation-delay: var(--signature-delay, 0ms);
   will-change: stroke-dashoffset, opacity;
 }
 

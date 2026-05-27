@@ -41,6 +41,12 @@ Latest verification snapshot:
 
 ## Condensed History
 
+### 2026-05-28 - Transparent Adaptive Favicon
+
+- Removed the solid dark square from the signature favicon SVG so the browser tab background can show through.
+- Updated the SVG favicon to switch between dark and bright white signature fills based on the browser color scheme.
+- Regenerated the PNG and ICO favicon fallbacks from `assets/img/signature.png` as transparent, optically thicker white signature assets.
+
 ### 2026-05-25 - JL Signature Logo And Favicon
 
 - Replaced the header brand with a single-path `JL` SVG signature designed for center-line stroke animation.

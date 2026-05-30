@@ -19,7 +19,7 @@ $defaultTagColors: #171717, #171717, #171717, #171717, #171717;
   --font-display: "Playfair Display", Georgia, "Times New Roman", serif;
   --font-script: "Dancing Script", cursive;
   --font-body: "Inter", "Noto Sans SC", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  --font-mono: "JetBrains Mono", "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+  --font-mono: "JetBrains Mono", "SFMono-Regular", Consolas, "Liberation Mono", var(--font-display), "Noto Sans SC", serif, monospace;
 
   --text-xs: 0.75rem;
   --text-sm: 0.875rem;

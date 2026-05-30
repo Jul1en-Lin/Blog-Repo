@@ -41,6 +41,18 @@ Latest verification snapshot:
 
 ## Condensed History
 
+### 2026-05-30 - Code Block CJK Font
+
+- Added the article display font stack after the monospace fonts so Chinese text inside code blocks falls back to the same serif blog typography instead of a system monospace fallback.
+
+### 2026-05-30 - Resource Cleanup
+
+- Removed unused tracked backup files, `.DS_Store` files, stale icons/images, an unused bundled font, and orphaned post media that were no longer referenced by Hugo content, layouts, config, or styles.
+
+### 2026-05-30 - Home Intro Copy
+
+- Reworked and tightened the Chinese homepage description and opening copy toward a quieter literary blog tone, removing specific technology references.
+
 ### 2026-05-28 - Transparent Adaptive Favicon
 
 - Removed the solid dark square from the signature favicon SVG so the browser tab background can show through.

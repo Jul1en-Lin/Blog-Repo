@@ -28,7 +28,7 @@
 .site-brand__signature {
   display: inline-flex;
   --signature-glow: color-mix(in srgb, var(--color-text) 28%, transparent);
-  --signature-duration: 1680ms;
+  --signature-duration: 2000ms;
   width: clamp(110px, 9vw, 132px);
   height: clamp(54px, 4.5vw, 66px);
   align-items: center;
@@ -48,8 +48,13 @@
 .site-signature__guide {
   stroke-dasharray: 1;
   stroke-dashoffset: 1;
-  animation: site-signature-guide-draw var(--signature-duration) cubic-bezier(0.62, 0.02, 0.17, 1) both;
+  animation: sig-draw var(--signature-duration) cubic-bezier(0.4, 0, 0.2, 1) both;
   will-change: stroke-dashoffset;
+}
+
+@keyframes sig-draw {
+  from { stroke-dashoffset: 1; }
+  to   { stroke-dashoffset: 0; }
 }
 
 .site-brand:hover .site-signature,
@@ -59,17 +64,7 @@
 
 .site-brand:hover .site-signature__guide,
 .site-brand:focus-visible .site-signature__guide {
-  animation: site-signature-guide-draw 1320ms cubic-bezier(0.62, 0.02, 0.17, 1) both;
-}
-
-@keyframes site-signature-guide-draw {
-  0% {
-    stroke-dashoffset: 1;
-  }
-
-  100% {
-    stroke-dashoffset: 0;
-  }
+  animation: sig-draw 1400ms cubic-bezier(0.4, 0, 0.2, 1) both;
 }
 
 .site-header__right {

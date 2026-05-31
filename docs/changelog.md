@@ -41,6 +41,11 @@ Latest verification snapshot:
 
 ## Condensed History
 
+### 2026-05-31 - Redis Sentinel And Cluster Posts
+
+- Imported the Redis Sentinel and Redis Cluster notes from the Obsidian vault as Hugo page-bundle posts.
+- Converted Obsidian image embeds to local post assets and removed the opening related-note backlinks from the published bodies.
+
 ### 2026-05-31 - Music Album Flip Cards
 
 - Added click-to-flip Music album cards with restrained CSS 3D motion and a reduced-motion crossfade fallback.

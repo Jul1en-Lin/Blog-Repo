@@ -22,8 +22,18 @@
         {{ range $index, $album := $albums }}
             {{- $layout := $album.layout | default "standard" -}}
             {{- $themeColor := $album.themeColor | default "#c46786" -}}
+            {{- $coverImage := "" -}}
+            {{- with $album.image -}}
+                {{- with $.Resources.GetMatch . -}}
+                    {{- $coverImage = (.Fill "700x700 webp q80 Smart").RelPermalink -}}
+                {{- end -}}
+            {{- end -}}
+            {{- $cardStyle := printf "--album-accent: %s;" $themeColor -}}
+            {{- with $coverImage -}}
+                {{- $cardStyle = printf "%s --album-image: url('%s');" $cardStyle . -}}
+            {{- end -}}
             {{- $detailsID := printf "album-details-%d" $index -}}
-            <article class="music-album-card music-album-card--{{ $layout }}" style="--album-accent: {{ $themeColor | safeCSS }};" data-album-card>
+            <article class="music-album-card music-album-card--{{ $layout }}" style="{{ $cardStyle | safeCSS }}" data-album-card>
                 <div class="music-album-card__inner">
                     <div class="music-album-card__face music-album-card__face--front" data-album-front>
                         {{ partial "music-cover.html" (dict

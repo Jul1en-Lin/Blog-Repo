@@ -50,6 +50,8 @@ Latest verification snapshot:
 - Changed the Music title waveform to `#c46786` and added a one-time staggered `320ms` entry stretch without continuous looping.
 - Added `140ms` `scale(0.97)` press feedback to primary navigation, button, card-link, and album-card interactions while leaving ordinary body links stable.
 - Added per-album theme colors and a static gradient liquid-glass treatment to Music card backs.
+- Refined the Music card back glass so it uses the album cover itself as a blurred background layer, making the original artwork faintly visible behind the details.
+- Changed the Music album wall row offsets from accumulating left drift to a repeating left/right alternation so added albums keep the visual weight near center.
 - Scoped scroll reveal so article reading stays stable: only editorial blocks and Music album cards fade in, while ordinary body paragraphs remain static.
 - Added a generated-output regression check for the Music flip-card structure, script hooks, transform, and reduced-motion handling.
 
@@ -159,7 +161,7 @@ Latest verification snapshot:
 - Added `[[albums]]` as the Music page front matter source for title, artist, year, genre, label, cover image, alt text, and the retained layout label.
 - Changed Music cover rendering to preserve full album artwork with `.Fit` derivatives and `object-fit: contain`, with the image itself as the card surface.
 - Moved visible card metadata into a bottom in-image overlay and reduced it to album title plus artist.
-- Adjusted the album gallery to use fixed-size square card slots with subtle row-by-row left offsets, so fitted square covers no longer show side bands or masonry gaps.
+- Adjusted the album gallery to use fixed-size square card slots with subtle alternating row offsets, so fitted square covers no longer show side bands or masonry gaps.
 - Kept existing `layout` values in content for compatibility, but the current visual wall intentionally renders album cards at the same size.
 - Lifted and tightened the Music hero title group to match the concept direction, and added the small waveform accent beside the title.
 - Removed Music page category tools, sorting, view switching, fake playback, and player-style controls from the planned surface.

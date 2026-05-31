@@ -36,9 +36,18 @@ assert_contains 'transition-duration:140ms' 'public/scss' 'Press feedback uses a
 assert_contains '--album-accent:' "$music_html" 'Music cards expose per-album accent variables'
 assert_contains '--album-accent: #cc9297' "$music_html" 'Sweatshirt uses its album-specific accent color'
 assert_contains '--album-accent: #b95f12' "$music_html" 'Saturn uses a different album-specific accent color'
+assert_contains '--album-image:' "$music_html" 'Music card backs expose the cover image as a glass background source'
 assert_contains 'backdrop-filter' 'public/scss' 'Music card backs use glass blur'
+assert_contains 'background-image:var(--album-image)' 'public/scss' 'Music card backs render a blurred version of the album cover'
 assert_contains 'radial-gradient' 'public/scss' 'Music card backs use layered liquid gradients'
 assert_contains 'color-mix' 'public/scss' 'Music card backs mix each album accent into the glass surface'
+assert_contains '--music-row-offset:var(--music-row-step-size)' 'public/scss' 'Music album rows can shift right to keep the gallery centered'
+assert_contains '--music-row-offset:calc(0px - var(--music-row-step-size))' 'public/scss' 'Music album rows can shift left for alternating row rhythm'
+
+if rg -Fq -- '--music-row-offset:calc(0px - var(--music-row-step-size) - var(--music-row-step-size)' 'public/scss'; then
+    printf 'FAIL: Music album rows must alternate offsets instead of drifting farther left each row\n' >&2
+    exit 1
+fi
 
 if rg -Fq -- '.music-album-card__face--back{position:relative' 'public/scss'; then
     printf 'FAIL: Music card backs must stay full-size instead of shrinking to content height\n' >&2

@@ -128,6 +128,7 @@ body.template-music .main-content {
 .music-album-card {
   --music-row-offset: 0px;
   --album-accent: #c46786;
+  --album-image: none;
   position: relative;
   display: block;
   grid-column: auto;
@@ -181,9 +182,7 @@ body.template-music .main-content {
   color: var(--color-text);
   border-color: color-mix(in srgb, var(--album-accent) 26%, rgba(255, 255, 255, 0.62));
   background:
-    radial-gradient(circle at 18% 12%, color-mix(in srgb, var(--album-accent) 34%, rgba(255, 255, 255, 0.82)) 0 17%, transparent 48%),
-    radial-gradient(circle at 82% 82%, color-mix(in srgb, var(--album-accent) 26%, rgba(255, 255, 255, 0.5)) 0 18%, transparent 52%),
-    linear-gradient(145deg, color-mix(in srgb, var(--album-accent) 20%, rgba(255, 255, 255, 0.86)), rgba(255, 255, 255, 0.64));
+    linear-gradient(145deg, color-mix(in srgb, var(--album-accent) 14%, rgba(255, 255, 255, 0.54)), rgba(255, 255, 255, 0.24));
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.68),
     inset 0 -28px 54px rgba(255, 255, 255, 0.18),
@@ -196,14 +195,29 @@ body.template-music .main-content {
 .music-album-card__face--back::before {
   content: "";
   position: absolute;
+  inset: -16px;
+  z-index: -2;
+  background-image: var(--album-image);
+  background-position: center;
+  background-size: cover;
+  filter: blur(6px) saturate(1.12) contrast(0.96);
+  opacity: 0.78;
+  transform: scale(1.04);
+  pointer-events: none;
+}
+
+.music-album-card__face--back::after {
+  content: "";
+  position: absolute;
   inset: 1px;
   z-index: -1;
   border-radius: calc(var(--music-card-radius) - 1px);
   background:
-    linear-gradient(125deg, rgba(255, 255, 255, 0.74), transparent 34%),
-    radial-gradient(circle at 72% 18%, rgba(255, 255, 255, 0.5), transparent 34%),
-    linear-gradient(315deg, transparent 46%, color-mix(in srgb, var(--album-accent) 16%, transparent) 100%);
-  opacity: 0.72;
+    linear-gradient(125deg, rgba(255, 255, 255, 0.58), rgba(255, 255, 255, 0.12) 36%, transparent 62%),
+    radial-gradient(circle at 18% 12%, color-mix(in srgb, var(--album-accent) 18%, rgba(255, 255, 255, 0.38)) 0 18%, transparent 50%),
+    radial-gradient(circle at 82% 82%, color-mix(in srgb, var(--album-accent) 14%, rgba(255, 255, 255, 0.24)) 0 20%, transparent 55%),
+    linear-gradient(145deg, rgba(255, 255, 255, 0.34), rgba(255, 255, 255, 0.16));
+  opacity: 0.76;
   pointer-events: none;
 }
 
@@ -242,24 +256,20 @@ body.template-music .main-content {
   grid-column: auto;
 }
 
-.music-album-card:nth-child(n + 6):nth-child(-n + 10) {
+.music-album-card:nth-child(10n + 6),
+.music-album-card:nth-child(10n + 7),
+.music-album-card:nth-child(10n + 8),
+.music-album-card:nth-child(10n + 9),
+.music-album-card:nth-child(10n + 10) {
   --music-row-offset: calc(0px - var(--music-row-step-size));
 }
 
-.music-album-card:nth-child(n + 11):nth-child(-n + 15) {
-  --music-row-offset: calc(0px - var(--music-row-step-size) - var(--music-row-step-size));
-}
-
-.music-album-card:nth-child(n + 16):nth-child(-n + 20) {
-  --music-row-offset: calc(0px - var(--music-row-step-size) - var(--music-row-step-size) - var(--music-row-step-size));
-}
-
-.music-album-card:nth-child(n + 21):nth-child(-n + 25) {
-  --music-row-offset: calc(0px - var(--music-row-step-size) - var(--music-row-step-size) - var(--music-row-step-size) - var(--music-row-step-size));
-}
-
-.music-album-card:nth-child(n + 26):nth-child(-n + 30) {
-  --music-row-offset: calc(0px - var(--music-row-step-size) - var(--music-row-step-size) - var(--music-row-step-size) - var(--music-row-step-size) - var(--music-row-step-size));
+.music-album-card:nth-child(10n + 11),
+.music-album-card:nth-child(10n + 12),
+.music-album-card:nth-child(10n + 13),
+.music-album-card:nth-child(10n + 14),
+.music-album-card:nth-child(10n + 15) {
+  --music-row-offset: var(--music-row-step-size);
 }
 
 .music-cover-image,
@@ -361,8 +371,6 @@ body.template-music .main-content {
 :root[data-scheme="dark"] .music-album-card__face--back {
   border-color: color-mix(in srgb, var(--album-accent) 32%, rgba(255, 255, 255, 0.14));
   background:
-    radial-gradient(circle at 18% 12%, color-mix(in srgb, var(--album-accent) 30%, rgba(255, 255, 255, 0.08)) 0 18%, transparent 50%),
-    radial-gradient(circle at 84% 82%, color-mix(in srgb, var(--album-accent) 24%, rgba(255, 255, 255, 0.06)) 0 18%, transparent 52%),
     linear-gradient(145deg, color-mix(in srgb, var(--album-accent) 18%, rgba(16, 16, 16, 0.88)), rgba(8, 8, 8, 0.78));
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.16),
@@ -371,10 +379,17 @@ body.template-music .main-content {
 }
 
 :root[data-scheme="dark"] .music-album-card__face--back::before {
+  filter: blur(7px) saturate(1.04) brightness(0.72) contrast(0.96);
+  opacity: 0.64;
+}
+
+:root[data-scheme="dark"] .music-album-card__face--back::after {
   background:
-    linear-gradient(125deg, rgba(255, 255, 255, 0.18), transparent 34%),
-    radial-gradient(circle at 72% 18%, color-mix(in srgb, var(--album-accent) 16%, rgba(255, 255, 255, 0.1)), transparent 34%);
-  opacity: 0.48;
+    linear-gradient(125deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.03) 34%, transparent 62%),
+    radial-gradient(circle at 18% 12%, color-mix(in srgb, var(--album-accent) 22%, rgba(255, 255, 255, 0.08)) 0 18%, transparent 50%),
+    radial-gradient(circle at 82% 82%, color-mix(in srgb, var(--album-accent) 18%, rgba(255, 255, 255, 0.06)) 0 20%, transparent 55%),
+    linear-gradient(145deg, rgba(12, 12, 12, 0.32), rgba(8, 8, 8, 0.62));
+  opacity: 0.84;
 }
 
 :root[data-scheme="dark"] .music-album-card__face--back h2 {
@@ -446,20 +461,18 @@ body.template-music .main-content {
     --music-row-offset: 0px;
   }
 
-  .music-album-card:nth-child(n + 5):nth-child(-n + 8) {
+  .music-album-card:nth-child(8n + 5),
+  .music-album-card:nth-child(8n + 6),
+  .music-album-card:nth-child(8n + 7),
+  .music-album-card:nth-child(8n + 8) {
     --music-row-offset: calc(0px - var(--music-row-step-size));
   }
 
-  .music-album-card:nth-child(n + 9):nth-child(-n + 12) {
-    --music-row-offset: calc(0px - var(--music-row-step-size) - var(--music-row-step-size));
-  }
-
-  .music-album-card:nth-child(n + 13):nth-child(-n + 16) {
-    --music-row-offset: calc(0px - var(--music-row-step-size) - var(--music-row-step-size) - var(--music-row-step-size));
-  }
-
-  .music-album-card:nth-child(n + 17):nth-child(-n + 20) {
-    --music-row-offset: calc(0px - var(--music-row-step-size) - var(--music-row-step-size) - var(--music-row-step-size) - var(--music-row-step-size));
+  .music-album-card:nth-child(8n + 9),
+  .music-album-card:nth-child(8n + 10),
+  .music-album-card:nth-child(8n + 11),
+  .music-album-card:nth-child(8n + 12) {
+    --music-row-offset: var(--music-row-step-size);
   }
 }
 
@@ -477,20 +490,16 @@ body.template-music .main-content {
     --music-row-offset: 0px;
   }
 
-  .music-album-card:nth-child(n + 4):nth-child(-n + 6) {
+  .music-album-card:nth-child(6n + 4),
+  .music-album-card:nth-child(6n + 5),
+  .music-album-card:nth-child(6n + 6) {
     --music-row-offset: calc(0px - var(--music-row-step-size));
   }
 
-  .music-album-card:nth-child(n + 7):nth-child(-n + 9) {
-    --music-row-offset: calc(0px - var(--music-row-step-size) - var(--music-row-step-size));
-  }
-
-  .music-album-card:nth-child(n + 10):nth-child(-n + 12) {
-    --music-row-offset: calc(0px - var(--music-row-step-size) - var(--music-row-step-size) - var(--music-row-step-size));
-  }
-
-  .music-album-card:nth-child(n + 13):nth-child(-n + 15) {
-    --music-row-offset: calc(0px - var(--music-row-step-size) - var(--music-row-step-size) - var(--music-row-step-size) - var(--music-row-step-size));
+  .music-album-card:nth-child(6n + 7),
+  .music-album-card:nth-child(6n + 8),
+  .music-album-card:nth-child(6n + 9) {
+    --music-row-offset: var(--music-row-step-size);
   }
 }
 
@@ -516,6 +525,7 @@ body.template-music .main-content {
   .music-album-card,
   .music-album-card--wide,
   .music-album-card--large {
+    --music-row-offset: 0px;
     width: unquote("min(100%, 362px)");
     grid-column: span 1;
     aspect-ratio: 1;

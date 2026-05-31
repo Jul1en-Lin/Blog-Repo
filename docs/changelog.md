@@ -13,7 +13,7 @@ Current user-facing state:
 - Blog list includes featured content, category filter buttons, search, responsive cards, accessible keyboard filtering, and restrained hover motion.
 - Blog detail uses a wide no-right-sidebar reading layout, header quote, larger readable body text, line-number-free code blocks, improved table readability, and bottom related posts.
 - About, Music, and Contact are standalone editorial pages with dedicated project-level layouts.
-- Music uses a static album gallery backed by `[[albums]]` front matter and page-bundle album covers; card text is limited to album title and artist inside the image surface, and the page intentionally has no audio, video, playback button, playlist, progress, sorting, filtering, or media-player UI.
+- Music uses a static album gallery backed by `[[albums]]` front matter and page-bundle album covers; each front face is cover artwork only, clicking a card flips it to an editorial details face, and the page intentionally has no audio, video, playback button, playlist, progress, sorting, filtering, or media-player UI.
 - Project-level SEO metadata, responsive WebP image processing, focus states, semantic heading cleanup, and accessibility refinements are in place.
 - Real images and portraits render in original color by default; grayscale is no longer applied globally to image surfaces.
 
@@ -40,6 +40,22 @@ Latest verification snapshot:
   - Blog detail: Performance 97, Accessibility 100, Best Practices 100, SEO 100.
 
 ## Condensed History
+
+### 2026-05-31 - Music Album Flip Cards
+
+- Added click-to-flip Music album cards with restrained CSS 3D motion and a reduced-motion crossfade fallback.
+- Simplified each card front to the album cover artwork only; title and artist now live on the details face.
+- Kept one album open at a time, added `Escape` recovery, semantic toggle buttons, and accessible face visibility state.
+- Added optional back-face support for year, genre, label, and listening note fields without inventing metadata for existing albums.
+- Changed the Music title waveform to `#c46786` and added a one-time staggered `320ms` entry stretch without continuous looping.
+- Added `140ms` `scale(0.97)` press feedback to primary navigation, button, card-link, and album-card interactions while leaving ordinary body links stable.
+- Added per-album theme colors and a static gradient liquid-glass treatment to Music card backs.
+- Scoped scroll reveal so article reading stays stable: only editorial blocks and Music album cards fade in, while ordinary body paragraphs remain static.
+- Added a generated-output regression check for the Music flip-card structure, script hooks, transform, and reduced-motion handling.
+
+### 2026-05-30 - Codex Workflow Update Post
+
+- Imported the `Codex 工作流更新-v2` article from the Obsidian vault as a Hugo post and converted its Obsidian wikilink into a Hugo article link.
 
 ### 2026-05-30 - Code Block CJK Font
 

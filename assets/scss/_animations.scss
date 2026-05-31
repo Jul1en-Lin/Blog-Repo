@@ -19,15 +19,25 @@
 
   .reveal-on-scroll {
     opacity: 0;
-    transform: translate3d(0, 18px, 0);
+    transform: translate3d(0, 10px, 0);
     transition:
-      opacity 480ms var(--ease-out) var(--reveal-delay, 0ms),
-      transform 480ms var(--ease-out) var(--reveal-delay, 0ms);
+      opacity 420ms var(--ease-out) var(--reveal-delay, 0ms),
+      transform 420ms var(--ease-out) var(--reveal-delay, 0ms);
   }
 
   .reveal-on-scroll.is-visible {
     opacity: 1;
     transform: translate3d(0, 0, 0);
+  }
+
+  .article-detail__content .reveal-on-scroll {
+    transform: none;
+    transition:
+      opacity 360ms var(--ease-out) var(--reveal-delay, 0ms);
+  }
+
+  .article-detail__content .reveal-on-scroll.is-visible {
+    transform: none;
   }
 
   .template-home .blog-card__title::after,
@@ -61,6 +71,28 @@
   .music-album-card:hover,
   .phase4-text-link:hover {
     transform: translateY(-2px);
+  }
+
+  :is(
+    .button,
+    .site-action-link,
+    #dark-mode-toggle.theme-toggle,
+    .site-menu-toggle,
+    .home-chip,
+    .home-profile__post-link,
+    .home-profile__social-link,
+    .category-tabs__button,
+    .blog-card__link,
+    .featured-post__link,
+    .post-timeline__link,
+    .taxonomy-list__item,
+    .phase4-text-link,
+    .article-detail__toc-toggle,
+    .code-copy-button,
+    .back-to-top
+  ):active {
+    transform: scale(0.97);
+    transition-duration: 140ms;
   }
 
 }

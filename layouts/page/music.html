@@ -19,21 +19,70 @@
     </header>
 
     <section class="music-album-gallery" aria-label="Favorite albums">
-        {{ range $album := $albums }}
+        {{ range $index, $album := $albums }}
             {{- $layout := $album.layout | default "standard" -}}
-            <article class="music-album-card music-album-card--{{ $layout }}">
-                {{ partial "music-cover.html" (dict
-                    "page" $
-                    "image" $album.image
-                    "size" "900x900"
-                    "alt" $album.alt
-                    "title" $album.title
-                    "artist" $album.artist
-                ) }}
-                <div class="music-album-card__overlay">
-                    <h2>{{ $album.title }}</h2>
-                    <p>{{ $album.artist }}</p>
+            {{- $themeColor := $album.themeColor | default "#c46786" -}}
+            {{- $detailsID := printf "album-details-%d" $index -}}
+            <article class="music-album-card music-album-card--{{ $layout }}" style="--album-accent: {{ $themeColor | safeCSS }};" data-album-card>
+                <div class="music-album-card__inner">
+                    <div class="music-album-card__face music-album-card__face--front" data-album-front>
+                        {{ partial "music-cover.html" (dict
+                            "page" $
+                            "image" $album.image
+                            "size" "900x900"
+                            "alt" $album.alt
+                            "title" $album.title
+                            "artist" $album.artist
+                        ) }}
+                    </div>
+
+                    <div class="music-album-card__face music-album-card__face--back" id="{{ $detailsID }}" data-album-back aria-hidden="true">
+                        <div>
+                            <span class="music-album-card__eyebrow">Album details</span>
+                            <h2>{{ $album.title }}</h2>
+                            <p class="music-album-card__artist">{{ $album.artist }}</p>
+                        </div>
+
+                        {{- if or $album.year $album.genre $album.label -}}
+                        <dl class="music-album-card__meta">
+                            {{- with $album.year -}}
+                            <div>
+                                <dt>Year</dt>
+                                <dd>{{ . }}</dd>
+                            </div>
+                            {{- end -}}
+                            {{- with $album.genre -}}
+                            <div>
+                                <dt>Genre</dt>
+                                <dd>{{ . }}</dd>
+                            </div>
+                            {{- end -}}
+                            {{- with $album.label -}}
+                            <div>
+                                <dt>Label</dt>
+                                <dd>{{ . }}</dd>
+                            </div>
+                            {{- end -}}
+                        </dl>
+                        {{- end -}}
+
+                        {{- with $album.note -}}
+                        <p class="music-album-card__note">{{ . }}</p>
+                        {{- end -}}
+
+                        <span class="music-album-card__hint">Click to return</span>
+                    </div>
                 </div>
+
+                <button
+                    class="music-album-card__toggle"
+                    type="button"
+                    data-album-toggle
+                    data-album-title="{{ $album.title }}"
+                    aria-controls="{{ $detailsID }}"
+                    aria-pressed="false"
+                    aria-label="Show details for {{ $album.title }}"
+                ></button>
             </article>
         {{ end }}
     </section>

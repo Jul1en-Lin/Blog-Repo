@@ -221,13 +221,44 @@
                 '.featured-section',
                 '.blog-card',
                 '.post-tools',
-                '.article-detail__content > *',
+                '.article-detail__content > blockquote',
+                '.article-detail__content > .highlight',
+                '.article-detail__content > pre',
+                '.article-detail__content > .table-wrapper',
+                '.article-detail__content > figure',
+                '.article-detail__content > details',
+                '.article-detail__content > hr',
                 '.article-detail__footer',
                 '.music-album-card'
             ];
 
-            const targets = Array.prototype.slice.call(document.querySelectorAll(revealSelectors.join(',')));
-            if (!targets.length) return;
+            const targets = revealSelectors.reduce(function (items, selector) {
+                return items.concat(Array.prototype.slice.call(document.querySelectorAll(selector)));
+            }, []);
+
+            const imageBlocks = Array.prototype.slice.call(document.querySelectorAll('.article-detail__content > p')).filter(function (block) {
+                const children = Array.prototype.slice.call(block.children).filter(function (child) {
+                    return child.tagName !== 'BR';
+                });
+                const onlyChild = children[0];
+
+                return children.length === 1 && (
+                    onlyChild.tagName === 'IMG' ||
+                    onlyChild.classList.contains('gallery') ||
+                    (onlyChild.tagName === 'A' && onlyChild.querySelector('img'))
+                );
+            });
+
+            imageBlocks.forEach(function (block) {
+                if (!targets.includes(block)) targets.push(block);
+            });
+
+            const filteredTargets = targets.filter(function (target, index) {
+                if (target.tagName === 'PRE' && target.closest('.highlight')) return false;
+                return targets.indexOf(target) === index;
+            });
+
+            if (!filteredTargets.length) return;
 
             const observer = new IntersectionObserver(function (entries) {
                 entries.forEach(function (entry) {
@@ -236,13 +267,13 @@
                     observer.unobserve(entry.target);
                 });
             }, {
-                rootMargin: '0px 0px -8% 0px',
-                threshold: 0.12
+                rootMargin: '0px 0px -6% 0px',
+                threshold: 0.1
             });
 
-            targets.forEach(function (target, index) {
+            filteredTargets.forEach(function (target, index) {
                 target.classList.add('reveal-on-scroll');
-                target.style.setProperty('--reveal-delay', Math.min(index % 5, 4) * 45 + 'ms');
+                target.style.setProperty('--reveal-delay', Math.min(index % 4, 3) * 32 + 'ms');
                 observer.observe(target);
             });
         }

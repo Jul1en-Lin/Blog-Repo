@@ -224,6 +224,56 @@ function initCodeCopyButtons() {
     });
 }
 
+function initMusicAlbumFlips() {
+    const gallery = document.querySelector<HTMLElement>('.music-album-gallery');
+    if (!gallery || gallery.dataset.albumFlipsReady === 'true') return;
+
+    gallery.dataset.albumFlipsReady = 'true';
+
+    const cards = Array.from(document.querySelectorAll<HTMLElement>('[data-album-card]'));
+    if (!cards.length) return;
+
+    const entries = cards.flatMap((card) => {
+        const toggle = card.querySelector<HTMLButtonElement>('[data-album-toggle]');
+        const front = card.querySelector<HTMLElement>('[data-album-front]');
+        const back = card.querySelector<HTMLElement>('[data-album-back]');
+
+        if (!toggle || !front || !back) return [];
+
+        return [{
+            card,
+            toggle,
+            front,
+            back,
+            title: toggle.dataset.albumTitle || ''
+        }];
+    });
+
+    function setFlipped(entry: typeof entries[number], flipped: boolean) {
+        entry.card.classList.toggle('is-flipped', flipped);
+        entry.toggle.setAttribute('aria-pressed', flipped ? 'true' : 'false');
+        entry.toggle.setAttribute('aria-label', `${flipped ? 'Hide' : 'Show'} details for ${entry.title}`);
+        entry.front.setAttribute('aria-hidden', flipped ? 'true' : 'false');
+        entry.back.setAttribute('aria-hidden', flipped ? 'false' : 'true');
+    }
+
+    function closeAll() {
+        entries.forEach((entry) => setFlipped(entry, false));
+    }
+
+    entries.forEach((entry) => {
+        entry.toggle.addEventListener('click', () => {
+            const willFlip = !entry.card.classList.contains('is-flipped');
+            closeAll();
+            if (willFlip) setFlipped(entry, true);
+        });
+    });
+
+    document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape') closeAll();
+    });
+}
+
 function initPlumBackground() {
     const root = document.querySelector<HTMLElement>('[data-plum-background]');
     if (!root || root.dataset.plumBackgroundReady === 'true') return;
@@ -407,6 +457,7 @@ function initCustomScripts() {
     initThemeToggle();
     initPostFilters();
     initCodeCopyButtons();
+    initMusicAlbumFlips();
     initPlumBackground();
 }
 

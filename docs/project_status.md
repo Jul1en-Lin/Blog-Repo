@@ -1,6 +1,6 @@
 # Project Status
 
-Last updated: 2026-05-28
+Last updated: 2026-05-31
 
 ## Current State
 
@@ -8,9 +8,9 @@ Phase 6 is complete. Home, Blog preview, Blog detail, About, Music, and Contact 
 
 The current header brand and browser favicon now use the same `JL` signature path, with the header rendering as a theme-colored stroke-dash handwriting animation. The browser SVG favicon is transparent, optically thickened for small tab sizes, and adapts its signature fill to the browser color scheme; PNG and ICO fallbacks use a transparent bright white signature without a black square.
 
-The current Blog timeline preview pass keeps preview titles and metadata on the blog typography system instead of the temporary body/mono overrides. Blog detail openings now use a cleaner title-and-body structure: summary preview, header quote, cover image, and the title underline are removed while the music divider remains before the article content. Blog detail theme toggling is handled by an early project-level listener so the mode button responds before Stack's window-load initializer finishes while preserving the circular View Transition animation.
+The current Blog timeline preview pass keeps preview titles and metadata on the blog typography system instead of the temporary body/mono overrides. Blog detail openings now use a cleaner title-and-body structure: summary preview, header quote, cover image, and the title underline are removed while the music divider remains before the article content. Blog detail theme toggling is handled by an early project-level listener so the mode button responds before Stack's window-load initializer finishes while preserving the circular View Transition animation. Scroll reveal on article pages stays restrained: ordinary paragraphs remain static, while blockquotes, code blocks, tables, standalone image blocks, and the article footer can fade in.
 
-The current Music page is a static responsive album wall rather than a four-column editorial collection. It follows the site theme in both light and dark modes, avoids sorting/filtering/view-switch/player controls, renders the visible NetEase Cloud Music collected albums from local page-bundle covers, preserves complete cover artwork by using fitted image derivatives plus `object-fit: contain`, uses fixed-size square cards with subtle row-by-row left offsets to avoid masonry gaps and side bands on square album covers, lifts the title/subtitle group with a small title waveform accent to align with the concept direction, and keeps visible card text inside the image surface as album title plus artist only.
+The current Music page is a static responsive album wall rather than a four-column editorial collection. It follows the site theme in both light and dark modes, avoids sorting/filtering/view-switch/player controls, renders the visible NetEase Cloud Music collected albums from local page-bundle covers, preserves complete cover artwork by using fitted image derivatives plus `object-fit: contain`, uses fixed-size square cards with subtle row-by-row left offsets to avoid masonry gaps and side bands on square album covers, and lifts the title/subtitle group with a small `#c46786` waveform accent that stretches once on entry. Each card front now shows cover artwork only and flips on click to an editorial details face with per-album theme-color gradient liquid glass; only one stays open at a time, `Escape` restores the cover wall, and optional year, genre, label, and listening-note fields appear when they exist. Primary interactive controls use a brief `scale(0.97)` press response without applying movement to ordinary article links.
 
 The project still depends on `hugo-theme-stack`, but the visual shell is now controlled from project-level templates instead of the theme sidebar layout.
 
@@ -194,6 +194,7 @@ Modified:
 - Use `[[albums]]` in `content/page/music/index.md` as the Music page gallery data source; future albums should be added there with title, artist, year, genre, label, page-bundle cover image, alt text, and the retained layout label.
 - Preserve full album artwork on Music cards by fitting images rather than cropping the primary cover.
 - Render the current Music album wall as fixed-size square cards; existing `layout` values are kept for data compatibility but do not change visual card size in the current concept-aligned layout.
+- Keep Music album details inside click-to-flip cards. Only one card stays flipped at a time; `Escape` restores the gallery, and missing optional metadata stays absent instead of being invented.
 - Do not apply global grayscale filters to real images or portraits; decorative music shapes and code-native panels can remain monochrome.
 - Use light mode as the default visual baseline so the Home page matches the current concept direction; dark mode remains manually toggleable.
 - Keep Phase 5 motion below 500ms and respect `prefers-reduced-motion`.
@@ -220,7 +221,8 @@ Modified:
 - Blog detail has been rewritten and refined against the current concept direction.
 - About, Music, and Contact have been implemented as static editorial pages using current site content/media resources.
 - Music has been refined into a static album gallery that uses `[[albums]]` front matter instead of the previous lyric/songwriter/record/inspiration columns.
-- Music album entries support real page-bundle cover images through `layouts/partials/music-cover.html`; uploaded covers preserve their original colors, primary artwork renders fully with a fitted non-cropping image, fixed-size square card slots avoid side bands on square covers, and visible text is overlaid inside the card image.
+- Music album entries support real page-bundle cover images through `layouts/partials/music-cover.html`; uploaded covers preserve their original colors, primary artwork renders fully with a fitted non-cropping image, fixed-size square card slots avoid side bands on square covers, and the front face stays cover-only.
+- Music album cards now expose an editorial back face with current title and artist data plus optional year, genre, label, and listening-note fields.
 - Project-level real image styles have been reset so newly added images and portraits are not forced to grayscale.
 - Phase 5 responsive and motion refinements are complete.
 - Phase 6 performance, SEO, and accessibility review is complete.
@@ -277,9 +279,16 @@ Local preview:
 - Music now renders 22 static NetEase Cloud Music collected album cards from `[[albums]]`, all backed by local page-bundle cover images and no no-image fallback card.
 - Music hero browser checks at desktop `1440x900`, tablet `820x1180`, and mobile `390x844` confirmed the lifted title/subtitle rhythm, no remaining `Album gallery` eyebrow, and the five-bar waveform beside `Music`.
 - Music scheme checks on a fresh Hugo preview confirmed the theme toggle renders the gallery readably in both light and dark modes with no horizontal overflow.
-- Music cover images compute `object-fit: contain`, appear as direct card children without the previous cover frame/backdrop/body/meta wrappers, and stay visible at desktop `1440x900`, tablet `820x1180`, and mobile `390x844`.
+- Music cover images compute `object-fit: contain`, appear inside the card front face without the previous cover frame/backdrop/body/meta wrappers, and stay visible at desktop `1440x900`, tablet `820x1180`, and mobile `390x844`.
 - Music album cards measured at a 1:1 rendered ratio on desktop `1440x900`, tablet `820x1180`, and mobile `390x844`; rendered square cover images matched the square card slots without the previous left/right side bands, and desktop rows use fixed-size cards with subtle left offsets instead of varied masonry sizing.
-- Music card overlays stay inside the card and display only album title plus artist.
+- Music card fronts render cover artwork only; title and artist appear on the details face after flipping.
+- Music flip-card browser checks confirmed click-to-flip behavior, one-card-at-a-time state, `Escape` recovery, `aria-pressed` updates, front/back `aria-hidden` updates, the 3D transform, and zero horizontal overflow.
+- Music mobile flip-card checks at `390x844` confirmed `362x362` square cards, successful flipping, and zero horizontal overflow.
+- Music dark-mode flip-card checks confirmed the details face remains readable after theme switching with zero horizontal overflow.
+- Music waveform browser checks confirmed the `#c46786` accent runs one staggered `320ms` entry stretch per bar, then stays still in desktop and mobile layouts.
+- Primary press-feedback styles load with `scale(0.97)` and a `140ms` response on scoped interactive controls while ordinary article links stay stable.
+- Music card backs use per-album `themeColor` accents, layered radial gradients, glass blur, and static highlight surfaces instead of a shared flat background.
+- Scroll-reveal checks confirm article pages no longer target every direct content child; only stable editorial blocks and Music album cards are reveal targets.
 - Music responsive checks showed no horizontal overflow at desktop, tablet, or mobile widths.
 - Music renders no `audio`, `video`, `progress`, sorting, filtering, view-switching, playlist, or playback-control UI.
 - Header theme-toggle checks confirmed the sun and moon default contrast now aligns with the GitHub and Instagram action group while keeping the existing hover/focus motion.

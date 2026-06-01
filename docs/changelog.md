@@ -41,6 +41,11 @@ Latest verification snapshot:
 
 ## Condensed History
 
+### 2026-06-01 - API Types Post
+
+- Imported the Obsidian `API 类型总结` note from the communication-protocol vault area as a Hugo page-bundle post.
+- Converted Obsidian image width syntax to normal Markdown images and copied the local API type diagrams into the post bundle.
+
 ### 2026-05-31 - Redis Sentinel And Cluster Posts
 
 - Imported the Redis Sentinel and Redis Cluster notes from the Obsidian vault as Hugo page-bundle posts.

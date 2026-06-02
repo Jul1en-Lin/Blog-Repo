@@ -41,6 +41,11 @@ Latest verification snapshot:
 
 ## Condensed History
 
+### 2026-06-02 - Redis Cluster Deployment Posts
+
+- Updated the Redis Cluster post from the revised Obsidian note, adding cluster client redirection and failover notes.
+- Imported the new Obsidian `Docker 部署集群` note as a standalone Docker Redis Cluster deployment post with local screenshots.
+
 ### 2026-06-01 - API Types Post
 
 - Imported the Obsidian `API 类型总结` note from the communication-protocol vault area as a Hugo page-bundle post.

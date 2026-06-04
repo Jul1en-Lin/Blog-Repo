@@ -2,10 +2,10 @@
 title = "Redis 集群"
 slug = "Redis-集群"
 date = "2026-05-31T23:16:16+08:00"
-lastmod = "2026-06-02T21:27:53+08:00"
+lastmod = "2026-06-04T17:17:27+08:00"
 draft = false
 categories = ["Redis"]
-description = "梳理 Redis Cluster 的分片、哈希槽、集群部署后的客户端重定向，以及故障转移时从节点竞选新主节点的过程。"
+description = "梳理 Redis Cluster 的分片、哈希槽、客户端重定向、故障转移，以及通过 Docker 节点完成主从扩容的过程。"
 +++
 
 ## 概述
@@ -90,10 +90,6 @@ Redis 使用 `16384` 个槽位，是一个折中的数量。可以简单的算�
 
 slots 通常会用位图表示：第 `i` 位为 `1`，表示这个节点持有第 `i` 个槽位；第 `i` 位为 `0`，表示不持有。注意这里表示的是节点是否持有槽位，不是这个槽位里有没有 key。
 
-## 总结
-
-Redis Cluster 的核心是分片。主从复制和哨兵主要解决可用性，集群模式进一步解决单机存储容量限制。
-
 ## 集群部署
 
 具体部署步骤单独整理到：[Docker 部署 Redis 集群]({{< relref "/post/Docker 部署 Redis 集群/" >}})。
@@ -123,7 +119,7 @@ Redis 分片后，每个分片的槽位都不同，如果在分片 1 中，写�
 
 #### 故障判定
 
-1. 节点 A 给节点 B 发送 ping 包，B 就会给 A 返回一个 pong 包。 ping 和 pong 除了 message type 属性之外，其他部分都是一样的。这里包含了集群的配置信息（该节点的 id，该节点从属于哪个分片，是主节点还是从节点，从属于谁，持有哪些 slots 的位图……）
+1. 节点 A 给节点 B 发送 ping 包，B 就会给 A 返回一个 pong 包。ping 和 pong 除了 message type 属性之外，其他部分都是一样的。这里包含了集群的配置信息（该节点的 id，该节点从属于哪个分片，是主节点还是从节点，从属于谁，持有哪些 slots 的位图……）
 2. 每个节点，每秒钟，都会给一些随机的节点发起 ping 包，而不是全发一遍。这样设定是为了避免在节点很多的时候，心跳包也非常多（比如有 9 个节点，如果全发，就是 9 * 8 有 72 组心跳了，而且这是按照 N^2 这样的级别增长的）。
 3. 当节点 A 给节点 B 发起 ping 包，B 不能如期回应的时候，此时 A 就会尝试重置和 B 的 TCP 连接，看能否连接成功。如果仍然连接失败，A 就会把 B 设为 **PFAIL 状态**（相当于主观下线）
 4. A 判定 B 为 PFAIL 之后，会通过 Redis 内置的 Gossip 协议，和其他节点进行沟通，向其他节点确认 B 的状态。（每个节点都会维护自己的“下线列表”，由于视角不同，每个节点的下线列表也不一定相同）。
@@ -140,6 +136,46 @@ Redis 分片后，每个分片的槽位都不同，如果在分片 1 中，写�
 4. 主节点就会把自己的票投给 C（每个主节点只有 1 票）。当 C 收到的票数超过主节点数目的一半，C 就会晋升成主节点（C 自己负责执行 `slaveof no one`，并且让 D 执行 `slaveof C`）。
 5. 同时，C 还会把自己成为主节点的消息，同步给其他集群的节点。大家也都会更新自己保存的集群结构信息。
 
-更多的时候，是为了选一个节点出来，至于选谁，没那么重要
+更多的时候，是为了选一个节点出来，至于选谁，没那么重要。所以你看，不同点在于：哨兵，是先竞选出 leader，leader 负责找一个从节点升级成主节点，**这里是直接投票选出新的主节点**
 
-所以你看，不同点在于：哨兵，是先竞选出 leader，leader 负责找一个从节点升级成主节点，**这里是直接投票选出新的主节点**
+## 集群扩容
+### 扩容主节点
+这里将 redis-10 作为主节点，redis-11 作为从节点。
+```bash
+# 添加 redis-10 的地址（172.30.0.110:6379）到集群中的任意一个节点地址（172.30.0.101:6379）
+redis-cli --cluster add-node 172.30.0.110:6379 172.30.0.101:6379
+```
+![Add redis10 as cluster master](assets/cluster-add-master.png)
+
+添加成功后 `cluster nodes` 查看 redis-10 已经作为主节点进入集群，但还未分配到 slots
+![Redis10 joined with no slots](assets/cluster-new-master-no-slots.png)
+**重新分配 slots**
+```bash
+# reshard （重新切分）后的地址是集群中的任意节点地址
+redis-cli --cluster reshard 172.30.0.101:6379
+```
+执行后会进行交互操作，具体有
+1. 选择多少个 slots 分配到该节点（原先有 3 个分片，现扩容至 4 分片，16384 slots 平均到一个分片为 4096）
+![Choose reshard slot count](assets/cluster-reshard-slots-count.png)
+
+2. 选择将 slots 转移到哪个节点上（此处填写节点的 id，如图）
+![Choose reshard target node](assets/cluster-reshard-target-node.png)
+
+3. 这些 slots 从哪些节点搬运过来（all 表示每个主节点都搬一点，若选择 done 则需手动填写主节点 id）
+![Choose reshard source nodes](assets/cluster-reshard-source-nodes.png)
+
+4. 确定之后，会初步打印出搬运方案，让用户确认，之后就会进行集群的 key 搬运工作，主节点就配置好了
+
+### 扩容从节点
+仅需一行命令
+```bash
+# 添加 redis-11（172.30.0.111:6379）到集群中（集群任意一个节点地址）作为从节点 （--cluster-slave），后跟上要跟随的主节点 id
+redis-cli --cluster add-node 172.30.0.111:6379 172.30.0.101:6379 --cluster-slave --cluster-master-id [172.30.0.110 节点的 nodeId（主节点 id）]
+```
+
+执行完毕后，从节点就已经被添加完成了，可见 **redis-10 占了其他三个分片的部分 slots**，redis-11 也成功成为了 redis-10 的从节点
+![Redis10 slots and redis11 replica result](assets/cluster-add-replica-result.png)
+
+## 总结
+
+Redis Cluster 的核心是分片。主从复制和哨兵主要解决可用性，集群模式进一步解决单机存储容量限制。部署后可以通过 `redis-cli -c` 让客户端自动跟随槽位跳转；扩容时则先添加主节点，再通过 reshard 分配 slots，最后把新从节点挂到对应主节点下面。

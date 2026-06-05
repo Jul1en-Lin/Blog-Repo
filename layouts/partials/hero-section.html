@@ -1,42 +1,12 @@
 {{- $context := .context -}}
 {{- $title := .title | default $context.Title -}}
 {{- $description := .description | default "" -}}
-{{- $primaryLabel := .primaryLabel | default "" -}}
-{{- $primaryURL := .primaryURL | default "" -}}
-{{- $secondaryLabel := .secondaryLabel | default "" -}}
-{{- $secondaryURL := .secondaryURL | default "" -}}
-{{- $avatarSrc := .avatarSrc | default "img/avatar.png" -}}
-{{- $showAvatar := default true .avatar -}}
-{{- $class := .class | default "" -}}
 
-<section class="hero-section {{ $class }}">
+<section class="hero-section">
     <div class="hero-section__content">
         <h1 class="hero-section__title">{{ $title | safeHTML }}</h1>
         {{- with $description -}}
         <p class="hero-section__description">{{ . }}</p>
         {{- end -}}
-
-        {{- if or $primaryLabel $secondaryLabel -}}
-        <div class="hero-section__actions">
-            {{- if and $primaryLabel $primaryURL -}}
-            <a class="button button--primary" href="{{ $primaryURL | relLangURL }}">
-                <span>{{ $primaryLabel }}</span>
-                {{ partial "helper/icon" "arrow-right" }}
-            </a>
-            {{- end -}}
-            {{- if and $secondaryLabel $secondaryURL -}}
-            <a class="button button--quiet" href="{{ $secondaryURL | relLangURL }}">{{ $secondaryLabel }}</a>
-            {{- end -}}
-        </div>
-        {{- end -}}
     </div>
-
-    {{- if $showAvatar -}}
-    {{- with resources.Get $avatarSrc -}}
-    {{- $avatar := .Fill "520x520 Center webp q86" -}}
-    <figure class="hero-section__portrait">
-        <img src="{{ $avatar.RelPermalink }}" width="{{ $avatar.Width }}" height="{{ $avatar.Height }}" alt="{{ $context.Site.Title }}" loading="eager" decoding="async" fetchpriority="high">
-    </figure>
-    {{- end -}}
-    {{- end -}}
 </section>

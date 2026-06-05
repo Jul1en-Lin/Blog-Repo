@@ -1,0 +1,34 @@
+{{- $result := dict "exists" false "permalink" nil "resource" nil "isDefault" false -}}
+{{- $context := .Context -}}
+{{- $imageField := default "image" $context.Site.Params.featuredImageField -}}
+{{- $imageValue := index $context.Params $imageField -}}
+
+{{- if $imageValue -}}
+    {{- $url := urls.Parse $imageValue -}}
+    {{- if or (eq $url.Scheme "http") (eq $url.Scheme "https") -}}
+        {{- $result = merge $result (dict "exists" true "permalink" $imageValue) -}}
+    {{- else -}}
+        {{- $pageImage := $context.Resources.GetMatch ($imageValue | safeURL) -}}
+        {{- if $pageImage -}}
+            {{- $result = merge $result (dict "exists" true "permalink" $pageImage.RelPermalink) -}}
+            {{- if ne (path.Ext $imageValue) ".svg" -}}
+                {{- $result = merge $result (dict "resource" $pageImage) -}}
+            {{- end -}}
+        {{- else -}}
+            {{- $result = merge $result (dict "exists" true "permalink" ($imageValue | relURL)) -}}
+        {{- end -}}
+    {{- end -}}
+{{- else if and .Type (index $context.Site.Params.defaultImage .Type) -}}
+    {{- $setting := index $context.Site.Params.defaultImage .Type -}}
+    {{- if $setting.enabled -}}
+        {{- if $setting.local -}}
+            {{- with resources.GetMatch ($setting.src | safeURL) -}}
+                {{- $result = merge $result (dict "exists" true "permalink" .RelPermalink "resource" . "isDefault" true) -}}
+            {{- end -}}
+        {{- else -}}
+            {{- $result = merge $result (dict "exists" true "permalink" ($setting.src | relURL) "isDefault" true) -}}
+        {{- end -}}
+    {{- end -}}
+{{- end -}}
+
+{{- return $result -}}

@@ -11,8 +11,6 @@
 }
 
 @media (prefers-reduced-motion: no-preference) {
-  body.is-loaded .home-composition,
-  body.is-loaded .blog-preview-composition,
   body.is-loaded .phase4-page {
     animation: melody-fade-up 480ms var(--ease-out) both;
   }
@@ -40,9 +38,6 @@
     transform: none;
   }
 
-  .template-home .blog-card__title::after,
-  .template-blog-list .blog-card__title::after,
-  .template-blog-list .featured-post__title::after,
   .article-detail__title-note,
   .phase4-page h2 span[aria-hidden="true"] {
     display: inline-block;
@@ -50,17 +45,12 @@
     transition: transform var(--duration-normal) var(--ease-out);
   }
 
-  .blog-card__link:hover .blog-card__title::after,
-  .blog-card__link:focus-visible .blog-card__title::after,
-  .featured-post__link:hover .featured-post__title::after,
-  .featured-post__link:focus-visible .featured-post__title::after,
   .article-detail__header:hover .article-detail__title-note,
   .phase4-page h2:hover span[aria-hidden="true"] {
     transform: translate(2px, -2px) rotate(-10deg);
   }
 
-  .music-album-card,
-  .phase4-text-link {
+  .music-album-card {
     transition:
       border-color var(--duration-normal) var(--ease-out),
       box-shadow var(--duration-normal) var(--ease-out),
@@ -68,25 +58,19 @@
       transform var(--duration-normal) var(--ease-out);
   }
 
-  .music-album-card:hover,
-  .phase4-text-link:hover {
+  .music-album-card:hover {
     transform: translateY(-2px);
   }
 
   :is(
-    .button,
     .site-action-link,
     #dark-mode-toggle.theme-toggle,
     .site-menu-toggle,
     .home-chip,
     .home-profile__post-link,
     .home-profile__social-link,
-    .category-tabs__button,
-    .blog-card__link,
-    .featured-post__link,
     .post-timeline__link,
     .taxonomy-list__item,
-    .phase4-text-link,
     .article-detail__toc-toggle,
     .code-copy-button,
     .back-to-top

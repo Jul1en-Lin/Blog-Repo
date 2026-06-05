@@ -1,8 +1,0 @@
-{{- $quote := .quote | default "A quiet note can still carry context." -}}
-{{- $signature := .signature | default .context.Site.Title -}}
-{{- $class := .class | default "" -}}
-
-<aside class="quote-block {{ $class }}">
-    <p class="quote-block__text">{{ $quote }}</p>
-    <p class="quote-block__signature">{{ $signature }}</p>
-</aside>

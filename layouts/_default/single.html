@@ -41,17 +41,4 @@
         </div>
     </div>
 </article>
-
-{{ if or .Params.math .Site.Params.article.math }}
-{{ partialCached "article/components/math.html" . }}
 {{ end }}
-
-{{ if not (eq .Params.comments false) }}
-{{ partial "comments/include" . }}
-{{ end }}
-
-{{ partialCached "article/components/photoswipe" . }}
-{{ end }}
-
-{{ define "left-sidebar" }}{{ end }}
-{{ define "right-sidebar" }}{{ end }}

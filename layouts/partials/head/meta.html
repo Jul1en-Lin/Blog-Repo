@@ -1,0 +1,27 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+{{- if hugo.IsServer }}
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+{{- end }}
+
+{{- $description := partialCached "data/description" . .RelPermalink -}}
+{{- $title := partial "data/title" . -}}
+<title>{{ $title }}</title>
+<meta name="description" content="{{ $description }}">
+{{- with .Params.Keywords }}
+<meta name="keywords" content="{{ delimit . `, ` }}">
+{{- end }}
+<meta name="author" content="{{ .Site.Copyright | default .Site.Title }}">
+<link rel="canonical" href="{{ .Permalink }}">
+
+{{- range .AlternativeOutputFormats }}
+<link rel="{{ .Rel }}" type="{{ .MediaType.Type }}" href="{{ .Permalink | safeURL }}">
+{{- end }}
+
+<link rel="icon" href="{{ `favicon-signature.svg` | relURL }}" type="image/svg+xml">
+<link rel="icon" href="{{ `favicon-signature.png` | relURL }}" type="image/png" sizes="512x512">
+<link rel="alternate icon" href="{{ `favicon.ico` | relURL }}" type="image/x-icon">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#090909" media="(prefers-color-scheme: dark)">

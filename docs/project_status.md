@@ -4,15 +4,15 @@ Last updated: 2026-06-05
 
 ## Current State
 
-Phase 6 is complete. Home, Blog preview, Blog detail, About, Music, and Contact have all been refined or implemented against the provided concept images. The latest content pass imported the Obsidian Redis cache note as a standalone page-bundle post. The previous content pass updated the Redis Cluster post from the revised Obsidian note, adding the cluster expansion section and six local screenshots. Earlier content imports brought in the Docker Redis Cluster deployment note, communication-protocol `API 类型总结`, Redis Sentinel, and Redis Cluster notes from the Obsidian vault as Hugo page-bundle posts. The latest visual pass tightened Home, Contact, and About against their concept screenshots, reduced oversized portrait/avatar presentation, widened the header rail, recentered the theme-toggle icon, aligned the mode toggle's default contrast with the neighboring social actions, removed the header mask layer so the plum background remains visible behind navigation, replaced the header signature with a single-path `JL` SVG designed for center-line handwriting animation, regenerated the matching browser favicon assets, removed the duplicate article TOC mini brand, added an inline theme-toggle fallback for older article previews, relaxed the Blog timeline column position and spacing against the AntfuStyle reference rhythm, simplified Blog timeline hover feedback to title-width underline reveals, aligned Blog detail titles with the body text edge, restyled the mobile menu toggle to match the header action icons, aligned Music heading typography with the Blog heading font, and replaced the older staff/note and ambient music background treatments with an AntfuStyle plum canvas animation on non-article site surfaces. The project now has the target homepage structure, a concept-aligned Blog list composition, a wider Blog detail reading layout without a right sidebar, cleaner code blocks without visible line numbers, larger Blog detail tables constrained to the main reading column, a Codex-docs-inspired syntax palette, standalone editorial layouts for the remaining primary pages, reusable post/media presentation components, category filters, search input, modular styling for hero/cards/article/page surfaces, responsive breakpoints, lightweight motion, refined Blog card hover interactions, project-level SEO metadata, WebP image processing, keyboard-accessible Blog filtering, stronger focus states, and a Music page that uses a static album gallery backed by dedicated `[[albums]]` front matter plus page-bundle album covers. Real images now render in their original colors by default.
+Phase 6 and the 2026-06-05 dependency cleanup are complete. The site is now a standalone Hugo project: all active templates, metadata, search, RSS, Markdown render hooks, styles, scripts, icons, and image helpers live in the root project. `themes/` and the `theme:` configuration have been removed.
 
 The current header brand and browser favicon now use the same `JL` signature path, with the header rendering as a theme-colored stroke-dash handwriting animation. The browser SVG favicon is transparent, optically thickened for small tab sizes, and adapts its signature fill to the browser color scheme; PNG and ICO fallbacks use a transparent bright white signature without a black square.
 
-The current Blog timeline preview pass keeps preview titles and metadata on the blog typography system instead of the temporary body/mono overrides. Blog detail openings now use a cleaner title-and-body structure: summary preview, header quote, cover image, and the title underline are removed while the music divider remains before the article content. Blog detail theme toggling is handled by an early project-level listener so the mode button responds before Stack's window-load initializer finishes while preserving the circular View Transition animation. Scroll reveal on article pages stays restrained: ordinary paragraphs remain static, while blockquotes, code blocks, tables, standalone image blocks, and the article footer can fade in.
+The current Blog timeline preview keeps titles and metadata on the blog typography system. Blog detail openings use a cleaner title-and-body structure, and the project script owns theme switching, menu behavior, code copy, TOC behavior, scroll reveal, Music interactions, the plum canvas, back-to-top, and the image lightbox.
 
 The current Music page is a static responsive album wall rather than a four-column editorial collection. It follows the site theme in both light and dark modes, avoids sorting/filtering/view-switch/player controls, renders the visible NetEase Cloud Music collected albums from local page-bundle covers, preserves complete cover artwork by using fitted image derivatives plus `object-fit: contain`, uses fixed-size square cards with subtle repeating left/right row offsets to avoid masonry gaps while keeping the gallery weight centered as albums are added, and lifts the title/subtitle group with a small `#c46786` waveform accent that stretches once on entry. Each card front now shows cover artwork only and flips on click to an editorial details face with per-album theme-color gradient liquid glass; the back face also uses the album cover itself as a blurred background layer so the artwork remains faintly visible. Only one card stays open at a time, `Escape` restores the cover wall, and optional year, genre, label, and listening-note fields appear when they exist. Primary interactive controls use a brief `scale(0.97)` press response without applying movement to ordinary article links.
 
-The project still depends on `hugo-theme-stack`, but the visual shell is now controlled from project-level templates instead of the theme sidebar layout.
+The active frontend surface is organized under `layouts/`, `assets/scss/`, and `assets/ts/`. Search and utility-page styles have dedicated modules, while Blog collection styles are isolated from article and Music styles.
 
 ## Progress
 
@@ -23,6 +23,14 @@ The project still depends on `hugo-theme-stack`, but the visual shell is now con
 - [x] Phase 4: About, Music, Contact
 - [x] Phase 5: Responsive refinements and motion
 - [x] Phase 6: Performance, SEO, accessibility
+
+## 2026-06-05 Theme Independence Migration
+
+- Removed `themes/hugo-theme-stack`, the `theme:` setting, theme-only configuration, obsolete project overrides, unused partials, old images, and unused icons.
+- Added project-owned head/SEO partials, search and JSON templates, RSS, 404, Markdown hooks, compact archive rows, media helpers, and image lightbox behavior.
+- `assets/scss/site.scss` and `assets/ts/site.ts` are the only global asset entries. Search keeps a separate page-only script.
+- Split collection styles and utility-page styles into `_collections.scss` and `_utility-pages.scss`; removed the old cards and compatibility modules.
+- The warning-enabled Hugo build and all three regression scripts pass without an external theme.
 
 ## Phase 1 Files
 
@@ -250,11 +258,9 @@ Modified:
 
 ## Decisions
 
-- Keep using `hugo-theme-stack` for the underlying Hugo pipeline and theme scripts.
-- Do not modify files under `themes/`.
+- Keep the project independent from external Hugo themes unless a future migration is explicitly approved.
 - Use `params.primaryNav` in `hugo.yaml` as the navigation source for the new top header.
-- Keep Stack's per-layout footer rendering for now to avoid duplicated footers on theme-provided list/search pages.
-- Add `_legacy-bridge.scss` as a temporary compatibility layer until Archives and remaining theme-provided surfaces are rewritten.
+- Keep shared head, media, footer tools, and list-row behavior in project partials.
 - Treat `docs/blog-refactor-plan.md` as the accepted design specification for staged implementation.
 - Keep homepage and Blog list free of music playback controls; music remains visual language only.
 - Keep the Music page editorial and recommendation-oriented; do not add playback controls, progress UI, or media-player modules.
@@ -265,16 +271,14 @@ Modified:
 - Do not apply global grayscale filters to real images or portraits; decorative music shapes and code-native panels can remain monochrome.
 - Use light mode as the default visual baseline so the Home page matches the current concept direction; dark mode remains manually toggleable.
 - Keep Phase 5 motion below 500ms and respect `prefers-reduced-motion`.
-- Use the footer custom script for small global behaviors only: mobile navigation, back-to-top, reveal, and staff-line parallax.
-- Keep Blog card hover interactions layered but restrained: card lift, image push, note movement, arrow response, and a thin hairline reveal without image filters.
-- Keep Blog detail code blocks line-number-free, larger, and visually quiet; hide the Stack-generated copy bubble on detail pages.
+- Keep global browser behavior in `assets/ts/site.ts`; page-only behavior belongs in a dedicated entry such as `assets/ts/search.ts`.
+- Keep Blog detail code blocks line-number-free, larger, and visually quiet.
 - Use a restrained technical-doc syntax palette for Blog detail code blocks so code remains readable and token types are clearly differentiated in both light and dark modes.
 - Keep generated Blog detail summaries short enough to support the concept composition and avoid repeating the article title.
 - Keep Blog detail tables at the same readable scale as the enlarged article body, including table inline code.
 - Keep Blog detail pages as a wide no-right-sidebar reading layout; place the quote in the header area and related posts after the article body.
-- Use project-level title and description partials instead of relying on the default Stack metadata behavior.
+- Use project-level title and description partials for metadata behavior.
 - Prefer WebP derivatives for project-level generated images and Markdown content images while preserving original colors.
-- Treat Blog category filters as toggle buttons with keyboard navigation rather than ARIA tabs.
 - Keep article body Markdown `h1` headings demoted under the article title so detail pages have a single primary `h1`.
 - Keep above-the-fold Blog detail content out of reveal animations to protect LCP.
 - Keep the global header rail wider than the main content rail so the logo and theme toggle match the concept-image edge spacing.
@@ -299,6 +303,16 @@ Modified:
 - Remaining optional optimization: deeper CSS pruning could reduce unused CSS reported by Lighthouse, but the current desktop Lighthouse targets are met.
 
 ## Latest Verification
+
+- `hugo -D --cleanDestinationDir --printI18nWarnings --printPathWarnings`: passed, 131 pages generated.
+- `bash tests/theme-independence.sh`: passed.
+- `bash tests/music-album-flip.sh`: passed.
+- `bash tests/scroll-reveal.sh`: passed.
+- `git diff --check`: passed.
+- Generated global CSS is about 65 KB; global JavaScript is about 11 KB. Search JavaScript is page-only and about 3.5 KB.
+- Browser checks covered Home, Blog, an article, Music, Search, Archives, and 404 in desktop and mobile viewports.
+
+## Verification History
 
 Command:
 

@@ -9,8 +9,6 @@
         "context" .
         "title" "Browse by <span class=\"script-accent\">category</span>."
         "description" "A quiet index of the subjects that keep recurring."
-        "avatar" false
-        "class" "hero-section--page"
     ) }}
 
     <section class="taxonomy-list" aria-label="{{ .Title }}">
@@ -32,9 +30,9 @@
     <section class="blog-index blog-index--timeline" aria-labelledby="blog-index-title">
         <h1 class="sr-only" id="blog-index-title">{{ if $isTermPage }}{{ .Title }}{{ else }}Blog{{ end }}</h1>
 
-        <div class="post-timeline" data-blog-timeline>
+        <div class="post-timeline">
             {{ range $posts.GroupByDate "2006" }}
-            <section class="post-year" data-blog-year-group>
+            <section class="post-year">
                 <h2 class="post-year__label">
                     <a href="#year-{{ .Key }}">{{ .Key }}</a>
                 </h2>
@@ -48,6 +46,4 @@
         </div>
     </section>
 {{ end }}
-
-{{ partialCached "footer/footer" . }}
 {{ end }}

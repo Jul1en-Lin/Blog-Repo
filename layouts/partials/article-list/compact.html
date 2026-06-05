@@ -1,0 +1,27 @@
+{{- $image := partial "media/featured-image.html" (dict "Context" . "Type" "articleList") -}}
+<article{{ if $image.exists }} class="has-image"{{ end }}>
+    <a href="{{ .RelPermalink }}">
+        <div class="article-details">
+            <h2 class="article-title">{{ .Title }}</h2>
+            {{- if not .Date.IsZero }}
+            <footer class="article-time">
+                <time datetime="{{ .Date.Format `2006-01-02T15:04:05Z07:00` }}">
+                    {{ .Date | time.Format (or .Site.Params.dateFormat.published "2006-01-02") }}
+                </time>
+            </footer>
+            {{- end }}
+        </div>
+
+        {{- if $image.exists }}
+        <div class="article-image">
+            {{- if $image.resource }}
+                {{- $thumbnail := $image.resource.Fill "240x240 Center" }}
+            <img src="{{ $thumbnail.RelPermalink }}" width="{{ $thumbnail.Width }}" height="{{ $thumbnail.Height }}"
+                alt="" loading="lazy">
+            {{- else }}
+            <img src="{{ $image.permalink }}" alt="" loading="lazy">
+            {{- end }}
+        </div>
+        {{- end }}
+    </a>
+</article>

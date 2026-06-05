@@ -1,0 +1,6 @@
+<h{{ .Level }} id="{{ .Anchor }}">
+    {{- if site.Params.article.headingAnchor }}
+    <a href="#{{ .Anchor }}" class="header-anchor" aria-label="链接到本节"></a>
+    {{- end }}
+    {{ .Text | safeHTML }}
+</h{{ .Level }}>

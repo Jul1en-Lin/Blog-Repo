@@ -8,8 +8,6 @@
     {{- $description = .Summary -}}
 {{- else if .Site.Params.description -}}
     {{- $description = .Site.Params.description -}}
-{{- else if .Site.Params.sidebar.subtitle -}}
-    {{- $description = .Site.Params.sidebar.subtitle -}}
 {{- else -}}
     {{- $description = .Site.Title -}}
 {{- end -}}

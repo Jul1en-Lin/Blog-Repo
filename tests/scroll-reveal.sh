@@ -19,7 +19,7 @@ assert_contains '.article-detail__content > .table-wrapper' 'public' 'Article re
 assert_contains '.article-detail__content > .highlight' 'public' 'Article reveal targets code blocks'
 assert_contains '.music-album-card' 'public' 'Music album cards remain scroll-reveal targets'
 assert_contains 'IntersectionObserver' 'public' 'Scroll reveal uses intersection observation'
-assert_contains 'article-detail__content .reveal-on-scroll' 'public/scss' 'Article content reveal has a quieter motion treatment'
+assert_contains 'article-detail__content .reveal-on-scroll' 'public/css' 'Article content reveal has a quieter motion treatment'
 
 if rg -Fq -- '.article-detail__content > *' 'public'; then
     printf 'FAIL: Article body text must not reveal every direct child while reading\n' >&2

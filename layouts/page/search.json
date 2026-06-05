@@ -1,0 +1,12 @@
+{{- $pages := where .Site.RegularPages "Type" "in" .Site.Params.mainSections -}}
+{{- $visible := where .Site.RegularPages "Params.hidden" "!=" true -}}
+{{- $filtered := $pages | intersect $visible -}}
+{{- $result := slice -}}
+{{- range $filtered -}}
+    {{- $result = $result | append (dict
+        "title" (.Title | plainify)
+        "permalink" .Permalink
+        "content" .Plain
+    ) -}}
+{{- end -}}
+{{- $result | jsonify -}}

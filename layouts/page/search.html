@@ -1,0 +1,51 @@
+{{ define "body-class" }}template-search{{ end }}
+
+{{ define "head" }}
+    {{- with .OutputFormats.Get "json" }}
+    <link rel="preload" href="{{ .RelPermalink }}" as="fetch" crossorigin="anonymous">
+    {{- end }}
+{{ end }}
+
+{{ define "main" }}
+<section class="search-page" aria-labelledby="search-page-title">
+    <header class="search-page__header">
+        <p class="search-page__eyebrow">Search</p>
+        <h1 id="search-page-title">{{ .Title }}</h1>
+        <p>输入标题或正文里的关键词。</p>
+    </header>
+
+    <form action="{{ .RelPermalink }}" class="search-form" data-search-form
+        {{- with .OutputFormats.Get "json" }} data-json="{{ .RelPermalink }}"{{ end }}>
+        <p>
+            <label for="search-input">关键词</label>
+            <input id="search-input" type="search" name="keyword" placeholder="搜索文章" autocomplete="off">
+        </p>
+        <button type="submit" title="搜索" aria-label="搜索">
+            {{ partial "media/icon.html" "search-line" }}
+        </button>
+    </form>
+
+    <div class="search-result" aria-live="polite">
+        <h2 class="search-result--title section-title" data-search-title></h2>
+        <div class="search-result--list article-list--compact" data-search-results></div>
+    </div>
+</section>
+
+<template id="search-result-template">
+    <article class="search-result-card">
+        <a href="">
+            <div class="article-details">
+                <h2 class="article-title" data-result-title></h2>
+                <p class="article-preview" data-result-preview></p>
+            </div>
+        </a>
+    </article>
+</template>
+
+<template id="search-mark-template"><mark></mark></template>
+
+{{- with resources.Get "ts/search.ts" }}
+    {{- $script := . | js.Build (dict "targetPath" "js/search.js" "minify" hugo.IsProduction) | fingerprint }}
+<script src="{{ $script.RelPermalink }}" integrity="{{ $script.Data.Integrity }}" defer></script>
+{{- end }}
+{{ end }}

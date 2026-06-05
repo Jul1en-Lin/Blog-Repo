@@ -1,0 +1,50 @@
+{{ define "body-class" }}template-not-found{{ end }}
+
+{{ define "main" }}
+<section class="not-found-card" aria-labelledby="not-found-title">
+    <p class="not-found-card__code">404</p>
+    <h1 id="not-found-title">这个页面不存在</h1>
+    <p>地址可能写错了，也可能已经被移走。</p>
+
+    {{- $searchPages := first 1 (where .Site.RegularPages "Layout" "search") -}}
+    {{- if $searchPages -}}
+        {{- range $searchPages }}
+        <form action="{{ .RelPermalink }}" class="search-form" data-search-form data-prefill-path
+            {{- with .OutputFormats.Get "json" }} data-json="{{ .RelPermalink }}"{{ end }}>
+            <p>
+                <label for="search-input">试着搜一下</label>
+                <input id="search-input" type="search" name="keyword" placeholder="搜索文章" autocomplete="off">
+            </p>
+            <button type="submit" title="搜索" aria-label="搜索">
+                {{ partial "media/icon.html" "search-line" }}
+            </button>
+        </form>
+
+        <div class="search-result" aria-live="polite">
+            <h2 class="search-result--title section-title" data-search-title></h2>
+            <div class="search-result--list article-list--compact" data-search-results></div>
+        </div>
+
+        <template id="search-result-template">
+            <article class="search-result-card">
+                <a href="">
+                    <div class="article-details">
+                        <h2 class="article-title" data-result-title></h2>
+                        <p class="article-preview" data-result-preview></p>
+                    </div>
+                </a>
+            </article>
+        </template>
+
+        <template id="search-mark-template"><mark></mark></template>
+
+        {{- with resources.Get "ts/search.ts" }}
+            {{- $script := . | js.Build (dict "targetPath" "js/search.js" "minify" hugo.IsProduction) | fingerprint }}
+        <script src="{{ $script.RelPermalink }}" integrity="{{ $script.Data.Integrity }}" defer></script>
+        {{- end }}
+        {{- end }}
+    {{- else }}
+    <a class="not-found-card__home" href="{{ .Site.Home.RelPermalink }}">回到首页</a>
+    {{- end }}
+</section>
+{{ end }}

@@ -51,6 +51,11 @@ The active frontend surface is organized under `layouts/`, `assets/scss/`, and `
 - Header signature hover no longer applies a surrounding glow, keeping the light mode brand mark quiet against the warm page background.
 - Header signature drawing animation no longer restarts on hover or focus, avoiding partial stroke gaps when the pointer leaves.
 
+## 2026-06-08 Deploy Build Pin
+
+- GitHub Actions deploy failed after `peaceiris/actions-hugo` resolved `hugo-version: latest` to Hugo `0.162.1`, which timed out rendering `content/post/Map & Set/index.md`.
+- Local verification passes with Homebrew Hugo `0.161.1`, so deploy now pins Hugo to `0.161.1` and runs the repository warning-enabled build command.
+
 ## Phase 1 Files
 
 Added:

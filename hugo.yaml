@@ -3,6 +3,7 @@ title: Jul1en
 copyright: Jul1en
 defaultContentLanguage: zh-cn
 hasCJKLanguage: true
+timeout: 300s
 
 languages:
   zh-cn:

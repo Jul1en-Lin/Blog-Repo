@@ -1,3 +1,17 @@
+function addMediaQueryChangeListener(
+    query: MediaQueryList,
+    listener: (event: MediaQueryListEvent | MediaQueryList) => void
+) {
+    if (typeof query.addEventListener === 'function') {
+        query.addEventListener('change', listener as EventListener);
+        return;
+    }
+
+    if (typeof query.addListener === 'function') {
+        query.addListener(listener);
+    }
+}
+
 function initThemeToggle() {
     const toggle = document.getElementById('dark-mode-toggle') as HTMLButtonElement | null;
     if (!toggle || toggle.dataset.projectThemeToggleReady === 'true') return;
@@ -375,7 +389,7 @@ function initPlumBackground() {
     });
 
     window.addEventListener('onColorSchemeChange', scheduleRedraw);
-    reducedMotion.addEventListener('change', scheduleRedraw);
+    addMediaQueryChangeListener(reducedMotion, scheduleRedraw);
 
     redraw({ instant: reducedMotion.matches });
 }
@@ -416,7 +430,7 @@ function initSiteMenu() {
     const closeOnDesktop = (event: MediaQueryListEvent) => {
         if (event.matches) setMenuOpen(false);
     };
-    desktopQuery.addEventListener('change', closeOnDesktop);
+    addMediaQueryChangeListener(desktopQuery, closeOnDesktop);
 }
 
 function initBackToTop() {
@@ -633,15 +647,24 @@ function initImageLightbox() {
 }
 
 function initCustomScripts() {
-    initSiteMenu();
-    initBackToTop();
-    initArticleTocHover();
-    initRevealOnScroll();
-    initThemeToggle();
-    initCodeCopyButtons();
-    initMusicAlbumFlips();
-    initPlumBackground();
-    initImageLightbox();
+    [
+        initSiteMenu,
+        initBackToTop,
+        initArticleTocHover,
+        initRevealOnScroll,
+        initThemeToggle,
+        initCodeCopyButtons,
+        initMusicAlbumFlips,
+        initPlumBackground,
+        initImageLightbox
+    ].forEach((init) => {
+        try {
+            init();
+        } catch (error) {
+            console.error('Site initializer failed', error);
+        }
+    });
+
     window.requestAnimationFrame(() => document.body.classList.add('is-loaded'));
 }
 

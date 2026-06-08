@@ -27,7 +27,6 @@
 
 .site-brand__signature {
   display: inline-flex;
-  --signature-glow: color-mix(in srgb, var(--color-text) 28%, transparent);
   --signature-duration: 2000ms;
   width: clamp(110px, 9vw, 132px);
   height: clamp(54px, 4.5vw, 66px);
@@ -55,16 +54,6 @@
 @keyframes sig-draw {
   from { stroke-dashoffset: 1; }
   to   { stroke-dashoffset: 0; }
-}
-
-.site-brand:hover .site-signature,
-.site-brand:focus-visible .site-signature {
-  filter: drop-shadow(0 0 3px var(--signature-glow));
-}
-
-.site-brand:hover .site-signature__guide,
-.site-brand:focus-visible .site-signature__guide {
-  animation: sig-draw 1400ms cubic-bezier(0.4, 0, 0.2, 1) both;
 }
 
 .site-header__right {

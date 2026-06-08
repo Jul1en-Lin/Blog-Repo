@@ -31,11 +31,12 @@
   position: absolute;
   z-index: -1;
   top: -62px;
-  left: clamp(-38px, -4vw, -20px);
+  left: clamp(-32px, -2.6vw, -16px);
   margin: 0;
-  font-family: var(--font-display);
-  font-size: clamp(12rem, 16vw, 15.5rem);
-  font-weight: 800;
+  font-family: "Noto Serif", Georgia, "Times New Roman", serif;
+  font-size: clamp(8.25rem, 11.5vw, 10.8rem);
+  font-weight: 700;
+  letter-spacing: -0.04em;
   line-height: 0.8;
   pointer-events: none;
 }
@@ -76,7 +77,7 @@
   color: var(--color-text);
   font-family: var(--font-display), "Noto Sans SC", serif;
   font-size: 1.125rem;
-  font-weight: 400;
+  font-weight: 600;
   line-height: 1.24;
   overflow-wrap: anywhere;
 }
@@ -180,7 +181,7 @@
   .post-year .post-year__label {
     top: -34px;
     left: -2px;
-    font-size: clamp(6.7rem, 28vw, 8.6rem);
+    font-size: clamp(5.8rem, 24vw, 7.2rem);
   }
 
   .post-timeline__link {

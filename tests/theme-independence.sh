@@ -61,5 +61,10 @@ article_html="$(rg -l 'class="gallery-image"' public/p --glob 'index.html' | hea
 assert_contains 'class="gallery-image"' "$article_html" 'Responsive article images are missing'
 assert_contains 'image-lightbox' public/js 'Project image lightbox code is missing'
 assert_contains '.image-lightbox' public/css 'Project image lightbox styles are missing'
+assert_contains 'addListener' public/js 'Global controls must support legacy matchMedia listeners'
+assert_contains 'Site initializer failed' public/js 'Global controls must isolate initializer failures'
+assert_contains 'scrollbar-color:var(--article-toc-scrollbar-thumb)' public/css 'Article TOC scrollbar must follow the active color scheme'
+assert_not_contains 'drop-shadow(0 0 3px var(--signature-glow))' public/css 'Header signature hover must not show a glow'
+assert_not_contains '.site-brand:hover .site-signature__guide' public/css 'Header signature hover must not restart the drawing animation'
 
 printf 'PASS: project builds without Hugo Theme Stack\n'

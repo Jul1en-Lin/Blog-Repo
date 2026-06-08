@@ -104,10 +104,30 @@ body.is-article-toc-visible .article-detail__toc-panel,
 }
 
 .article-detail__toc-nav {
+  --article-toc-scrollbar-thumb: color-mix(in srgb, var(--color-text) 28%, transparent);
+  --article-toc-scrollbar-thumb-hover: color-mix(in srgb, var(--color-text) 42%, transparent);
   max-height: 100%;
   padding-right: var(--space-3);
   overflow-y: auto;
+  scrollbar-color: var(--article-toc-scrollbar-thumb) transparent;
   scrollbar-width: thin;
+}
+
+.article-detail__toc-nav::-webkit-scrollbar {
+  width: 6px;
+}
+
+.article-detail__toc-nav::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.article-detail__toc-nav::-webkit-scrollbar-thumb {
+  background-color: var(--article-toc-scrollbar-thumb);
+  border-radius: 999px;
+}
+
+.article-detail__toc-nav::-webkit-scrollbar-thumb:hover {
+  background-color: var(--article-toc-scrollbar-thumb-hover);
 }
 
 .article-detail__toc-nav #TableOfContents ul,

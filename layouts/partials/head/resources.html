@@ -1,6 +1,6 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;600&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Noto+Sans+SC:wght@400;500;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;600&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Noto+Sans+SC:wght@400;500;700&family=Noto+Serif:wght@400;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
 
 {{- $defaultScheme := default "light" .Site.Params.colorScheme.default -}}
 <script>
@@ -21,17 +21,11 @@
 </script>
 
 {{- with resources.Get "scss/site.scss" }}
-    {{- $style := . | toCSS (dict "targetPath" "css/site.css") | minify -}}
-    {{- if not hugo.IsServer -}}
-        {{- $style = $style | fingerprint -}}
-    {{- end -}}
+    {{- $style := . | toCSS (dict "targetPath" "css/site.css") | minify | fingerprint -}}
 <link rel="stylesheet" href="{{ $style.RelPermalink }}"{{ with $style.Data.Integrity }} integrity="{{ . }}"{{ end }}>
 {{- end }}
 
 {{- with resources.Get "ts/site.ts" }}
-    {{- $script := . | js.Build (dict "targetPath" "js/site.js" "minify" hugo.IsProduction) -}}
-    {{- if not hugo.IsServer -}}
-        {{- $script = $script | fingerprint -}}
-    {{- end -}}
+    {{- $script := . | js.Build (dict "targetPath" "js/site.js" "minify" hugo.IsProduction) | fingerprint -}}
 <script src="{{ $script.RelPermalink }}"{{ with $script.Data.Integrity }} integrity="{{ . }}"{{ end }} defer></script>
 {{- end }}

@@ -1,6 +1,6 @@
 # Project Status
 
-Last updated: 2026-06-05
+Last updated: 2026-06-08
 
 ## Current State
 
@@ -31,6 +31,25 @@ The active frontend surface is organized under `layouts/`, `assets/scss/`, and `
 - `assets/scss/site.scss` and `assets/ts/site.ts` are the only global asset entries. Search keeps a separate page-only script.
 - Split collection styles and utility-page styles into `_collections.scss` and `_utility-pages.scss`; removed the old cards and compatibility modules.
 - The warning-enabled Hugo build and all three regression scripts pass without an external theme.
+
+## 2026-06-08 Blog Timeline Adjustment
+
+- Blog year watermarks now use `Noto Serif` and a smaller desktop/mobile size range so the background year stays closer to the published Blog page rhythm.
+- Dark mode page background remains `#090909`; the dark browser `theme-color` metadata matches it.
+- Blog timeline post titles now keep the 18px size while using a stronger 600 title weight.
+- Site CSS and JavaScript are always referenced with Hugo fingerprinted asset URLs so article routes do not fall back to unstyled pages when served from `public/`.
+
+## 2026-06-08 Article Control Fixes
+
+- Article TOC scrollbars now use the active text color with transparent tracks, including WebKit scrollbar styling for dark mode.
+- Global site controls now tolerate legacy `matchMedia` listeners and isolate initializer failures so one widget cannot prevent article TOC hover or theme toggling from binding.
+- `tests/theme-independence.sh` now checks the generated JS/CSS for these regressions.
+
+## 2026-06-08 Light Background Adjustment
+
+- Light mode page background and light browser `theme-color` now use `#fdfdf7`.
+- Header signature hover no longer applies a surrounding glow, keeping the light mode brand mark quiet against the warm page background.
+- Header signature drawing animation no longer restarts on hover or focus, avoiding partial stroke gaps when the pointer leaves.
 
 ## Phase 1 Files
 

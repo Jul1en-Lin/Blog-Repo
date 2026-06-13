@@ -29,6 +29,9 @@ params:
       name: Blog
       url: /post/
       section: post
+    - identifier: search
+      name: Search
+      url: /search/
     - identifier: music
       name: Music
       url: /music/

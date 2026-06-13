@@ -1,6 +1,23 @@
 # Project Status
 
-Last updated: 2026-06-08
+Last updated: 2026-06-13
+
+## 2026-06-13 Search Page Nav Entry and Redesign
+
+- Added `Search` as a visible `primaryNav` entry in `hugo.yaml` between Blog and Music.
+- Redesigned the search page template (`layouts/page/search.html`) with a centered editorial hero using the same large Playfair Display serif title pattern as Music.
+- Search input is a compact underline-style field with editorial font; the underline animates left-to-right via `scaleX(0)→scaleX(1)` on focus, matching the Home page recently-written hover effect.
+- Removed browser focus outline/box-shadow on the search input and WebKit search decoration chrome.
+- Results use thin separator lines, serif titles at `1rem` that animate a smooth left-to-right underline on hover, and muted preview text (without horizontal page layout translation).
+- Restored standalone `.back-to-top` and `.not-found-card` base styles that were previously in shared selectors with the old search form.
+- Search index correctly filters to `mainSections: post` only; emoji-prefixed posts and code-heavy articles that match search keywords are expected behavior.
+- Build passes (131 pages), `theme-independence.sh` passes.
+
+## 2026-06-12 Course Report
+
+- Completed the `网页开发技术` course report from the current standalone Hugo implementation.
+- Replaced obsolete About/Contact and Blog-filter claims with the active Home, Blog, article, search, archive, and Music surfaces.
+- Added current desktop/mobile screenshots, real code excerpts, development problems and fixes, and build/regression evidence.
 
 ## Current State
 

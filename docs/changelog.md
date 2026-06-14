@@ -41,6 +41,11 @@ Latest verification snapshot:
 
 ## Condensed History
 
+### 2026-06-14 - Seata Post
+
+- Imported the Obsidian `Spring Cloud/Seata` note as a Hugo page-bundle post.
+- Converted Obsidian image embeds to local post assets and removed the opening related-note backlinks from the published body.
+
 ### 2026-06-02 - Redis Cluster Deployment Posts
 
 - Updated the Redis Cluster post from the revised Obsidian note, adding cluster client redirection and failover notes.

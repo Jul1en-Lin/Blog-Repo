@@ -230,6 +230,25 @@ Modified:
 - `docs/project_status.md`
 - `docs/blog-refactor-plan.md`
 
+## 2026-06-14 Content Import Files
+
+Added:
+
+- `content/post/Seata/index.md`
+- `content/post/Seata/assets/seata-global-transaction.png`
+- `content/post/Seata/assets/seata-2pc.png`
+- `content/post/Seata/assets/seata-xa-mode.png`
+- `content/post/Seata/assets/seata-at-mode.png`
+- `content/post/Seata/assets/seata-at-write-isolation.png`
+- `content/post/Seata/assets/seata-at-read-isolation.png`
+- `content/post/Seata/assets/seata-tcc-flow.png`
+- `content/post/Seata/assets/seata-saga-recovery.png`
+
+Modified:
+
+- `docs/changelog.md`
+- `docs/project_status.md`
+
 ## 2026-05-31 Content Import Files
 
 Added:

@@ -522,6 +522,7 @@ function initRevealOnScroll() {
         '.article-detail__content > blockquote',
         '.article-detail__content > .highlight',
         '.article-detail__content > pre',
+        '.article-detail__content > .mermaid-diagram',
         '.article-detail__content > .table-wrapper',
         '.article-detail__content > figure',
         '.article-detail__content > details',

@@ -1,0 +1,76 @@
+{{- if .Store.Get "hasMermaid" -}}
+<script type="module">
+    import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.15.0/dist/mermaid.esm.min.mjs";
+
+    const diagrams = Array.from(document.querySelectorAll(".mermaid"));
+    const sources = new Map(diagrams.map((diagram) => [diagram, diagram.textContent || ""]));
+    let renderQueue = Promise.resolve();
+
+    function getMermaidConfig(scheme) {
+        const dark = scheme === "dark";
+
+        return {
+            startOnLoad: false,
+            securityLevel: "strict",
+            theme: "base",
+            fontFamily: '"Inter", "Noto Sans SC", sans-serif',
+            themeVariables: {
+                background: dark ? "#111111" : "#fdfdf7",
+                primaryColor: dark ? "#251b22" : "#f8f1f4",
+                primaryTextColor: dark ? "#f1ecef" : "#272226",
+                primaryBorderColor: "#c46786",
+                secondaryColor: dark ? "#1c1a20" : "#f4f1f5",
+                tertiaryColor: dark ? "#171717" : "#ffffff",
+                lineColor: dark ? "#b9adb4" : "#514950",
+                textColor: dark ? "#f1ecef" : "#272226",
+                actorBkg: dark ? "#251b22" : "#f8f1f4",
+                actorBorder: "#c46786",
+                actorTextColor: dark ? "#f1ecef" : "#272226",
+                actorLineColor: dark ? "#6f646b" : "#b7aeb3",
+                signalColor: dark ? "#d8ced3" : "#40393e",
+                signalTextColor: dark ? "#f1ecef" : "#272226",
+                labelBoxBkgColor: dark ? "#1c1a20" : "#fdfdf7",
+                labelBoxBorderColor: "#c46786",
+                labelTextColor: dark ? "#f1ecef" : "#272226",
+                loopTextColor: dark ? "#f1ecef" : "#272226",
+                activationBorderColor: "#c46786",
+                activationBkgColor: dark ? "#34272f" : "#f1dce4",
+                sequenceNumberColor: dark ? "#111111" : "#ffffff"
+            }
+        };
+    }
+
+    async function renderDiagrams(scheme) {
+        diagrams.forEach((diagram) => {
+            diagram.removeAttribute("data-processed");
+            diagram.textContent = sources.get(diagram) || "";
+        });
+
+        mermaid.initialize(getMermaidConfig(scheme));
+        await mermaid.run({ nodes: diagrams });
+
+        diagrams.forEach((diagram) => {
+            const svg = diagram.querySelector("svg");
+            if (svg?.viewBox.baseVal.width) {
+                svg.style.setProperty(
+                    "--mermaid-intrinsic-width",
+                    `${Math.ceil(svg.viewBox.baseVal.width)}px`
+                );
+            }
+            diagram.closest(".mermaid-diagram")?.classList.add("is-rendered");
+        });
+    }
+
+    function scheduleRender(scheme) {
+        renderQueue = renderQueue
+            .catch(() => undefined)
+            .then(() => renderDiagrams(scheme))
+            .catch((error) => console.error("Mermaid rendering failed", error));
+    }
+
+    scheduleRender(document.documentElement.dataset.scheme || "light");
+    window.addEventListener("onColorSchemeChange", (event) => {
+        scheduleRender(event.detail === "dark" ? "dark" : "light");
+    });
+</script>
+{{- end -}}

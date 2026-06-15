@@ -2,6 +2,13 @@
 
 Last updated: 2026-06-15
 
+## 2026-06-15 Mermaid Rendering
+
+- Added a project-level Hugo code-block hook so fenced `mermaid` blocks render as diagrams instead of highlighted source.
+- Mermaid 11.15.0 loads from jsDelivr only on pages that contain diagrams and re-renders when the site color scheme changes.
+- Diagram frames match the article image and table boundaries; mobile diagrams keep a readable intrinsic width inside a horizontally scrollable container.
+- Added generated-site regression checks for the render hook, intrinsic sizing, and page-level script loading.
+
 ## 2026-06-15 Obsidian Highlightr Compatibility
 
 - Fixed the Seata XA drawbacks label being parsed into the previous list item by restoring the missing Markdown boundary.

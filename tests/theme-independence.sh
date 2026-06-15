@@ -70,6 +70,22 @@ assert_not_contains '<mark class="hltr-pink">缺点</mark></li>' public/p/seata/
     'Seata XA drawbacks label must not be merged into a list item'
 assert_contains '<mark class="hltr-green-light">不是很多 key 同时失效，而是针对热点 key 失效</mark>' \
     public/p/redis-缓存/index.html 'Redis cache breakdown explanation must keep its Highlightr markup'
+assert_contains '<figure class="mermaid-diagram">' public/p/seata/index.html \
+    'Mermaid code blocks must render as diagram containers'
+assert_contains 'class="mermaid"' public/p/seata/index.html \
+    'Mermaid diagram source container is missing'
+assert_contains 'mermaid@11.15.0/dist/mermaid.esm.min.mjs' public/p/seata/index.html \
+    'Mermaid articles must load the pinned Mermaid module'
+assert_contains 'svg.viewBox.baseVal.width' public/p/seata/index.html \
+    'Mermaid diagrams must preserve their readable intrinsic width on narrow screens'
+assert_contains '.article-detail__content .mermaid-diagram{width:100%;max-width:100%;margin:var(--space-6)0' public/css \
+    'Mermaid diagram boundaries must match article images and tables'
+assert_contains '--mermaid-intrinsic-width' public/css \
+    'Narrow Mermaid diagrams must scroll inside their container instead of overflowing the page'
+assert_not_contains 'mermaid@11.15.0/dist/mermaid.esm.min.mjs' public/index.html \
+    'Home must not load Mermaid'
+assert_not_contains 'mermaid@11.15.0/dist/mermaid.esm.min.mjs' public/p/redis-缓存/index.html \
+    'Articles without Mermaid diagrams must not load Mermaid'
 
 recent_article_html=(
     public/p/seata/index.html

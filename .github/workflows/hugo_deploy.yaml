@@ -28,6 +28,9 @@ jobs:
               hugo-version: "0.161.1"
               extended: true
 
+        - name: Validate Obsidian highlight markup
+          run: bash tests/highlightr-markup.sh
+
         - name: Build Web
           run: hugo -D --cleanDestinationDir --printI18nWarnings --printPathWarnings
 

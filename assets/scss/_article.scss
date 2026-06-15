@@ -340,6 +340,53 @@ body.is-article-toc-visible .article-detail__toc-staff,
   margin-bottom: var(--space-6);
 }
 
+.article-detail__content p:has(> mark[class^="hltr-"]:only-child),
+.article-detail__content p:has(> mark[class*=" hltr-"]:only-child) {
+  margin-bottom: var(--space-3);
+}
+
+.article-detail__content mark[class^="hltr-"],
+.article-detail__content mark[class*=" hltr-"] {
+  margin: 0 -0.05em;
+  padding: 0.1em 0.4em;
+  border-radius: 0.8em 0.3em;
+  background: var(--highlighter-color);
+  color: #171717;
+  font-weight: inherit;
+  line-height: inherit;
+  text-shadow: 0 0 0.75em color-mix(in srgb, var(--color-bg) 76%, transparent);
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+}
+
+.article-detail__content .hltr-green-light {
+  --highlighter-color: #bdd1cf;
+}
+
+.article-detail__content .hltr-pink {
+  --highlighter-color: #c46786;
+}
+
+.article-detail__content .hltr-orange {
+  --highlighter-color: #d97757;
+}
+
+.article-detail__content .hltr-cyan {
+  --highlighter-color: #abf7f7a6;
+}
+
+.article-detail__content .hltr-blue {
+  --highlighter-color: #adccffa6;
+}
+
+.article-detail__content .hltr-purple {
+  --highlighter-color: #d2b3ffa6;
+}
+
+.article-detail__content .hltr-grey {
+  --highlighter-color: #cacfd9a6;
+}
+
 .article-detail__content h1,
 .article-detail__content h2,
 .article-detail__content h3,
@@ -677,6 +724,52 @@ body.is-article-toc-visible .article-detail__toc-staff,
 .article-content.article-detail__content .code-copy-button.is-error {
   border-color: color-mix(in srgb, var(--code-deleted) 24%, var(--code-border));
   color: var(--code-deleted);
+}
+
+.article-detail__content .mermaid-diagram {
+  width: 100%;
+  max-width: 100%;
+  margin: var(--space-6) 0;
+  padding: clamp(16px, 2.4vw, 28px);
+  overflow-x: auto;
+  border: 1px solid var(--color-border-light);
+  border-radius: var(--radius-md);
+  background: color-mix(in srgb, var(--color-bg-secondary) 72%, var(--color-bg));
+  overscroll-behavior-inline: contain;
+  scrollbar-color: color-mix(in srgb, var(--color-text) 28%, transparent) transparent;
+  scrollbar-width: thin;
+}
+
+.article-detail__content .mermaid {
+  display: grid;
+  width: max-content;
+  min-width: 100%;
+  place-items: center;
+  color: var(--color-text-muted);
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
+  line-height: 1.6;
+  white-space: pre;
+}
+
+.article-detail__content .mermaid svg {
+  display: block;
+  width: 100% !important;
+  height: auto;
+  max-width: none !important;
+  margin: 0 auto;
+  font-family: var(--font-sans), "Noto Sans SC", sans-serif !important;
+}
+
+.article-detail__content .mermaid-diagram.is-rendered .mermaid {
+  font-family: inherit;
+  white-space: normal;
+}
+
+@media (max-width: 760px) {
+  .article-detail__content .mermaid svg {
+    width: var(--mermaid-intrinsic-width, 100%) !important;
+  }
 }
 
 :root[data-scheme="dark"] .article-detail__content :not(pre) > code {

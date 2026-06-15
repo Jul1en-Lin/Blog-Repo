@@ -1,6 +1,21 @@
 # Project Status
 
-Last updated: 2026-06-13
+Last updated: 2026-06-15
+
+## 2026-06-15 Mermaid Rendering
+
+- Added a project-level Hugo code-block hook so fenced `mermaid` blocks render as diagrams instead of highlighted source.
+- Mermaid 11.15.0 loads from jsDelivr only on pages that contain diagrams and re-renders when the site color scheme changes.
+- Diagram frames match the article image and table boundaries; mobile diagrams keep a readable intrinsic width inside a horizontally scrollable container.
+- Added generated-site regression checks for the render hook, intrinsic sizing, and page-level script loading.
+
+## 2026-06-15 Obsidian Highlightr Compatibility
+
+- Fixed the Seata XA drawbacks label being parsed into the previous list item by restoring the missing Markdown boundary.
+- Restored the Redis cache-avalanche inline Highlightr label and fixed another emphasis span whose Chinese punctuation caused Goldmark to emit literal `**`.
+- Added article-scoped realistic Highlightr styling and the seven colors currently configured in Obsidian without importing plugin JavaScript or Obsidian-only selectors.
+- Added `tests/highlightr-markup.sh` to reject standalone `hltr-*` labels without a preceding blank line; GitHub Actions runs it before deployment.
+- Extended the generated-site regression check to verify the Seata label remains a standalone paragraph, recent articles contain no unparsed emphasis markers, source and rendered Highlightr counts match, and the compiled article styles include Highlightr support.
 
 ## 2026-06-13 Music Album Update
 

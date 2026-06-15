@@ -2,6 +2,12 @@
 
 Last updated: 2026-06-15
 
+## 2026-06-15 SkyWalking Article Import
+
+- Imported the Obsidian note `/Spring Cloud/SkyWalking` as a published Hugo post.
+- Converted Obsidian wikilinks and image embeds to Hugo-compatible Markdown and copied the two referenced PNG assets into the page bundle.
+- Kept the article in the microservices category with Spring Cloud and SkyWalking tags.
+
 ## 2026-06-15 Search Page Title Removal
 
 - Removed the large `Search` hero title from the Search page so only the search field is shown.

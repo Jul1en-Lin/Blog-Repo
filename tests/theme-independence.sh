@@ -38,6 +38,8 @@ assert_file public/search/index.html 'Search output is missing'
 assert_file public/search/index.json 'Search JSON output is missing'
 assert_file public/404.html '404 output is missing'
 assert_file public/index.xml 'RSS output is missing'
+assert_file public/p/seata/index.html 'Seata article output is missing'
+assert_file public/p/redis-缓存/index.html 'Redis cache article output is missing'
 
 assert_contains '/css/site.' public/index.html 'Home must load the project stylesheet'
 assert_contains '/js/site.' public/index.html 'Home must load the project script'
@@ -61,6 +63,35 @@ article_html="$(rg -l 'class="gallery-image"' public/p --glob 'index.html' | hea
 assert_contains 'class="gallery-image"' "$article_html" 'Responsive article images are missing'
 assert_contains 'image-lightbox' public/js 'Project image lightbox code is missing'
 assert_contains '.image-lightbox' public/css 'Project image lightbox styles are missing'
+assert_contains '.article-detail__content mark[class^=hltr-]' public/css 'Article Highlightr styles are missing'
+assert_contains '<p><mark class="hltr-pink">缺点</mark></p>' public/p/seata/index.html \
+    'Seata XA drawbacks label must render as a standalone paragraph'
+assert_not_contains '<mark class="hltr-pink">缺点</mark></li>' public/p/seata/index.html \
+    'Seata XA drawbacks label must not be merged into a list item'
+assert_contains '<mark class="hltr-green-light">不是很多 key 同时失效，而是针对热点 key 失效</mark>' \
+    public/p/redis-缓存/index.html 'Redis cache breakdown explanation must keep its Highlightr markup'
+
+recent_article_html=(
+    public/p/seata/index.html
+    public/p/redis-缓存/index.html
+    public/p/redis-集群/index.html
+    public/p/docker-部署-redis-集群/index.html
+    public/p/api-类型总结/index.html
+    public/p/redis-哨兵/index.html
+    public/p/codex-工作流更新-v2/index.html
+    public/p/sentinel/index.html
+)
+
+for recent_article in "${recent_article_html[@]}"; do
+    assert_file "$recent_article" "Recent article output is missing: $recent_article"
+    assert_not_contains '**' "$recent_article" "Recent article contains unparsed emphasis markers: $recent_article"
+done
+
+source_highlightr_count="$(rg -o 'class="hltr-[^"]+"' content/post --glob '*.md' | wc -l | tr -d ' ')"
+rendered_highlightr_count="$(rg -o 'class="hltr-[^"]+"' public/p --glob 'index.html' | wc -l | tr -d ' ')"
+[[ "$rendered_highlightr_count" == "$source_highlightr_count" ]] || \
+    fail "Rendered Highlightr count ($rendered_highlightr_count) does not match Markdown source ($source_highlightr_count)"
+
 assert_contains 'addListener' public/js 'Global controls must support legacy matchMedia listeners'
 assert_contains 'Site initializer failed' public/js 'Global controls must isolate initializer failures'
 assert_contains 'scrollbar-color:var(--article-toc-scrollbar-thumb)' public/css 'Article TOC scrollbar must follow the active color scheme'

@@ -340,6 +340,53 @@ body.is-article-toc-visible .article-detail__toc-staff,
   margin-bottom: var(--space-6);
 }
 
+.article-detail__content p:has(> mark[class^="hltr-"]:only-child),
+.article-detail__content p:has(> mark[class*=" hltr-"]:only-child) {
+  margin-bottom: var(--space-3);
+}
+
+.article-detail__content mark[class^="hltr-"],
+.article-detail__content mark[class*=" hltr-"] {
+  margin: 0 -0.05em;
+  padding: 0.1em 0.4em;
+  border-radius: 0.8em 0.3em;
+  background: var(--highlighter-color);
+  color: #171717;
+  font-weight: inherit;
+  line-height: inherit;
+  text-shadow: 0 0 0.75em color-mix(in srgb, var(--color-bg) 76%, transparent);
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+}
+
+.article-detail__content .hltr-green-light {
+  --highlighter-color: #bdd1cf;
+}
+
+.article-detail__content .hltr-pink {
+  --highlighter-color: #c46786;
+}
+
+.article-detail__content .hltr-orange {
+  --highlighter-color: #d97757;
+}
+
+.article-detail__content .hltr-cyan {
+  --highlighter-color: #abf7f7a6;
+}
+
+.article-detail__content .hltr-blue {
+  --highlighter-color: #adccffa6;
+}
+
+.article-detail__content .hltr-purple {
+  --highlighter-color: #d2b3ffa6;
+}
+
+.article-detail__content .hltr-grey {
+  --highlighter-color: #cacfd9a6;
+}
+
 .article-detail__content h1,
 .article-detail__content h2,
 .article-detail__content h3,

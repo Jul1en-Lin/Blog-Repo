@@ -7,7 +7,7 @@ fail() {
 }
 
 assert_contains() {
-    rg -Fq -- "$1" "$2" || fail "$3"
+    grep -Fq -- "$1" "$2" || fail "$3"
 }
 
 violations=''

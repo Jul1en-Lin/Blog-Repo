@@ -2,6 +2,12 @@
 
 Last updated: 2026-06-15
 
+## 2026-06-15 Search Page Title Removal
+
+- Removed the large `Search` hero title from the Search page so only the search field is shown.
+- Replaced the removed heading reference with a section `aria-label` and tightened the page's top spacing.
+- Local Hugo build and browser verification passed.
+
 ## 2026-06-15 Mermaid Rendering
 
 - Added a project-level Hugo code-block hook so fenced `mermaid` blocks render as diagrams instead of highlighted source.

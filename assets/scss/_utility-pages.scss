@@ -117,20 +117,7 @@
 .search-page {
   width: unquote("min(100%, 660px)");
   margin: 0 auto;
-}
-
-.search-hero {
-  margin-bottom: clamp(var(--space-6), 5vw, var(--space-8));
-  text-align: center;
-}
-
-.search-hero h1 {
-  margin: 0;
-  color: var(--color-text);
-  font-family: var(--font-display);
-  font-size: clamp(2.75rem, 7vw, 4.5rem);
-  font-weight: 600;
-  line-height: var(--leading-tight);
+  padding-top: clamp(var(--space-6), 8vw, var(--space-10));
 }
 
 .search-form {

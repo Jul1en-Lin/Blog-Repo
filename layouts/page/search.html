@@ -7,11 +7,7 @@
 {{ end }}
 
 {{ define "main" }}
-<section class="phase4-page search-page" aria-labelledby="search-page-title">
-    <header class="search-hero" aria-labelledby="search-page-title">
-        <h1 id="search-page-title">Search</h1>
-    </header>
-
+<section class="phase4-page search-page" aria-label="搜索">
     <form action="{{ .RelPermalink }}" class="search-form" data-search-form
         {{- with .OutputFormats.Get "json" }} data-json="{{ .RelPermalink }}"{{ end }}>
         <label for="search-input" class="sr-only">关键词</label>

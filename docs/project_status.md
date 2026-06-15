@@ -2,6 +2,13 @@
 
 Last updated: 2026-06-13
 
+## 2026-06-13 Music Album Update
+
+- Removed `Black Cab`, `すずめの戸締まり`, `劇場映画「秒速5センチメートル」-Soundtracks`, `Humble Swag GT Mixtape`, `乐透人生GT：即刻入戏`, `旷野`, `CHARLIE`, `THE PROTÉGÉ`, and `Starboy` from the Music page gallery.
+- Added `Live Today` and `NANA I` by Nana Ou-Yang with local cover images.
+- Added `네가 좋아 (Feat. 박원)` by Hello Ga-Young with its local cover image.
+- The Music page now renders 16 album cards; removed cover files remain in the page bundle.
+
 ## 2026-06-13 Search Page Nav Entry and Redesign
 
 - Added `Search` as a visible `primaryNav` entry in `hugo.yaml` between Blog and Music.
@@ -417,7 +424,7 @@ Local preview:
 - About, Music, and Contact active navigation states render correctly.
 - Contact renders one form and three FAQ rows.
 - Playwright fallback screenshots checked Home, Contact, and About at `1670x950` against the provided concept images; theme-toggle icon centering, smaller portrait dimensions, first-viewport positions, and no horizontal overflow were verified.
-- Music now renders 22 static NetEase Cloud Music collected album cards from `[[albums]]`, all backed by local page-bundle cover images and no no-image fallback card.
+- Music now renders 16 static collected album cards from `[[albums]]`, all backed by local page-bundle cover images and no no-image fallback card.
 - Music hero browser checks at desktop `1440x900`, tablet `820x1180`, and mobile `390x844` confirmed the lifted title/subtitle rhythm, no remaining `Album gallery` eyebrow, and the five-bar waveform beside `Music`.
 - Music scheme checks on a fresh Hugo preview confirmed the theme toggle renders the gallery readably in both light and dark modes with no horizontal overflow.
 - Music cover images compute `object-fit: contain`, appear inside the card front face without the previous cover frame/backdrop/body/meta wrappers, and stay visible at desktop `1440x900`, tablet `820x1180`, and mobile `390x844`.

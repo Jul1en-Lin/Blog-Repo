@@ -653,42 +653,21 @@ function initRouteTransitionDemo() {
 
     document.documentElement.dataset.routeTransitionReady = 'true';
 
-    const storageKey = 'RouteTransitionPreviewState';
+    const storageKey = 'RouteTransitionDirectionState';
     const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
-    const coverDuration = () => reducedMotion.matches ? 80 : 620;
-    const revealDuration = () => reducedMotion.matches ? 80 : 300;
+    const coverDuration = () => reducedMotion.matches ? 80 : 1080;
+    const revealDuration = () => reducedMotion.matches ? 80 : 380;
     let isTransitioning = false;
-    let loadingTimer: ReturnType<typeof window.setTimeout> | null = null;
-
-    function clearLoadingTimer() {
-        if (!loadingTimer) return;
-        window.clearTimeout(loadingTimer);
-        loadingTimer = null;
-    }
 
     function clearMaskState() {
-        clearLoadingTimer();
         mask.classList.remove('is-starting', 'is-covering', 'is-loading', 'is-revealing');
         delete document.documentElement.dataset.routeTransitioning;
         isTransitioning = false;
     }
 
-    function setMaskGeometry(x: number, y: number) {
-        const radius = Math.ceil(Math.hypot(
-            Math.max(x, window.innerWidth - x),
-            Math.max(y, window.innerHeight - y)
-        ));
-
-        mask.style.setProperty('--route-transition-x', `${x}px`);
-        mask.style.setProperty('--route-transition-y', `${y}px`);
-        mask.style.setProperty('--route-transition-radius', `${radius}px`);
-    }
-
-    function storeTransitionOrigin(x: number, y: number) {
+    function storeTransitionState() {
         try {
             window.sessionStorage.setItem(storageKey, JSON.stringify({
-                x,
-                y,
                 timestamp: Date.now()
             }));
         } catch {
@@ -696,17 +675,16 @@ function initRouteTransitionDemo() {
         }
     }
 
-    function readTransitionOrigin() {
+    function readTransitionState() {
         try {
             const raw = window.sessionStorage.getItem(storageKey);
-            if (!raw) return null;
+            if (!raw) return false;
             window.sessionStorage.removeItem(storageKey);
-            const parsed = JSON.parse(raw) as { x?: unknown; y?: unknown; timestamp?: unknown };
-            if (typeof parsed.x !== 'number' || typeof parsed.y !== 'number') return null;
-            if (typeof parsed.timestamp !== 'number' || Date.now() - parsed.timestamp > 8000) return null;
-            return { x: parsed.x, y: parsed.y };
+            const parsed = JSON.parse(raw) as { timestamp?: unknown };
+            if (typeof parsed.timestamp !== 'number') return false;
+            return Date.now() - parsed.timestamp <= 8000;
         } catch {
-            return null;
+            return false;
         }
     }
 
@@ -749,10 +727,8 @@ function initRouteTransitionDemo() {
     }
 
     function revealPreviousTransition() {
-        const origin = readTransitionOrigin();
-        if (!origin) return;
+        if (!readTransitionState()) return;
 
-        setMaskGeometry(origin.x, origin.y);
         mask.style.transition = 'none';
         mask.classList.add('is-covering');
         mask.getBoundingClientRect();
@@ -771,21 +747,15 @@ function initRouteTransitionDemo() {
         event.preventDefault();
         if (isTransitioning) return;
 
-        const x = event.clientX || window.innerWidth / 2;
-        const y = event.clientY || window.innerHeight / 2;
         isTransitioning = true;
         document.documentElement.dataset.routeTransitioning = 'true';
-        setMaskGeometry(x, y);
-        storeTransitionOrigin(x, y);
+        storeTransitionState();
         mask.classList.add('is-starting');
         mask.getBoundingClientRect();
 
         window.requestAnimationFrame(() => {
             mask.classList.remove('is-starting');
-            mask.classList.add('is-covering');
-            loadingTimer = window.setTimeout(() => {
-                if (isTransitioning) mask.classList.add('is-loading');
-            }, 180);
+            mask.classList.add('is-covering', 'is-loading');
         });
 
         window.setTimeout(() => {

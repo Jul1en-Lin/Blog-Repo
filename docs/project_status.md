@@ -1,6 +1,13 @@
 # Project Status
 
-Last updated: 2026-06-15
+Last updated: 2026-06-17
+
+## 2026-06-17 Route Transition Demo
+
+- Added a global route-transition demo overlay for internal link navigation.
+- The demo uses a click-origin circular cover, subtle line texture, and centered `LOADING...` pill before normal multi-page navigation.
+- External links, modifier-key opens, downloads, and same-page anchors are skipped; reduced-motion users get near-instant transitions.
+- Local Hugo build, route-transition regression script, and browser preview passed.
 
 ## 2026-06-15 SkyWalking Article Import
 

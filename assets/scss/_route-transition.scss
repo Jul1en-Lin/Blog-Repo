@@ -48,18 +48,11 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-width: 86px;
-  min-height: 31px;
-  padding: 0 var(--space-4);
-  border: 1px solid color-mix(in srgb, var(--color-text) 7%, transparent);
-  border-radius: var(--radius-full);
-  background: color-mix(in srgb, var(--color-surface) 92%, transparent);
-  box-shadow: 0 8px 22px color-mix(in srgb, #000000 7%, transparent);
   color: var(--color-text);
-  font-family: var(--font-mono);
-  font-size: 0.64rem;
-  font-weight: 500;
-  letter-spacing: 0.12em;
+  font-family: var(--font-body);
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
   opacity: 0;
   transform: translate3d(-50%, calc(-50% + 6px), 0);
   transition:

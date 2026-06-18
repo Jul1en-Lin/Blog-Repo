@@ -5,8 +5,8 @@ Last updated: 2026-06-18
 ## 2026-06-17 Route Transition Demo
 
 - Added a global route-transition demo overlay for internal link navigation.
-- The demo uses a fixed left-edge circular expansion over the second pale botanical background image, with a left-biased `Loading... ✦ — ···` label before normal multi-page navigation.
-- The loading label uses the blog display font and no longer renders the old music notes, white pill backdrop, or synthetic line texture.
+- The demo uses a click-origin circular cover, subtle line texture, and centered `LOADING...` pill before normal multi-page navigation.
+- The original demo timing and click-origin geometry have been restored.
 - External links, modifier-key opens, downloads, and same-page anchors are skipped; reduced-motion users get near-instant transitions.
 - Local Hugo build, route-transition regression script, and browser preview passed.
 

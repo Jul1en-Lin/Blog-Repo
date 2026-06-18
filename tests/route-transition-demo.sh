@@ -42,10 +42,10 @@ assert_contains 'left:36%' public/css \
     'Route transition loading must sit left of center'
 assert_contains 'font-family:var(--font-display)' public/css \
     'Route transition loading must use the blog display font'
-assert_contains 'clip-path:inset(0 100% 0 0)' public/css \
-    'Route transition must start from the left edge'
-assert_contains 'clip-path:inset(0 0 0 0)' public/css \
-    'Route transition must sweep left to right'
+assert_contains 'clip-path:circle(0 at 0% 50%)' public/css \
+    'Route transition must start as a fixed circle from the left edge'
+assert_contains 'clip-path:circle(150vmax at 0% 50%)' public/css \
+    'Route transition must expand as a fixed circle from left to right'
 assert_contains '960ms' public/css \
     'Route transition cover animation must be slower for review'
 assert_contains 'transition:clip-path 960ms linear' public/css \
@@ -55,6 +55,14 @@ assert_contains '@media(prefers-reduced-motion:reduce)' public/css \
 
 if rg -Fq 'route-transition-x' public/js public/css; then
     fail 'Route transition must not use click-origin geometry in the fixed left-to-right demo'
+fi
+
+if rg -Fq 'clip-path:inset(0 100% 0 0)' public/css; then
+    fail 'Route transition must not use the old rectangular left-to-right wipe'
+fi
+
+if rg -Fq 'clip-path:inset(0 0 0 0)' public/css; then
+    fail 'Route transition must not use the old rectangular full-cover state'
 fi
 
 if rg -Fq 'route-transition__staff' public/index.html public/css; then

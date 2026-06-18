@@ -7,7 +7,7 @@
   visibility: hidden;
   opacity: 1;
   background: url("/image/transition-bg2.png") center / cover no-repeat, var(--color-bg);
-  clip-path: inset(0 100% 0 0);
+  clip-path: circle(0 at 0% 50%);
   transform-origin: left center;
   will-change: clip-path, opacity;
 }
@@ -70,12 +70,12 @@
 }
 
 .route-transition-mask.is-starting {
-  clip-path: inset(0 100% 0 0);
+  clip-path: circle(0 at 0% 50%);
 }
 
 .route-transition-mask.is-covering,
 .route-transition-mask.is-revealing {
-  clip-path: inset(0 0 0 0);
+  clip-path: circle(150vmax at 0% 50%);
 }
 
 .route-transition-mask.is-covering {

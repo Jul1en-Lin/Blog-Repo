@@ -647,8 +647,162 @@ function initImageLightbox() {
     document.body.appendChild(lightbox);
 }
 
+function initRouteTransitionDemo() {
+    const mask = document.getElementById('route-transition-mask') as HTMLElement | null;
+    if (!mask || document.documentElement.dataset.routeTransitionReady === 'true') return;
+
+    document.documentElement.dataset.routeTransitionReady = 'true';
+
+    const storageKey = 'RouteTransitionPreviewState';
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const coverDuration = () => reducedMotion.matches ? 80 : 620;
+    const revealDuration = () => reducedMotion.matches ? 80 : 300;
+    let isTransitioning = false;
+    let loadingTimer: ReturnType<typeof window.setTimeout> | null = null;
+
+    function clearLoadingTimer() {
+        if (!loadingTimer) return;
+        window.clearTimeout(loadingTimer);
+        loadingTimer = null;
+    }
+
+    function clearMaskState() {
+        clearLoadingTimer();
+        mask.classList.remove('is-starting', 'is-covering', 'is-loading', 'is-revealing');
+        delete document.documentElement.dataset.routeTransitioning;
+        isTransitioning = false;
+    }
+
+    function setMaskGeometry(x: number, y: number) {
+        const radius = Math.ceil(Math.hypot(
+            Math.max(x, window.innerWidth - x),
+            Math.max(y, window.innerHeight - y)
+        ));
+
+        mask.style.setProperty('--route-transition-x', `${x}px`);
+        mask.style.setProperty('--route-transition-y', `${y}px`);
+        mask.style.setProperty('--route-transition-radius', `${radius}px`);
+    }
+
+    function storeTransitionOrigin(x: number, y: number) {
+        try {
+            window.sessionStorage.setItem(storageKey, JSON.stringify({
+                x,
+                y,
+                timestamp: Date.now()
+            }));
+        } catch {
+            // The animation still works when session storage is unavailable.
+        }
+    }
+
+    function readTransitionOrigin() {
+        try {
+            const raw = window.sessionStorage.getItem(storageKey);
+            if (!raw) return null;
+            window.sessionStorage.removeItem(storageKey);
+            const parsed = JSON.parse(raw) as { x?: unknown; y?: unknown; timestamp?: unknown };
+            if (typeof parsed.x !== 'number' || typeof parsed.y !== 'number') return null;
+            if (typeof parsed.timestamp !== 'number' || Date.now() - parsed.timestamp > 8000) return null;
+            return { x: parsed.x, y: parsed.y };
+        } catch {
+            return null;
+        }
+    }
+
+    function getTransitionUrl(event: MouseEvent) {
+        if (
+            event.defaultPrevented
+            || event.button !== 0
+            || event.metaKey
+            || event.ctrlKey
+            || event.shiftKey
+            || event.altKey
+        ) {
+            return null;
+        }
+
+        const target = event.target;
+        if (!(target instanceof Element)) return null;
+
+        const anchor = target.closest<HTMLAnchorElement>('a[href]');
+        if (!anchor) return null;
+        if (anchor.target && anchor.target !== '_self') return null;
+        if (anchor.hasAttribute('download')) return null;
+        if (anchor.dataset.routeTransition === 'skip') return null;
+
+        const href = anchor.getAttribute('href');
+        if (!href || href.startsWith('#')) return null;
+
+        let url: URL;
+        try {
+            url = new URL(anchor.href, window.location.href);
+        } catch {
+            return null;
+        }
+
+        if (url.origin !== window.location.origin) return null;
+        if (url.protocol !== 'http:' && url.protocol !== 'https:') return null;
+        if (url.pathname === window.location.pathname && url.search === window.location.search) return null;
+
+        return url;
+    }
+
+    function revealPreviousTransition() {
+        const origin = readTransitionOrigin();
+        if (!origin) return;
+
+        setMaskGeometry(origin.x, origin.y);
+        mask.style.transition = 'none';
+        mask.classList.add('is-covering');
+        mask.getBoundingClientRect();
+        mask.style.removeProperty('transition');
+
+        window.requestAnimationFrame(() => {
+            mask.classList.add('is-revealing');
+            window.setTimeout(clearMaskState, revealDuration());
+        });
+    }
+
+    document.addEventListener('click', (event) => {
+        const url = getTransitionUrl(event);
+        if (!url) return;
+
+        event.preventDefault();
+        if (isTransitioning) return;
+
+        const x = event.clientX || window.innerWidth / 2;
+        const y = event.clientY || window.innerHeight / 2;
+        isTransitioning = true;
+        document.documentElement.dataset.routeTransitioning = 'true';
+        setMaskGeometry(x, y);
+        storeTransitionOrigin(x, y);
+        mask.classList.add('is-starting');
+        mask.getBoundingClientRect();
+
+        window.requestAnimationFrame(() => {
+            mask.classList.remove('is-starting');
+            mask.classList.add('is-covering');
+            loadingTimer = window.setTimeout(() => {
+                if (isTransitioning) mask.classList.add('is-loading');
+            }, 180);
+        });
+
+        window.setTimeout(() => {
+            window.location.assign(url.href);
+        }, coverDuration());
+    }, true);
+
+    window.addEventListener('pageshow', (event) => {
+        if (event.persisted) clearMaskState();
+    });
+
+    revealPreviousTransition();
+}
+
 function initCustomScripts() {
     [
+        initRouteTransitionDemo,
         initSiteMenu,
         initBackToTop,
         initArticleTocHover,

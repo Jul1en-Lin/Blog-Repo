@@ -43,6 +43,10 @@ OpenAI 这篇博客把 Codex 看成一个 persistent workspace：一件复杂任
 
 <mark class="hltr-green-light">目标 -> 线程 -> 项目记忆 -> 调用工具 -> 产出 -> review -> 下一轮任务</mark>
 
+这张图可以作为本次更新的总览。
+
+![Codex 长期任务工作流总览](assets/codex-workflow-v3-long-running-task.png)
+
 ## 三层模型
 
 通过上述总结可以把工作流分成三层：

@@ -6,6 +6,7 @@ Last updated: 2026-06-24
 
 - Imported the Obsidian note `/AI/Codex 工作流更新-v3` as a published Hugo post.
 - Converted the two Codex command screenshots to local page-bundle assets.
+- Added the long-running task workflow overview image from the updated Obsidian note.
 - Replaced the opening Obsidian related-note link with a Hugo related-blog link to the existing v2 post.
 
 ## 2026-06-17 Route Transition Demo

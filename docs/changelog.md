@@ -41,6 +41,11 @@ Latest verification snapshot:
 
 ## Condensed History
 
+### 2026-06-24 - Codex Workflow V3 Post
+
+- Imported the Obsidian `AI/Codex 工作流更新-v3` note as a Hugo page-bundle post.
+- Converted the two Obsidian image embeds to local post assets and linked the opening related note to the existing v2 post.
+
 ### 2026-06-14 - Seata Post
 
 - Imported the Obsidian `Spring Cloud/Seata` note as a Hugo page-bundle post.

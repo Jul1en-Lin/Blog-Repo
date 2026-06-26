@@ -1,2 +1,16 @@
+# macOS
+.DS_Store
 
+# Hugo generated output
+/public/
+/resources/
+.hugo_build.lock
 
+# Local env / logs
+.env
+.env.*
+*.log
+
+# Local deps / caches
+node_modules/
+.cache/

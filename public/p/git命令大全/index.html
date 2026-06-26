@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="zh-CN" dir="ltr">
+
+<head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1"><title>🪶 Git命令大全 | Jul1en</title>
+<meta name="description" content="Git命令大全 前提介绍 git是一个分布式版本控制系统，相当于一个时光机，拿来保管代码，一旦出错，可以随时回滚到任何一个历史节点 其核心架构分为三个区域：工作区（写代码的地方）、暂存区（临时存放的地方）和版本库（安全存档的地方）">
+<meta name="author" content="Jul1en">
+<link rel="canonical" href="https://Jul1en-Lin.github.io/p/git%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/">
+
+<link rel="icon" href="/favicon-signature.svg" type="image/svg+xml">
+<link rel="icon" href="/favicon-signature.png" type="image/png" sizes="512x512">
+<link rel="alternate icon" href="/favicon.ico" type="image/x-icon">
+<meta name="theme-color" content="#fdfdf7" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#090909" media="(prefers-color-scheme: dark)">
+<meta property="og:title" content="🪶 Git命令大全 | Jul1en">
+<meta property="og:description" content="Git命令大全 前提介绍 git是一个分布式版本控制系统，相当于一个时光机，拿来保管代码，一旦出错，可以随时回滚到任何一个历史节点 其核心架构分为三个区域：工作区（写代码的地方）、暂存区（临时存放的地方）和版本库（安全存档的地方）">
+<meta property="og:url" content="https://Jul1en-Lin.github.io/p/git%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/">
+<meta property="og:site_name" content="Jul1en">
+<meta property="og:type" content="article">
+<meta property="article:section" content="Post">
+<meta property="article:published_time" content="2025-12-15T00:47:22&#43;08:00">
+<meta property="article:modified_time" content="2026-05-21T14:32:14&#43;08:00">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="🪶 Git命令大全 | Jul1en">
+<meta name="twitter:description" content="Git命令大全 前提介绍 git是一个分布式版本控制系统，相当于一个时光机，拿来保管代码，一旦出错，可以随时回滚到任何一个历史节点 其核心架构分为三个区域：工作区（写代码的地方）、暂存区（临时存放的地方）和版本库（安全存档的地方）">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;600&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Noto+Sans+SC:wght@400;500;700&family=Noto+Serif:wght@400;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet"><script>
+    (function () {
+        var stored = null;
+        try {
+            stored = window.localStorage.getItem('ColorScheme');
+        } catch (error) {
+            stored = null;
+        }
+
+        var scheme = stored;
+        if (scheme !== 'light' && scheme !== 'dark') {
+            scheme = "light";
+        }
+        document.documentElement.dataset.scheme = scheme;
+    })();
+</script><link rel="stylesheet" href="/css/site.min.954818373eafb12c608d3f56fa7bff4c76c8574abd1940dbc983cf3318715029.css" integrity="sha256-lUgYNz6vsSxgjT9W&#43;nv/THbIV0q9GUDbyYPPMxhxUCk="><script src="/js/site.abbcb3538826a91399f254fdb11f18a958e7dc1361cb64ea6dbd74cdee2ad59b.js" integrity="sha256-q7yzU4gmqROZ8lT9sR8YqVjn3BNhy2Tqbb10ze4q1Zs=" defer></script>
+
+</head>
+
+<body class="melody-shell template-article-detail article-page">
+    <a class="skip-link" href="#main-content">Skip to content</a><header class="site-header" role="banner">
+    <div class="site-header__inner">
+        <a class="site-brand" href="/" aria-label="Jul1en home">
+            <span class="site-brand__signature" aria-hidden="true">
+    <svg class="site-signature" viewBox="0 0 1672 941" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+        <defs>
+            <mask id="sig-mask" maskUnits="userSpaceOnUse">
+                
+                <path class="site-signature__guide" pathLength="1"
+                      fill="none" stroke="white" stroke-width="20"
+                      stroke-linecap="round" stroke-linejoin="round"
+                      d="M 584 422 C 575 412, 564 415, 559 394 C 554 373, 556 386, 571 361 C 586 337, 580 347, 602 324 C 624 301, 614 311, 634 296 C 654 281, 639 292, 658 281 C 677 270, 668 275, 688 264 C 708 254, 697 258, 716 251 C 735 244, 723 249, 742 244 C 761 239, 752 239, 771 238 C 790 237, 781 235, 795 240 C 809 245, 803 241, 810 251 C 817 262, 815 255, 816 270 C 817 285, 817 277, 812 294 C 807 311, 810 301, 803 318 C 796 336, 800 327, 792 344 C 784 361, 789 350, 781 366 C 773 382, 777 374, 768 390 C 759 406, 763 398, 755 413 C 747 428, 753 419, 745 433 C 737 447, 750 425, 732 454 C 714 483, 721 472, 693 515 C 665 558, 678 540, 652 576 C 626 612, 641 590, 619 617 C 597 644, 609 631, 589 652 C 569 673, 583 659, 563 678 C 543 697, 558 685, 532 706 C 506 727, 515 722, 489 738 C 463 754, 480 745, 459 752 C 438 759, 450 755, 429 759 C 408 763, 419 763, 398 763 C 377 763, 387 768, 368 759 C 349 750, 355 755, 344 737 C 334 719, 333 731, 338 707 C 343 683, 341 694, 359 668 C 377 642, 366 656, 389 633 C 412 610, 399 623, 426 603 C 453 583, 436 595, 467 577 C 498 559, 483 566, 515 551 C 547 536, 523 547, 559 535 C 595 523, 582 527, 617 516 C 652 506, 631 512, 658 505 C 685 498, 666 502, 695 496 C 724 490, 710 493, 740 488 C 770 483, 753 487, 781 481 C 809 475, 796 478, 821 472 C 846 466, 831 472, 853 463 C 875 454, 858 465, 883 446 C 908 427, 896 436, 924 409 C 952 382, 939 397, 963 370 C 987 343, 973 358, 992 332 C 1011 306, 1001 322, 1018 295 C 1035 268, 1027 284, 1041 254 C 1055 224, 1051 234, 1057 210 C 1063 186, 1063 198, 1057 186 C 1051 174, 1051 176, 1039 176 C 1027 176, 1034 176, 1022 186 C 1010 196, 1017 190, 1005 204 C 993 218, 1001 209, 989 226 C 977 243, 983 232, 972 252 C 961 272, 967 262, 957 282 C 947 302, 953 288, 944 308 C 935 328, 942 311, 931 338 C 921 365, 925 356, 914 384 C 904 412, 915 387, 901 418 C 887 450, 893 436, 875 474 C 857 512, 868 495, 849 527 C 830 559, 839 545, 821 566 C 803 587, 812 579, 797 587 C 782 595, 785 594, 777 589 C 769 584, 768 586, 773 572 C 778 558, 776 563, 790 550 C 804 537, 795 543, 812 535 C 830 527, 822 531, 840 527 C 858 523, 847 522, 864 524 C 882 526, 870 527, 890 533 C 910 539, 899 536, 920 540 C 941 544, 929 542, 950 544 C 971 546, 959 545, 981 546 C 1003 547, 992 547, 1013 546 C 1034 545, 1021 545, 1042 542 C 1063 539, 1052 541, 1072 537 C 1092 533, 1078 536, 1100 531 C 1122 526, 1113 529, 1135 524 C 1157 519, 1141 522, 1163 516 C 1185 510, 1171 513, 1197 507 C 1223 501, 1212 503, 1238 500 C 1264 497, 1250 498, 1271 498 C 1292 498, 1281 498, 1297 500 C 1313 502, 1302 499, 1317 505 C 1332 511, 1332 512, 1340 516" />
+            </mask>
+        </defs>
+        
+        <g mask="url(#sig-mask)" fill="currentColor">
+            <g transform="translate(0,941) scale(0.1,-0.1)">
+                <path d="M10357 7720 c-89 -23 -208 -101 -303 -202 -182 -191 -341 -442 -549 -863 -188 -382 -306 -651 -562 -1285 -63 -157 -119 -290 -124 -297 -18 -21 -173 -121 -259 -167 -173 -91 -263 -114 -751 -190 -156 -25 -332 -53 -391 -64 -60 -11 -108 -16 -108 -11 0 4 37 70 83 146 234 389 414 710 541 968 291 589 368 917 268 1137 -77 168 -269 247 -530 218 -547 -60 -1348 -483 -1792 -947 -371 -386 -469 -744 -264 -963 56 -60 138 -103 201 -104 38 -1 49 4 74 32 54 60 29 124 -65 166 -140 62 -161 188 -66 391 72 153 222 331 436 515 467 402 1215 738 1599 717 106 -5 163 -26 204 -73 177 -201 -98 -876 -861 -2110 -99 -160 -99 -160 -211 -183 -409 -83 -952 -237 -1327 -376 -1006 -374 -1827 -945 -2156 -1501 -224 -379 -187 -706 100 -878 124 -74 276 -108 486 -108 217 0 414 43 650 142 742 311 1437 1016 2349 2383 72 108 135 197 139 197 4 0 120 20 257 45 138 25 354 61 480 81 399 61 525 93 690 173 44 22 81 38 82 37 5 -4 -124 -283 -183 -396 -59 -115 -59 -115 -146 -127 -187 -26 -378 -124 -520 -265 -137 -137 -202 -278 -179 -383 25 -111 131 -164 262 -131 184 48 391 230 572 505 62 93 62 93 152 87 50 -3 119 -12 155 -20 627 -140 805 -162 1240 -153 458 9 741 60 1610 287 275 72 417 103 580 129 476 76 884 33 1079 -113 48 -36 94 -35 132 3 55 55 32 130 -56 187 -171 109 -513 176 -815 160 -270 -15 -497 -57 -990 -182 -437 -112 -589 -148 -795 -189 -602 -121 -1060 -124 -1600 -10 -94 20 -233 49 -310 65 -77 17 -152 30 -167 30 -15 0 -29 4 -32 9 -3 5 28 79 70 166 71 150 213 474 228 523 4 12 58 65 121 117 786 654 1594 1865 1595 2391 0 112 -57 226 -132 263 -51 24 -138 34 -191 21z m102 -209 c87 -87 -37 -464 -291 -884 -139 -230 -315 -480 -498 -707 -161 -199 -520 -582 -520 -554 0 18 141 365 247 609 337 772 561 1171 793 1407 129 131 222 176 269 129z m-3579 -3177 c0 -12 -337 -494 -478 -684 -520 -699 -969 -1159 -1406 -1437 -365 -232 -717 -345 -1025 -330 -304 15 -466 130 -479 337 -19 321 422 836 1054 1233 562 353 1201 611 2019 818 258 65 315 76 315 63z m1393 -354 c-63 -107 -244 -280 -340 -325 -68 -33 -97 -33 -88 -2 37 122 189 262 362 333 79 32 88 31 66 -6z"/>
+            </g>
+        </g>
+    </svg>
+    <span class="sr-only">Jul1en</span>
+</span>
+
+        </a>
+
+        <div class="site-header__right">
+            <nav id="primary-navigation" class="site-nav" aria-label="Primary navigation">
+                <ul class="site-nav__list"><li class="site-nav__item">
+                            <a class="site-nav__link is-active" href="/post/" aria-current="page">
+                                Blog
+                            </a>
+                        </li><li class="site-nav__item">
+                            <a class="site-nav__link" href="/search/">
+                                Search
+                            </a>
+                        </li><li class="site-nav__item">
+                            <a class="site-nav__link" href="/music/">
+                                Music
+                            </a>
+                        </li></ul>
+            </nav>
+
+            <div class="site-actions" role="group" aria-label="Social links and theme"><a class="site-action-link" href="https://github.com/Jul1en-Lin" target="_blank" rel="noopener noreferrer" aria-label="GitHub" title="GitHub">
+                        <span class="site-action-link__icon" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true">
+  <path fill="currentColor" d="M12 2.2c-5.5 0-9.9 4.5-9.9 9.9 0 4.4 2.8 8.1 6.8 9.4.5.1.7-.2.7-.5v-1.8c-2.8.6-3.4-1.2-3.4-1.2-.5-1.1-1.1-1.4-1.1-1.4-.9-.6.1-.6.1-.6 1 0 1.6 1.1 1.6 1.1.9 1.5 2.4 1.1 2.9.8.1-.7.4-1.1.7-1.4-2.2-.3-4.5-1.1-4.5-4.9 0-1.1.4-2 1.1-2.7-.1-.3-.5-1.3.1-2.7 0 0 .9-.3 2.8 1.1.8-.2 1.7-.3 2.5-.3s1.7.1 2.5.3c1.9-1.3 2.8-1.1 2.8-1.1.6 1.4.2 2.4.1 2.7.7.8 1.1 1.7 1.1 2.7 0 3.8-2.3 4.6-4.5 4.9.4.3.7.9.7 1.9V21c0 .3.2.6.7.5 4-1.3 6.8-5 6.8-9.4 0-5.4-4.4-9.9-9.9-9.9Z" />
+</svg>
+</span>
+                    </a><a class="site-action-link" href="https://www.instagram.com/jul1en_lin" target="_blank" rel="noopener noreferrer" aria-label="Instagram" title="Instagram">
+                        <span class="site-action-link__icon" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true">
+  <path fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" d="M7.5 3.5h9A4 4 0 0 1 20.5 7.5v9a4 4 0 0 1-4 4h-9a4 4 0 0 1-4-4v-9a4 4 0 0 1 4-4Z" />
+  <path fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" d="M8.8 12a3.2 3.2 0 1 0 6.4 0 3.2 3.2 0 0 0-6.4 0Z" />
+  <path fill="currentColor" d="M17.2 7.2a.9.9 0 1 1-1.8 0 .9.9 0 0 1 1.8 0Z" />
+</svg>
+</span>
+                    </a><button id="dark-mode-toggle" class="theme-toggle" type="button" aria-label="切换配色" title="切换配色">
+                    <span class="theme-toggle__icon theme-toggle__icon--sun" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <circle cx="12" cy="12" r="4.2" />
+    <path d="M12 2.8v2.2M12 19v2.2M4.2 4.2l1.6 1.6M18.2 18.2l1.6 1.6M2.8 12h2.2M19 12h2.2M4.2 19.8l1.6-1.6M18.2 5.8l1.6-1.6" />
+</svg>
+</span>
+                    <span class="theme-toggle__icon theme-toggle__icon--moon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <path d="M19.7 14.6c-1.3 2.9-4.6 4.8-8.1 4.2-4.3-.7-7.2-4.8-6.5-9.1.5-3.2 2.8-5.7 5.7-6.5-.9 2.1-.5 4.7 1.2 6.6 1.9 2.2 4.9 3 7.7 2.2-.1.9-.1 1.7 0 2.6z" />
+</svg>
+</span>
+                </button></div>
+
+            <button class="site-menu-toggle" type="button" aria-controls="primary-navigation" aria-expanded="false">
+                <span class="site-menu-toggle__bar" aria-hidden="true"></span>
+                <span class="site-menu-toggle__bar" aria-hidden="true"></span>
+                <span class="site-menu-toggle__bar" aria-hidden="true"></span>
+                <span class="sr-only">Menu</span>
+            </button>
+        </div>
+    </div>
+</header>
+<main id="main-content" class="main main-content full-width" tabindex="-1"><article class="article-detail">
+    <aside class="article-detail__toc-rail" aria-label="文章目录" data-article-toc>
+    <button class="article-detail__toc-toggle" type="button" aria-label="显示文章目录" aria-controls="TableOfContents" aria-expanded="false" data-article-toc-toggle>
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+    </button>
+
+    <div class="article-detail__toc-panel">
+        <div class="article-detail__toc-nav">
+            <nav id="TableOfContents">
+  <ol>
+    <li><a href="#git命令大全">Git命令大全</a></li>
+    <li><a href="#添加文件">添加文件</a></li>
+    <li><a href="#提交">提交</a></li>
+    <li><a href="#查看日志">查看日志</a></li>
+    <li><a href="#版本回退">版本回退</a></li>
+    <li><a href="#查看当前仓库状态">查看当前仓库状态</a></li>
+    <li><a href="#查看差异">查看差异</a></li>
+    <li><a href="#撤销修改">撤销修改</a></li>
+    <li><a href="#删除文件">删除文件</a></li>
+    <li><a href="#分支">分支</a>
+      <ol>
+        <li><a href="#查看本地仓库分支情况">查看本地仓库分支情况</a></li>
+        <li><a href="#创建分支">创建分支</a></li>
+        <li><a href="#切换分支">切换分支</a></li>
+        <li><a href="#合并分支">合并分支</a></li>
+        <li><a href="#合并冲突">合并冲突</a></li>
+        <li><a href="#删除分支">删除分支</a></li>
+        <li><a href="#删除分支2">删除分支2</a></li>
+        <li><a href="#分支策略">分支策略</a></li>
+        <li><a href="#bug分支">Bug分支</a></li>
+      </ol>
+    </li>
+    <li><a href="#推送">推送</a></li>
+    <li><a href="#拉取">拉取</a></li>
+    <li><a href="#忽略特殊文件">忽略特殊文件</a></li>
+    <li><a href="#标签管理">标签管理</a>
+      <ol>
+        <li><a href="#创建标签">创建标签</a></li>
+        <li><a href="#描述标签">描述标签</a></li>
+        <li><a href="#查看标签">查看标签</a></li>
+        <li><a href="#删除标签">删除标签</a></li>
+        <li><a href="#推送标签">推送标签</a></li>
+      </ol>
+    </li>
+  </ol>
+</nav>
+        </div>
+    </div>
+
+    <div class="article-detail__toc-staff" aria-hidden="true">
+        <svg viewBox="0 0 320 110" preserveAspectRatio="none" focusable="false">
+            <g>
+                <path d="M-18 58 C 52 25, 106 82, 176 52 S 270 42, 338 66" />
+                <path d="M-18 69 C 52 36, 106 93, 176 63 S 270 53, 338 77" />
+                <path d="M-18 80 C 52 47, 106 104, 176 74 S 270 64, 338 88" />
+                <path d="M-18 91 C 52 58, 106 115, 176 85 S 270 75, 338 99" />
+                <path d="M-18 102 C 52 69, 106 126, 176 96 S 270 86, 338 110" />
+            </g>
+            <text x="72" y="83">♪</text>
+            <text x="176" y="63">♩</text>
+        </svg>
+    </div>
+</aside>
+
+    <div class="article-detail__layout">
+        <div class="article-detail__main">
+            <header class="article-detail__header">
+                <div class="article-detail__meta"><time datetime="2025-12-15T00:47:22&#43;08:00">2025-12-15</time><span aria-hidden="true">•</span>
+                        <a href="/categories/git/">Git</a></div>
+
+                <h1 class="article-detail__title">
+                    <span>🪶 Git命令大全</span>
+                    <span class="article-detail__title-note" aria-hidden="true">♪</span>
+                </h1>
+            </header>
+
+            <section class="article-content article-detail__content">
+                <h2 id="git命令大全">
+    Git命令大全
+</h2>
+<p>前提介绍</p>
+<p>git是一个分布式版本控制系统，相当于一个时光机，拿来保管代码，一旦出错，可以随时回滚到任何一个历史节点</p>
+<p>其核心架构分为三个区域：<strong>工作区（写代码的地方）、暂存区（临时存放的地方）和版本库（安全存档的地方）</strong></p>
+<p><img src="/p/git%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/assets/Gemini123_hu_e10a82f4ff2ba24f.webp" width="1600" height="1073" srcset="/p/git%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/assets/Gemini123_hu_dbafb9a7b776cf61.webp 800w, /p/git%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/assets/Gemini123_hu_e10a82f4ff2ba24f.webp 1600w, /p/git%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/assets/Gemini123_hu_91fe44afe684b214.webp 2400w" sizes="(max-width: 860px) calc(100vw - 40px), 1060px" loading="lazy" decoding="async" alt="Git仓库结构" class="gallery-image" data-flex-grow="149" data-flex-basis="357px">
+</p>
+<h2 id="添加文件">
+    添加文件
+</h2>
+<p>​<code>git add .</code>表示添加所有在工作区的文件至暂存区</p>
+<p>​<code>git add &lt;fileName&gt; &lt;fileName&gt;</code></p>
+<p>eg：<code>git add file1 file2</code></p>
+<h2 id="提交">
+    提交
+</h2>
+<p>提交暂存区的文件至版本库中</p>
+<p>​<code>git commit -m &quot;&lt;填写你要备注的内容&gt;&quot;</code></p>
+<p>eg：<code>git commit -m &quot;no message commit&quot;</code></p>
+<h2 id="查看日志">
+    查看日志
+</h2>
+<ul>
+<li>
+<p>查看最近日志：<code>git log</code>​ / <code>git log --pretty=oneline</code></p>
+</li>
+<li>
+<p>记录本地每一次提交的命令 <code>git reflog</code></p>
+</li>
+</ul>
+<p>得到每一次的id，此id可用于版本回退功能</p>
+<p><img src="/p/git%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/assets/image-20251119212943-wvcvc93_hu_6e71c1ebba48129c.webp" width="1600" height="1232" srcset="/p/git%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/assets/image-20251119212943-wvcvc93_hu_46c055af39432610.webp 800w, /p/git%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/assets/image-20251119212943-wvcvc93_hu_6e71c1ebba48129c.webp 1600w, /p/git%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/assets/image-20251119212943-wvcvc93_hu_698797b70999bfa9.webp 2400w" sizes="(max-width: 860px) calc(100vw - 40px), 1060px" loading="lazy" decoding="async" alt="" class="gallery-image" data-flex-grow="129" data-flex-basis="311px">
+</p>
+<p>高亮部分就是每次提交的id，用<code>git reflog</code>命令也能得到，且id更加简洁</p>
+<p><img src="/p/git%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/assets/image-20251119215310-0affl22_hu_f707fbca13d4e722.webp" width="1600" height="363" srcset="/p/git%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/assets/image-20251119215310-0affl22_hu_8affcf1a29910fa1.webp 800w, /p/git%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/assets/image-20251119215310-0affl22_hu_f707fbca13d4e722.webp 1600w, /p/git%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/assets/image-20251119215310-0affl22_hu_bfbd937695b645ec.webp 2400w" sizes="(max-width: 860px) calc(100vw - 40px), 1060px" loading="lazy" decoding="async" alt="" class="gallery-image" data-flex-grow="440" data-flex-basis="1057px">
+</p>
+<h2 id="版本回退">
+    版本回退
+</h2>
+<p>它有三个版本</p>
+<p>​<code>git reset [--soft / --mixed / --hard] &lt;HEAD&gt;</code>，区别如图所示</p>
+<p><img src="/p/git%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/assets/image-20251105003923-cmv4tgy_hu_501c1385607c3489.webp" width="1600" height="708" srcset="/p/git%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/assets/image-20251105003923-cmv4tgy_hu_7dc3ed6670424bf7.webp 800w, /p/git%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/assets/image-20251105003923-cmv4tgy_hu_501c1385607c3489.webp 1600w, /p/git%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/assets/image-20251105003923-cmv4tgy_hu_446f50595c0dc564.webp 2400w" sizes="(max-width: 860px) calc(100vw - 40px), 1060px" loading="lazy" decoding="async" alt="" class="gallery-image" data-flex-grow="225" data-flex-basis="542px">
+</p>
+<p>​<code>git reset &lt;使用 git log / git reflog 后查看的对应版本的提交id&gt;</code>，版本id在&lt;查看日志&gt;部分可得到</p>
+<p>eg：<code>git reset --mixed 3f50f68</code></p>
+<h2 id="查看当前仓库状态">
+    查看当前仓库状态
+</h2>
+<p>查看与上一次提交之后到现在是否对文件进行修改（工作区）</p>
+<p>​<code>git status</code></p>
+<p>查看是哪个文件被修改了之后，用下面介绍的<code>diff</code>命令即可查看修改的具体内容</p>
+<h2 id="查看差异">
+    查看差异
+</h2>
+<ul>
+<li>
+<p>查看暂存区与工作区之间的差异：<code>git diff &lt;fileName&gt;</code></p>
+<p>eg：<code>git diff ReadMe</code></p>
+<p>‍</p>
+</li>
+<li>
+<p>查看版本库和工作区文件的区别：<code>git diff HEAD --&lt;fileName&gt;</code></p>
+<p>eg：<code>git diff HEAD -- ReadMe</code></p>
+</li>
+</ul>
+<h2 id="撤销修改">
+    撤销修改
+</h2>
+<p>如果你在工作区中写了好多天的代码，但是效果还不如初次的，此时你想要退回到未修改的状态，就需要撤销修改操作</p>
+<p>撤销修改虽然可以手动把你自己写的代码删掉，但如果写的太多了，手动删除会有隐患且耗费时间精力</p>
+<p>撤销的目的，就是为了不影响远程仓库，所以撤销修改的前提是代码没有push到远程仓库</p>
+<p>以下是撤销修改的命令，分三种情况</p>
+<p><img src="/p/git%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/assets/image-20251109015150-ieem3qz_hu_663cdab081d1111a.webp" width="1600" height="644" srcset="/p/git%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/assets/image-20251109015150-ieem3qz_hu_e376c604790f16ba.webp 800w, /p/git%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/assets/image-20251109015150-ieem3qz_hu_663cdab081d1111a.webp 1600w, /p/git%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/assets/image-20251109015150-ieem3qz_hu_d5f2480a80f899de.webp 2400w" sizes="(max-width: 860px) calc(100vw - 40px), 1060px" loading="lazy" decoding="async" alt="" class="gallery-image" data-flex-grow="248" data-flex-basis="596px">
+</p>
+<h2 id="删除文件">
+    删除文件
+</h2>
+<ol>
+<li>终端命令使用<code>rm &lt;fileName&gt;</code>​，这时会将工作区的文件删除，如果想提交修改的话后续使用<code>add 、commit</code>操作，分为三步</li>
+<li>git 也提供了这个命令，将这个流程简化为了两布：<code>git rm &lt;fileName&gt;</code>​，这是将工作区与暂存区的文件同时删除，此时git已经自动将删除后的文件提交到暂存区中，只需要<code>commit</code>操作即可</li>
+</ol>
+<p>‍</p>
+<h2 id="分支">
+    分支
+</h2>
+<h2 id="查看本地仓库分支情况">
+    查看本地仓库分支情况
+</h2>
+<p>​<code>git branch</code></p>
+<h2 id="创建分支">
+    创建分支
+</h2>
+<p>在<code>git branch</code>后加上想要添加分支的名字即可</p>
+<p>​<code>git branch &lt;branchName&gt;</code>​，如：<code>git branch dev</code></p>
+<h2 id="切换分支">
+    切换分支
+</h2>
+<p>跟撤销修改的命令有点相似，只是少了<code>--</code></p>
+<p>​<code>git checkout &lt;已有的分支&gt;</code>​，如：<code>git checkout dev</code></p>
+<p>还能使用切换并创建一个未创建的分支，使用<code>git checkout -b &lt;branchName&gt;</code>​，相当于<code>git branch &lt;branchName&gt; + git checkout &lt;branchName&gt;</code></p>
+<h2 id="合并分支">
+    合并分支
+</h2>
+<p>合并分支的前提下是在选定某一个分支内对另一分支进行合并，不能合并现在所选的分支上</p>
+<ol>
+<li>
+<p>​<code>git merge &lt;branchName&gt;</code>（Fast-forward模式）</p>
+<p>例如有两个分支：<code>master 和 dev</code></p>
+<p>如果想要合并dev分支，那需要讲选中的分支切换到master上，用<code>git branch</code>来查看现在所处的分支，前面带 * 号的就是所在分支</p>
+<p><img src="/p/git%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/assets/image-20251118000559-ea8sdim_hu_a30c249c6d4eefe3.webp" width="1600" height="656" srcset="/p/git%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/assets/image-20251118000559-ea8sdim_hu_38ebac5358fbf628.webp 800w, /p/git%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/assets/image-20251118000559-ea8sdim_hu_a30c249c6d4eefe3.webp 1600w, /p/git%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/assets/image-20251118000559-ea8sdim_hu_7deb79a3784f4a98.webp 2400w" sizes="(max-width: 860px) calc(100vw - 40px), 1060px" loading="lazy" decoding="async" alt="" class="gallery-image" data-flex-grow="244" data-flex-basis="585px">
+</p>
+<p>像这样，所在是分支dev，就使用<code>git checkout master</code>转回master分支</p>
+<p>然后就能进行合并操作了，使用<code>git merge dev</code>，这时master就指向了dev的最新一次提交</p>
+<p>此时的分支情况为</p>
+<p><img src="/p/git%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/assets/image-20251118003722-spucr2i_hu_cab24b7ef648722b.webp" width="1600" height="770" srcset="/p/git%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/assets/image-20251118003722-spucr2i_hu_9ee42245d69adadb.webp 800w, /p/git%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/assets/image-20251118003722-spucr2i_hu_cab24b7ef648722b.webp 1600w, /p/git%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/assets/image-20251118003722-spucr2i_hu_fc334b2c33157e65.webp 2400w" sizes="(max-width: 860px) calc(100vw - 40px), 1060px" loading="lazy" decoding="async" alt="" class="gallery-image" data-flex-grow="207" data-flex-basis="498px">
+</p>
+</li>
+</ol>
+<p>在这种Fast-forward模式下，删除分支历史时，会丢掉分支的信息，看不出来最新的提交是merge进来的还是master分支上正常提交的，为了更好的溯源以及留痕，日后便于发现是哪个分支提交出了问题，在合并的时候会使用no-ff模式，即No-Fast-forward</p>
+<ol start="2">
+<li>
+<p>​<code>git merge --no-ff -m &quot;新提交的信息&quot; &lt;branchName&gt;</code></p>
+<p>其中<code>-m &quot;新提交的信息&quot;</code>表示在使用no-ff的模式下，表示merge之后还带有一个提交，说明no-ff模式下，master必须要指向一个新的提交</p>
+<p>例如：有分支<code>dev、master</code>​，在选中master分支的前提下使用<code>git merge --no-ff -m &quot;merge dev&quot; dev</code>，此时分支的情况为</p>
+<p><img src="/p/git%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/assets/image-20251118004848-3eh6v98_hu_c1623ea127633965.webp" width="1600" height="660" srcset="/p/git%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/assets/image-20251118004848-3eh6v98_hu_dae9cd82303224a6.webp 800w, /p/git%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/assets/image-20251118004848-3eh6v98_hu_c1623ea127633965.webp 1600w, /p/git%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/assets/image-20251118004848-3eh6v98_hu_8de4edfab3c294f1.webp 2400w" sizes="(max-width: 860px) calc(100vw - 40px), 1060px" loading="lazy" decoding="async" alt="" class="gallery-image" data-flex-grow="242" data-flex-basis="581px">
+</p>
+<p><strong>==在平时使用中，更加建议使用no-ff模式，能进行更好的区别与溯源==</strong></p>
+</li>
+</ol>
+<h2 id="合并冲突">
+    合并冲突
+</h2>
+<p>如果出现merge冲突，需要手动解决，<strong>并进行一次《添加 + 提交》操作！！！如果不提交，是不属于成功的merge</strong></p>
+<p><img src="/p/git%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/assets/image-20251118002835-0l81g4z_hu_31cfea99eaae0ca0.webp" width="1600" height="1152" srcset="/p/git%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/assets/image-20251118002835-0l81g4z_hu_e8ff61df5029ed3a.webp 800w, /p/git%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/assets/image-20251118002835-0l81g4z_hu_31cfea99eaae0ca0.webp 1600w, /p/git%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/assets/image-20251118002835-0l81g4z_hu_1140aa9e9142e9a0.webp 2400w" sizes="(max-width: 860px) calc(100vw - 40px), 1060px" loading="lazy" decoding="async" alt="" class="gallery-image" data-flex-grow="138" data-flex-basis="333px">
+</p>
+<p>此时的分支情况</p>
+<p><img src="/p/git%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/assets/image-20251118003231-8009p5k_hu_fe2cd13afa9a621f.webp" width="1600" height="824" srcset="/p/git%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/assets/image-20251118003231-8009p5k_hu_15e38f9aeff7d9fe.webp 800w, /p/git%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/assets/image-20251118003231-8009p5k_hu_fe2cd13afa9a621f.webp 1600w, /p/git%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/assets/image-20251118003231-8009p5k_hu_a3b7b71178a1d7a.webp 2400w" sizes="(max-width: 860px) calc(100vw - 40px), 1060px" loading="lazy" decoding="async" alt="" class="gallery-image" data-flex-grow="194" data-flex-basis="465px">
+</p>
+<p>在git中也支持提交线的可视化图标，使用<code>git log --graph --abbrev-commit</code>，如图所示</p>
+<p><img src="/p/git%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/assets/image-20251118003527-w7w7uap_hu_61122a37ad0d33fc.webp" width="1600" height="1558" srcset="/p/git%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/assets/image-20251118003527-w7w7uap_hu_3929686eb2968cd5.webp 800w, /p/git%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/assets/image-20251118003527-w7w7uap_hu_61122a37ad0d33fc.webp 1600w, /p/git%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/assets/image-20251118003527-w7w7uap_hu_5acfc1227813edf6.webp 2400w" sizes="(max-width: 860px) calc(100vw - 40px), 1060px" loading="lazy" decoding="async" alt="" class="gallery-image" data-flex-grow="102" data-flex-basis="246px">
+</p>
+<h2 id="删除分支">
+    删除分支
+</h2>
+<p>删除分支也是只能在其他的分支上删除分支，比如在dev分支上就不能删除dev，必须要切到master分支上才可以</p>
+<p>使用<code>git branch -d &lt;branchName&gt;</code></p>
+<p>因为创建、合并和删除分支非常快，所以鼓励你使用分支完成某个任务，合并后再删掉分支，这和直接在master分支上工作效果是一样的，但过程更加的安全</p>
+<h2 id="删除分支2">
+    删除分支2
+</h2>
+<p>开发过程中，可能<code>dev</code>​分支在中途被废弃了，不需要合并到<code>master</code>​中，直接删除<code>dev</code>​分支，此时强制删除分支用命令<code>git branch -D &lt;branchName&gt;</code></p>
+<p>在终端命令中也会提醒你，这个分支未被完全合并到master分支上，如果确定你要删除，使用<code>git branch -D &lt;branchName&gt;</code></p>
+<p><img src="/p/git%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/assets/image-20251119212250-66ug4cp_hu_7c6a78641b5eae92.webp" width="1600" height="360" srcset="/p/git%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/assets/image-20251119212250-66ug4cp_hu_566c02e28672ba7b.webp 800w, /p/git%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/assets/image-20251119212250-66ug4cp_hu_7c6a78641b5eae92.webp 1600w, /p/git%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/assets/image-20251119212250-66ug4cp_hu_68b878861f4ce654.webp 2400w" sizes="(max-width: 860px) calc(100vw - 40px), 1060px" loading="lazy" decoding="async" alt="" class="gallery-image" data-flex-grow="444" data-flex-basis="1066px">
+</p>
+<h2 id="分支策略">
+    分支策略
+</h2>
+<p>在实际开发中，git给我们的分支管理能力是非常重要的，这能帮我们进行多人协同开发</p>
+<p>在git管理中，需要遵守的几个重要约定</p>
+<ul>
+<li>
+<p>master分支应该是非常稳定的，仅用来发布新版本，平时不能在上面修改操作</p>
+</li>
+<li>
+<p>干活修改的内容都应该在dev分支上，等到某个时候迎来版本更新，再把dev分支合并到master上，在master分支上发布新版本</p>
+<p>这样每个人都能在基于master上创建dev分支进行协同开发，每个人都有自己的分支，时不时往dev分支上合并即可</p>
+<p>故团队协同开发的分支belike：</p>
+<p><img src="/p/git%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/assets/image-20251118011057-v5s8oxu_hu_ac66a7625fd96bb6.webp" width="1600" height="895" srcset="/p/git%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/assets/image-20251118011057-v5s8oxu_hu_401414efcda56104.webp 800w, /p/git%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/assets/image-20251118011057-v5s8oxu_hu_ac66a7625fd96bb6.webp 1600w, /p/git%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/assets/image-20251118011057-v5s8oxu_hu_f7a3bdee437544fd.webp 2400w" sizes="(max-width: 860px) calc(100vw - 40px), 1060px" loading="lazy" decoding="async" alt="" class="gallery-image" data-flex-grow="178" data-flex-basis="429px">
+</p>
+</li>
+</ul>
+<h2 id="bug分支">
+    Bug分支
+</h2>
+<p>在平时开发过程中，master分支一般是稳定的版本，其他分支都是基于master分支进行完善开发，但master也有可能有bug，此时如果没能及时发现小bug，其他分支在有bug的master上基础上进行开发，这就需要我们建立bug分支对master进行bug修复</p>
+<p>假如已经建立了分支dev，但是发现了master上有bug，那是不建议在dev分支上进行bug修复的，因为这违背了分支dev的任务，可能dev的任务是对某个模块进行更新，且已经修改了部分文件，所以我们需要再创建分支专门对master分支进行修复bug</p>
+<p>这时候我们切回master分支后其实能看到分支dev修改的代码，虽然这只是在工作区的修改，还未提交到暂存区，但这也影响了对master的创建bug分支的步骤</p>
+<p>比如在dev上修改了readme文件</p>
+<p><img src="/p/git%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/assets/image-20251119214443-mtmd3j9_hu_64e7116008ab7777.webp" width="1600" height="468" srcset="/p/git%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/assets/image-20251119214443-mtmd3j9_hu_a40c7e5e90aba684.webp 800w, /p/git%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/assets/image-20251119214443-mtmd3j9_hu_64e7116008ab7777.webp 1600w, /p/git%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/assets/image-20251119214443-mtmd3j9_hu_81fe1a1eb283c903.webp 2400w" sizes="(max-width: 860px) calc(100vw - 40px), 1060px" loading="lazy" decoding="async" alt="" class="gallery-image" data-flex-grow="341" data-flex-basis="820px">
+</p>
+<p>在master分支上也能看到dev修改的内容</p>
+<p><img src="/p/git%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/assets/image-20251119202832-z3gjr98_hu_be3cc836c67b73dd.webp" width="1600" height="539" srcset="/p/git%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/assets/image-20251119202832-z3gjr98_hu_e387d6716c44fe6d.webp 800w, /p/git%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/assets/image-20251119202832-z3gjr98_hu_be3cc836c67b73dd.webp 1600w, /p/git%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/assets/image-20251119202832-z3gjr98_hu_4690996572cd68e4.webp 2400w" sizes="(max-width: 860px) calc(100vw - 40px), 1060px" loading="lazy" decoding="async" alt="" class="gallery-image" data-flex-grow="296" data-flex-basis="712px">
+</p>
+<p>原因是master工作区中的代码有变动的</p>
+<p><img src="/p/git%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/assets/image-20251119131537-kxueqbn_hu_4e58ec42c653051f.webp" width="1600" height="760" srcset="/p/git%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/assets/image-20251119131537-kxueqbn_hu_5fe35a2bf0de5ae3.webp 800w, /p/git%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/assets/image-20251119131537-kxueqbn_hu_4e58ec42c653051f.webp 1600w, /p/git%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/assets/image-20251119131537-kxueqbn_hu_1b444edd5670a6cd.webp 2400w" sizes="(max-width: 860px) calc(100vw - 40px), 1060px" loading="lazy" decoding="async" alt="" class="gallery-image" data-flex-grow="210" data-flex-basis="505px">
+</p>
+<p>虽然代码只存在工作区中，但我们还是不想在master上看到dev修改的代码，且在dev分支上不影响master，可在dev分支上用<code>git stash</code>，将工作区中的内容进行储存。</p>
+<p><img src="/p/git%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/assets/image-20251119214215-559d67r_hu_d3144f5cd28a0c70.webp" width="1600" height="137" srcset="/p/git%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/assets/image-20251119214215-559d67r_hu_9feeee2013778462.webp 800w, /p/git%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/assets/image-20251119214215-559d67r_hu_d3144f5cd28a0c70.webp 1600w, /p/git%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/assets/image-20251119214215-559d67r_hu_6b0e5487ee5dd240.webp 2400w" sizes="(max-width: 860px) calc(100vw - 40px), 1060px" loading="lazy" decoding="async" alt="" class="gallery-image" data-flex-grow="1167" data-flex-basis="2802px">
+​此时的<code>tree .git</code>​仓库一下就能看到<code>stash</code>分区保存在refs上</p>
+<p><img src="/p/git%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/assets/image-20251119132237-33kmjue_hu_12b68e4c0b9965ae.webp" width="1600" height="1023" srcset="/p/git%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/assets/image-20251119132237-33kmjue_hu_11476a9b30af369b.webp 800w, /p/git%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/assets/image-20251119132237-33kmjue_hu_12b68e4c0b9965ae.webp 1600w, /p/git%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/assets/image-20251119132237-33kmjue_hu_f27b9ef4ec7a1083.webp 2400w" sizes="(max-width: 860px) calc(100vw - 40px), 1060px" loading="lazy" decoding="async" alt="" class="gallery-image" data-flex-grow="156" data-flex-basis="375px">
+</p>
+<p>此时再返回到<code>master</code>​分支上，就已经看不到<code>dev</code>修改的代码了</p>
+<p><img src="/p/git%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/assets/image-20251119132318-pabl3t4_hu_d45b8c97898286d2.webp" width="1600" height="269" srcset="/p/git%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/assets/image-20251119132318-pabl3t4_hu_9e09a63c504f670f.webp 800w, /p/git%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/assets/image-20251119132318-pabl3t4_hu_d45b8c97898286d2.webp 1600w, /p/git%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/assets/image-20251119132318-pabl3t4_hu_96463a03515f7d99.webp 2400w" sizes="(max-width: 860px) calc(100vw - 40px), 1060px" loading="lazy" decoding="async" alt="" class="gallery-image" data-flex-grow="594" data-flex-basis="1427px">
+</p>
+<p>此时就能对<code>master</code>​进行bug修复了，先切回<code>master</code>​分支。然后在<code>master</code>​上新建fix_bug分支并切换到fix_bug，可用<code>git checkout -b fix_bug</code></p>
+<p><img src="/p/git%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/assets/image-20251119132854-0p9u42o_hu_243e48288de4f238.webp" width="1600" height="343" srcset="/p/git%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/assets/image-20251119132854-0p9u42o_hu_6d6ecbc177cc2f1b.webp 800w, /p/git%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/assets/image-20251119132854-0p9u42o_hu_243e48288de4f238.webp 1600w, /p/git%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/assets/image-20251119132854-0p9u42o_hu_c2751367ca5126d8.webp 2400w" sizes="(max-width: 860px) calc(100vw - 40px), 1060px" loading="lazy" decoding="async" alt="" class="gallery-image" data-flex-grow="467" data-flex-basis="1121px">
+</p>
+<p>在fix_bug上修改代码后，更新提交后就可以提交到<code>master</code>​上了，可合并后直接提交，这里用no-ff方式提交，命令为<code>git merge --no-ff -m &quot;&lt;commit message&gt;&quot; &lt;devName&gt;</code></p>
+<p><img src="/p/git%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/assets/image-20251119203044-yneddim_hu_cda5f43d9f17a1f.webp" width="1600" height="460" srcset="/p/git%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/assets/image-20251119203044-yneddim_hu_f5e1694d3213127f.webp 800w, /p/git%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/assets/image-20251119203044-yneddim_hu_cda5f43d9f17a1f.webp 1600w, /p/git%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/assets/image-20251119203044-yneddim_hu_a60732bb21314994.webp 2400w" sizes="(max-width: 860px) calc(100vw - 40px), 1060px" loading="lazy" decoding="async" alt="" class="gallery-image" data-flex-grow="347" data-flex-basis="834px">
+<img src="/p/git%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/assets/image-20251119203530-9xzrr9z_hu_154241276ae93b6d.webp" width="1600" height="414" srcset="/p/git%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/assets/image-20251119203530-9xzrr9z_hu_369379093d7f2d67.webp 800w, /p/git%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/assets/image-20251119203530-9xzrr9z_hu_154241276ae93b6d.webp 1600w, /p/git%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/assets/image-20251119203530-9xzrr9z_hu_36e645878cca5d67.webp 2400w" sizes="(max-width: 860px) calc(100vw - 40px), 1060px" loading="lazy" decoding="async" alt="image" class="gallery-image" data-flex-grow="386" data-flex-basis="927px">
+</p>
+<p>此时的<code>master</code>分支上就是已经修复好的bug了</p>
+<p><img src="/p/git%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/assets/image-20251119203601-j5yioad_hu_2dc14976b6a62417.webp" width="1600" height="337" srcset="/p/git%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/assets/image-20251119203601-j5yioad_hu_85724b87563a1db8.webp 800w, /p/git%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/assets/image-20251119203601-j5yioad_hu_2dc14976b6a62417.webp 1600w, /p/git%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/assets/image-20251119203601-j5yioad_hu_3e5cc297cd90e7dc.webp 2400w" sizes="(max-width: 860px) calc(100vw - 40px), 1060px" loading="lazy" decoding="async" alt="" class="gallery-image" data-flex-grow="474" data-flex-basis="1139px">
+</p>
+<p>但<code>dev</code>​分支上我们还是以有bug的<code>master</code>​基础上开发的，那怎么办呢？<code>dev</code>​分支的修改信息还存在<code>stash</code>上，我们需要把暂存在stash区的代码给拉回来，这是没拉回来的readme文件</p>
+<p><img src="/p/git%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/assets/image-20251119203743-j5v93qi_hu_9103d3c486b58812.webp" width="1600" height="428" srcset="/p/git%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/assets/image-20251119203743-j5v93qi_hu_6cf5f1c5befda2db.webp 800w, /p/git%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/assets/image-20251119203743-j5v93qi_hu_9103d3c486b58812.webp 1600w, /p/git%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/assets/image-20251119203743-j5v93qi_hu_335c7b38a33f1cd3.webp 2400w" sizes="(max-width: 860px) calc(100vw - 40px), 1060px" loading="lazy" decoding="async" alt="" class="gallery-image" data-flex-grow="373" data-flex-basis="897px">
+</p>
+<p>在上面提到，<code>dev</code>​已经修改了readme的内容，那这些内容都存在了<code>stash</code>​区，且dev本地是没在的。可以用<code>git stash list</code>查看stash区的状态</p>
+<p><img src="/p/git%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/assets/image-20251119204025-72pwhka_hu_bb6b8bff8c1c424.webp" width="1600" height="253" srcset="/p/git%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/assets/image-20251119204025-72pwhka_hu_72d63f428281d999.webp 800w, /p/git%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/assets/image-20251119204025-72pwhka_hu_bb6b8bff8c1c424.webp 1600w, /p/git%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/assets/image-20251119204025-72pwhka_hu_9a55dde2e4bfd6b.webp 2400w" sizes="(max-width: 860px) calc(100vw - 40px), 1060px" loading="lazy" decoding="async" alt="" class="gallery-image" data-flex-grow="633" data-flex-basis="1519px">
+</p>
+<p>现在拉回来的dev分支上的readme文件就显示正常了，用到命令<code>git stash pop</code>，这时readme文件就正常显示了</p>
+<p><img src="/p/git%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/assets/image-20251119204154-25ds3ni_hu_e6e47ab10f00a1d9.webp" width="1600" height="955" srcset="/p/git%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/assets/image-20251119204154-25ds3ni_hu_739e9054e2716a4c.webp 800w, /p/git%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/assets/image-20251119204154-25ds3ni_hu_e6e47ab10f00a1d9.webp 1600w, /p/git%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/assets/image-20251119204154-25ds3ni_hu_d12ac5675c32c40.webp 2400w" sizes="(max-width: 860px) calc(100vw - 40px), 1060px" loading="lazy" decoding="async" alt="" class="gallery-image" data-flex-grow="167" data-flex-basis="402px">
+</p>
+<p>假设dev分支上已经完成开发，且已经更新最新一次提交。（add + commit）</p>
+<p><img src="/p/git%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/assets/image-20251119204552-9gswvnm_hu_9eb7462e16ae31c6.webp" width="1600" height="637" srcset="/p/git%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/assets/image-20251119204552-9gswvnm_hu_393b5cb38400fb9f.webp 800w, /p/git%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/assets/image-20251119204552-9gswvnm_hu_9eb7462e16ae31c6.webp 1600w, /p/git%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/assets/image-20251119204552-9gswvnm_hu_9a6c30673c652d0.webp 2400w" sizes="(max-width: 860px) calc(100vw - 40px), 1060px" loading="lazy" decoding="async" alt="" class="gallery-image" data-flex-grow="251" data-flex-basis="602px">
+</p>
+<p>现在要提交到master上，那怎么办呢？它还存有<code>master</code>​原来的bug代码，<strong>==如果直接合并到==****==​<code>master</code>​==<strong>​</strong>==分支上，那会出现合并冲突，需要我们手动解决，手动解决是非常危险的，处理不当可能会污染master分支，变得更加不稳定。==</strong> 情况如图所示，会更加直观。</p>
+<p><img src="/p/git%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/assets/image-20251119205319-8qfuplj_hu_71ae358282170b17.webp" width="1600" height="748" srcset="/p/git%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/assets/image-20251119205319-8qfuplj_hu_3b4b44de29fe39e4.webp 800w, /p/git%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/assets/image-20251119205319-8qfuplj_hu_71ae358282170b17.webp 1600w, /p/git%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/assets/image-20251119205319-8qfuplj_hu_5e8a4c4429366eb8.webp 2400w" sizes="(max-width: 860px) calc(100vw - 40px), 1060px" loading="lazy" decoding="async" alt="" class="gallery-image" data-flex-grow="213" data-flex-basis="513px">
+</p>
+<p>解决这个问题的一个好的建议是：最好在自己的分支上合并下<code>master</code>​，再让<code>master</code>​去合并<code>dev</code>​，这样做的目的是有冲突可以在本地分支解决并进行测试，而不影响<code>master</code>，这样做此时的状态为：</p>
+<p><img src="/p/git%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/assets/image-20251119210205-6stwel5_hu_58e9ac4669443f16.webp" width="1600" height="774" srcset="/p/git%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/assets/image-20251119210205-6stwel5_hu_6fbb02db3ea209f3.webp 800w, /p/git%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/assets/image-20251119210205-6stwel5_hu_58e9ac4669443f16.webp 1600w, /p/git%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/assets/image-20251119210205-6stwel5_hu_82fea326087fac05.webp 2400w" sizes="(max-width: 860px) calc(100vw - 40px), 1060px" loading="lazy" decoding="async" alt="" class="gallery-image" data-flex-grow="206" data-flex-basis="496px">
+</p>
+<p><img src="/p/git%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/assets/image-20251119210308-2c4655f_hu_f26f2bb68f9ce979.webp" width="1600" height="622" srcset="/p/git%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/assets/image-20251119210308-2c4655f_hu_ba62865750de1bf8.webp 800w, /p/git%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/assets/image-20251119210308-2c4655f_hu_f26f2bb68f9ce979.webp 1600w, /p/git%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/assets/image-20251119210308-2c4655f_hu_1a27eb5a261d2890.webp 2400w" sizes="(max-width: 860px) calc(100vw - 40px), 1060px" loading="lazy" decoding="async" alt="" class="gallery-image" data-flex-grow="257" data-flex-basis="617px">
+</p>
+<p>具体操作如下，在第一步中不出意外遇到了冲突</p>
+<p><img src="/p/git%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/assets/image-20251119210545-wdaw7ch_hu_a367dd819b779fcb.webp" width="1600" height="266" srcset="/p/git%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/assets/image-20251119210545-wdaw7ch_hu_344e6ec4b6fc6114.webp 800w, /p/git%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/assets/image-20251119210545-wdaw7ch_hu_a367dd819b779fcb.webp 1600w, /p/git%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/assets/image-20251119210545-wdaw7ch_hu_30d6d1620a92dbb7.webp 2400w" sizes="(max-width: 860px) calc(100vw - 40px), 1060px" loading="lazy" decoding="async" alt="" class="gallery-image" data-flex-grow="602" data-flex-basis="1446px">
+</p>
+<p>手动修改后别忘了提交，然后切回到<code>master</code>​分支上，再合并<code>dev</code>​，此时<code>master</code>​上就既有修改后的代码，也有<code>dev</code>上提交的新代码且不冲突了</p>
+<p><img src="/p/git%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/assets/image-20251119211401-fm7zl8x_hu_acb9afedeb795358.webp" width="1600" height="615" srcset="/p/git%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/assets/image-20251119211401-fm7zl8x_hu_a100493bf428b689.webp 800w, /p/git%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/assets/image-20251119211401-fm7zl8x_hu_acb9afedeb795358.webp 1600w, /p/git%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/assets/image-20251119211401-fm7zl8x_hu_6fb7041f24264ba0.webp 2400w" sizes="(max-width: 860px) calc(100vw - 40px), 1060px" loading="lazy" decoding="async" alt="" class="gallery-image" data-flex-grow="260" data-flex-basis="624px">
+</p>
+<p>完成后记得删分支，这是个好习惯😁</p>
+<p>​<code>git branch -d dev</code>​、<code>git branch -d fix_bug</code></p>
+<h2 id="推送">
+    推送
+</h2>
+<p>​<code>git push origin &lt;远程主机名&gt; &lt;本地分支名&gt;:&lt;远程分支名&gt;</code>​，比如<code>git push origin test-branch:remote-test-branch</code>，远程仓库就会出现</p>
+<p>​<code>remote-test-branch</code> 的新分支</p>
+<h2 id="拉取">
+    拉取
+</h2>
+<p>Pull其实是有拉取 + 合并的操作，拉取过程中自动帮你合并了，且默认的是fast-forward模式</p>
+<p>​<code>git pull origin &lt;远程branchName&gt;:&lt;要拉取到的本地branchName&gt;</code></p>
+<p><img src="/p/git%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/assets/image-20251124165733-gfaiycq_hu_30c8215e6ced2f29.webp" width="1600" height="500" srcset="/p/git%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/assets/image-20251124165733-gfaiycq_hu_e7fe0a3dace2cedd.webp 800w, /p/git%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/assets/image-20251124165733-gfaiycq_hu_30c8215e6ced2f29.webp 1600w, /p/git%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/assets/image-20251124165733-gfaiycq_hu_8f21db2fa6f4d7ed.webp 2400w" sizes="(max-width: 860px) calc(100vw - 40px), 1060px" loading="lazy" decoding="async" alt="" class="gallery-image" data-flex-grow="319" data-flex-basis="767px">
+</p>
+<p>如果远端的master与本地的分支名字一样，即是拉取到本地master分支，则可以省略<code>:master</code>​，即<code>git pull origin master</code></p>
+<h2 id="忽略特殊文件">
+    忽略特殊文件
+</h2>
+<p>在开发中，有时候有些文件不应该被提交到远端仓库，比如重要的数据库密码等配置文件，那怎么才能让git知道并自动忽略呢？</p>
+<p>在git的工作区根目录上创建一个特殊的<code>.gitignore</code>文件，然后把忽略的文件名填进去，git就会自动忽略这些文件了</p>
+<p>可以手动创建，如：<code>touch .gitignore</code>，也可以在创建远程仓库的时候选择</p>
+<p><img src="/p/git%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/assets/image-20251124172126-rwiu879_hu_46faa0c829fe83d5.webp" width="1600" height="283" srcset="/p/git%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/assets/image-20251124172126-rwiu879_hu_e36dadf735d97e3d.webp 800w, /p/git%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/assets/image-20251124172126-rwiu879_hu_46faa0c829fe83d5.webp 1600w, /p/git%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/assets/image-20251124172126-rwiu879_hu_607b61d2b23e512b.webp 2400w" sizes="(max-width: 860px) calc(100vw - 40px), 1060px" loading="lazy" decoding="async" alt="" class="gallery-image" data-flex-grow="564" data-flex-basis="1354px">
+</p>
+<p>然后修改在<code>.gitignore</code>​上写上要忽略的文件类型 / 文件后缀名，修改命令为<code>vim</code>​，如<code>vim .gitignore</code></p>
+<p><img src="/p/git%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/assets/image-20251124173342-9h0v7bn_hu_9778314b6d96b602.webp" width="1600" height="1001" srcset="/p/git%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/assets/image-20251124173342-9h0v7bn_hu_e41e07a4c08e3c06.webp 800w, /p/git%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/assets/image-20251124173342-9h0v7bn_hu_9778314b6d96b602.webp 1600w, /p/git%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/assets/image-20251124173342-9h0v7bn_hu_1bb14f971570049b.webp 2400w" sizes="(max-width: 860px) calc(100vw - 40px), 1060px" loading="lazy" decoding="async" alt="" class="gallery-image" data-flex-grow="159" data-flex-basis="383px">
+</p>
+<p>此处我在工作区中新建了<code>file.txt</code>​、<code>a.io</code>​、<code>c.io</code>​、<code>picture.png</code>文件</p>
+<p>查看git状态的时发现，<code>picture.png</code>​没有被忽略，<code>file.txt</code>​、<code>a.io</code>​和单独指定的<code>c.io</code>文件被忽略了，没有被git追踪管理，这个结果是理想的</p>
+<p><img src="/p/git%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/assets/image-20251124174325-f4r8qgh_hu_54d40f70a80841b4.webp" width="1600" height="752" srcset="/p/git%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/assets/image-20251124174325-f4r8qgh_hu_7ac9da9b4467bf1e.webp 800w, /p/git%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/assets/image-20251124174325-f4r8qgh_hu_54d40f70a80841b4.webp 1600w, /p/git%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/assets/image-20251124174325-f4r8qgh_hu_5d1f90eed082adf0.webp 2400w" sizes="(max-width: 860px) calc(100vw - 40px), 1060px" loading="lazy" decoding="async" alt="" class="gallery-image" data-flex-grow="212" data-flex-basis="510px">
+</p>
+<p>有时候<code>.gitignore</code>​文件太大了，记不清具体忽略了哪些文件，但是又不小心建立了被忽略的文件，手动在ignore文件内查看太费劲了，可以使用命令<code>git check-ignore -v &lt;被忽略的文件名&gt;</code></p>
+<p><img src="/p/git%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/assets/image-20251124174841-iqiqhgg_hu_58aefd928fc2e5e5.webp" width="1600" height="277" srcset="/p/git%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/assets/image-20251124174841-iqiqhgg_hu_2e95c1ae68ca83bb.webp 800w, /p/git%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/assets/image-20251124174841-iqiqhgg_hu_58aefd928fc2e5e5.webp 1600w, /p/git%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/assets/image-20251124174841-iqiqhgg_hu_9bbdd4b2bb69729d.webp 2400w" sizes="(max-width: 860px) calc(100vw - 40px), 1060px" loading="lazy" decoding="async" alt="" class="gallery-image" data-flex-grow="577" data-flex-basis="1387px">
+</p>
+<p>这就能看到具体的被忽略的文件的具体位置</p>
+<h2 id="标签管理">
+    标签管理
+</h2>
+<p>标签<code>tag</code>​，可以简单理解为对某次<code>commit</code> 的一次标识，相当于起了个别名。</p>
+<p>相较于难以记住的<code>commit id</code>​，<code>tag</code>​可以很好的解决这个问题，当我们需要回退某个重要的版本时，直接使用标签就能很快的定位到对应的<code>commit</code></p>
+<p>这里引用hutool 工具包的GitHub仓库，能看到不同版本的tag</p>
+<p><img src="/p/git%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/assets/image-20251205012941-z67yes7_hu_ec7402335969cc0f.webp" width="1600" height="1142" srcset="/p/git%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/assets/image-20251205012941-z67yes7_hu_3ad80a10dab44382.webp 800w, /p/git%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/assets/image-20251205012941-z67yes7_hu_ec7402335969cc0f.webp 1600w, /p/git%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/assets/image-20251205012941-z67yes7_hu_a988e5c12f07e6de.webp 2400w" sizes="(max-width: 860px) calc(100vw - 40px), 1060px" loading="lazy" decoding="async" alt="" class="gallery-image" data-flex-grow="140" data-flex-basis="336px">
+</p>
+<h2 id="创建标签">
+    创建标签
+</h2>
+<p>在Git中打标签非常简单，首先切换到需要打标签的分支上，直接<code>git tag &lt;name&gt;</code>​就可以打一个新的标签，<strong>这样的标签默认指向最新的一次提交</strong></p>
+<p>当然也可以<strong>指定某个提交打</strong>​<code>tag</code>​，只需在后面加上提交的id，如：<code>git tag v0.9 f7340fd</code></p>
+<h2 id="描述标签">
+    描述标签
+</h2>
+<p>新建<code>tag</code>​​​的同时还能对标签进行一些描述，使用<code>git tag -a v0.8 -m &quot;XXX&quot; &lt;需要指定的哪次提交id，如果没有默认指向最新的一次&gt;</code></p>
+<h2 id="查看标签">
+    查看标签
+</h2>
+<p>使用<code>git tag</code>就能看到当前目录下有多少个标签，</p>
+<p><img src="/p/git%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/assets/image-20251126130810-3tkybqm_hu_dd721ba0963af62a.webp" width="1600" height="289" srcset="/p/git%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/assets/image-20251126130810-3tkybqm_hu_619c870401988aad.webp 800w, /p/git%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/assets/image-20251126130810-3tkybqm_hu_dd721ba0963af62a.webp 1600w, /p/git%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/assets/image-20251126130810-3tkybqm_hu_f00339eefa939e2c.webp 2400w" sizes="(max-width: 860px) calc(100vw - 40px), 1060px" loading="lazy" decoding="async" alt="" class="gallery-image" data-flex-grow="553" data-flex-basis="1328px">
+</p>
+<p>如果需要看具体某一次的<code>tag</code>​的详细描述，则需要命令<code>git show &lt;某一次的tag&gt;</code>​，如：<code>git show v0.8</code>​ / <code>git show v1.0</code></p>
+<p><img src="/p/git%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/assets/image-20251126131019-78ja9tl_hu_6a7357f18c857cd.webp" width="1600" height="738" srcset="/p/git%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/assets/image-20251126131019-78ja9tl_hu_ff8e99f415652894.webp 800w, /p/git%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/assets/image-20251126131019-78ja9tl_hu_6a7357f18c857cd.webp 1600w, /p/git%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/assets/image-20251126131019-78ja9tl_hu_a6cd2b8b1e2b5d6c.webp 2400w" sizes="(max-width: 860px) calc(100vw - 40px), 1060px" loading="lazy" decoding="async" alt="" class="gallery-image" data-flex-grow="216" data-flex-basis="520px">
+</p>
+<h2 id="删除标签">
+    删除标签
+</h2>
+<p><strong>本地删除：</strong> 删除标签与删除分支的操作类似：<code>git tag -d &lt;tagName&gt;</code>​，如<code>git tag -d v0.8</code>​，可见已经删除了<code>tag</code>v0.8</p>
+<p><img src="/p/git%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/assets/image-20251126131203-8qe7jxs_hu_cc003fa494f57445.webp" width="1600" height="324" srcset="/p/git%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/assets/image-20251126131203-8qe7jxs_hu_5596281914816d4f.webp 800w, /p/git%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/assets/image-20251126131203-8qe7jxs_hu_cc003fa494f57445.webp 1600w, /p/git%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/assets/image-20251126131203-8qe7jxs_hu_a1cff1ac150687c0.webp 2400w" sizes="(max-width: 860px) calc(100vw - 40px), 1060px" loading="lazy" decoding="async" alt="" class="gallery-image" data-flex-grow="493" data-flex-basis="1183px">
+</p>
+<p><strong>删除远程仓库标签：</strong></p>
+<ol>
+<li>直接在远程仓库删除</li>
+<li>在本地执行<code>git push origin :&lt;你要删除的标签&gt;</code>​，注意这个标签需要先在本地进行删除，才有变更，变更之后才能<code>push</code></li>
+</ol>
+<h2 id="推送标签">
+    推送标签
+</h2>
+<p>将标签推送同步至远程仓库</p>
+<p>**推送单一标签：**​<code>git push origin &lt;标签名&gt;</code></p>
+<p>**一次性推送所有标签：**​<code>git push origin --tags</code>，就能把本地所有的标签都推送到远程仓库</p>
+<p>‍</p>
+
+            </section>
+
+            <footer class="article-detail__footer">
+                <div class="article-closing" aria-label="Article closing">
+    <ul class="article-closing__links">
+        <li>
+            <span class="article-closing__chevron" aria-hidden="true">›</span>
+            <span>written by <span class="article-closing__author">@Jul1en</span></span>
+        </li>
+        <li>
+            <span class="article-closing__chevron" aria-hidden="true">›</span>
+            <a href="/post/">cd ..</a>
+        </li>
+    </ul>
+
+</div>
+
+            </footer>
+        </div>
+    </div>
+</article>
+
+    </main><button id="back-to-top" class="back-to-top" type="button" aria-label="回到顶部" title="回到顶部">
+    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+        <path d="M6 14.5 12 8l6 6.5"></path>
+    </svg>
+</button>
+<div id="route-transition-mask" class="route-transition-mask" aria-hidden="true">
+    <span class="route-transition-mask__texture" aria-hidden="true"></span>
+    <span class="route-transition__loading" aria-hidden="true">LOADING...</span>
+</div>
+</body>
+
+</html>

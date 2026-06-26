@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="zh-CN" dir="ltr">
+
+<head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1"><title>Redis 集群 | Jul1en</title>
+<meta name="description" content="梳理 Redis Cluster 的分片、哈希槽、客户端重定向、故障转移，以及通过 Docker 节点完成主从扩容的过程。">
+<meta name="author" content="Jul1en">
+<link rel="canonical" href="https://Jul1en-Lin.github.io/p/redis-%E9%9B%86%E7%BE%A4/">
+
+<link rel="icon" href="/favicon-signature.svg" type="image/svg+xml">
+<link rel="icon" href="/favicon-signature.png" type="image/png" sizes="512x512">
+<link rel="alternate icon" href="/favicon.ico" type="image/x-icon">
+<meta name="theme-color" content="#fdfdf7" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#090909" media="(prefers-color-scheme: dark)">
+<meta property="og:title" content="Redis 集群 | Jul1en">
+<meta property="og:description" content="梳理 Redis Cluster 的分片、哈希槽、客户端重定向、故障转移，以及通过 Docker 节点完成主从扩容的过程。">
+<meta property="og:url" content="https://Jul1en-Lin.github.io/p/redis-%E9%9B%86%E7%BE%A4/">
+<meta property="og:site_name" content="Jul1en">
+<meta property="og:type" content="article">
+<meta property="article:section" content="Post">
+<meta property="article:published_time" content="2026-05-31T23:16:16&#43;08:00">
+<meta property="article:modified_time" content="2026-06-04T17:21:29&#43;08:00">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Redis 集群 | Jul1en">
+<meta name="twitter:description" content="梳理 Redis Cluster 的分片、哈希槽、客户端重定向、故障转移，以及通过 Docker 节点完成主从扩容的过程。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;600&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Noto+Sans+SC:wght@400;500;700&family=Noto+Serif:wght@400;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet"><script>
+    (function () {
+        var stored = null;
+        try {
+            stored = window.localStorage.getItem('ColorScheme');
+        } catch (error) {
+            stored = null;
+        }
+
+        var scheme = stored;
+        if (scheme !== 'light' && scheme !== 'dark') {
+            scheme = "light";
+        }
+        document.documentElement.dataset.scheme = scheme;
+    })();
+</script><link rel="stylesheet" href="/css/site.min.954818373eafb12c608d3f56fa7bff4c76c8574abd1940dbc983cf3318715029.css" integrity="sha256-lUgYNz6vsSxgjT9W&#43;nv/THbIV0q9GUDbyYPPMxhxUCk="><script src="/js/site.abbcb3538826a91399f254fdb11f18a958e7dc1361cb64ea6dbd74cdee2ad59b.js" integrity="sha256-q7yzU4gmqROZ8lT9sR8YqVjn3BNhy2Tqbb10ze4q1Zs=" defer></script>
+
+</head>
+
+<body class="melody-shell template-article-detail article-page">
+    <a class="skip-link" href="#main-content">Skip to content</a><header class="site-header" role="banner">
+    <div class="site-header__inner">
+        <a class="site-brand" href="/" aria-label="Jul1en home">
+            <span class="site-brand__signature" aria-hidden="true">
+    <svg class="site-signature" viewBox="0 0 1672 941" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+        <defs>
+            <mask id="sig-mask" maskUnits="userSpaceOnUse">
+                
+                <path class="site-signature__guide" pathLength="1"
+                      fill="none" stroke="white" stroke-width="20"
+                      stroke-linecap="round" stroke-linejoin="round"
+                      d="M 584 422 C 575 412, 564 415, 559 394 C 554 373, 556 386, 571 361 C 586 337, 580 347, 602 324 C 624 301, 614 311, 634 296 C 654 281, 639 292, 658 281 C 677 270, 668 275, 688 264 C 708 254, 697 258, 716 251 C 735 244, 723 249, 742 244 C 761 239, 752 239, 771 238 C 790 237, 781 235, 795 240 C 809 245, 803 241, 810 251 C 817 262, 815 255, 816 270 C 817 285, 817 277, 812 294 C 807 311, 810 301, 803 318 C 796 336, 800 327, 792 344 C 784 361, 789 350, 781 366 C 773 382, 777 374, 768 390 C 759 406, 763 398, 755 413 C 747 428, 753 419, 745 433 C 737 447, 750 425, 732 454 C 714 483, 721 472, 693 515 C 665 558, 678 540, 652 576 C 626 612, 641 590, 619 617 C 597 644, 609 631, 589 652 C 569 673, 583 659, 563 678 C 543 697, 558 685, 532 706 C 506 727, 515 722, 489 738 C 463 754, 480 745, 459 752 C 438 759, 450 755, 429 759 C 408 763, 419 763, 398 763 C 377 763, 387 768, 368 759 C 349 750, 355 755, 344 737 C 334 719, 333 731, 338 707 C 343 683, 341 694, 359 668 C 377 642, 366 656, 389 633 C 412 610, 399 623, 426 603 C 453 583, 436 595, 467 577 C 498 559, 483 566, 515 551 C 547 536, 523 547, 559 535 C 595 523, 582 527, 617 516 C 652 506, 631 512, 658 505 C 685 498, 666 502, 695 496 C 724 490, 710 493, 740 488 C 770 483, 753 487, 781 481 C 809 475, 796 478, 821 472 C 846 466, 831 472, 853 463 C 875 454, 858 465, 883 446 C 908 427, 896 436, 924 409 C 952 382, 939 397, 963 370 C 987 343, 973 358, 992 332 C 1011 306, 1001 322, 1018 295 C 1035 268, 1027 284, 1041 254 C 1055 224, 1051 234, 1057 210 C 1063 186, 1063 198, 1057 186 C 1051 174, 1051 176, 1039 176 C 1027 176, 1034 176, 1022 186 C 1010 196, 1017 190, 1005 204 C 993 218, 1001 209, 989 226 C 977 243, 983 232, 972 252 C 961 272, 967 262, 957 282 C 947 302, 953 288, 944 308 C 935 328, 942 311, 931 338 C 921 365, 925 356, 914 384 C 904 412, 915 387, 901 418 C 887 450, 893 436, 875 474 C 857 512, 868 495, 849 527 C 830 559, 839 545, 821 566 C 803 587, 812 579, 797 587 C 782 595, 785 594, 777 589 C 769 584, 768 586, 773 572 C 778 558, 776 563, 790 550 C 804 537, 795 543, 812 535 C 830 527, 822 531, 840 527 C 858 523, 847 522, 864 524 C 882 526, 870 527, 890 533 C 910 539, 899 536, 920 540 C 941 544, 929 542, 950 544 C 971 546, 959 545, 981 546 C 1003 547, 992 547, 1013 546 C 1034 545, 1021 545, 1042 542 C 1063 539, 1052 541, 1072 537 C 1092 533, 1078 536, 1100 531 C 1122 526, 1113 529, 1135 524 C 1157 519, 1141 522, 1163 516 C 1185 510, 1171 513, 1197 507 C 1223 501, 1212 503, 1238 500 C 1264 497, 1250 498, 1271 498 C 1292 498, 1281 498, 1297 500 C 1313 502, 1302 499, 1317 505 C 1332 511, 1332 512, 1340 516" />
+            </mask>
+        </defs>
+        
+        <g mask="url(#sig-mask)" fill="currentColor">
+            <g transform="translate(0,941) scale(0.1,-0.1)">
+                <path d="M10357 7720 c-89 -23 -208 -101 -303 -202 -182 -191 -341 -442 -549 -863 -188 -382 -306 -651 -562 -1285 -63 -157 -119 -290 -124 -297 -18 -21 -173 -121 -259 -167 -173 -91 -263 -114 -751 -190 -156 -25 -332 -53 -391 -64 -60 -11 -108 -16 -108 -11 0 4 37 70 83 146 234 389 414 710 541 968 291 589 368 917 268 1137 -77 168 -269 247 -530 218 -547 -60 -1348 -483 -1792 -947 -371 -386 -469 -744 -264 -963 56 -60 138 -103 201 -104 38 -1 49 4 74 32 54 60 29 124 -65 166 -140 62 -161 188 -66 391 72 153 222 331 436 515 467 402 1215 738 1599 717 106 -5 163 -26 204 -73 177 -201 -98 -876 -861 -2110 -99 -160 -99 -160 -211 -183 -409 -83 -952 -237 -1327 -376 -1006 -374 -1827 -945 -2156 -1501 -224 -379 -187 -706 100 -878 124 -74 276 -108 486 -108 217 0 414 43 650 142 742 311 1437 1016 2349 2383 72 108 135 197 139 197 4 0 120 20 257 45 138 25 354 61 480 81 399 61 525 93 690 173 44 22 81 38 82 37 5 -4 -124 -283 -183 -396 -59 -115 -59 -115 -146 -127 -187 -26 -378 -124 -520 -265 -137 -137 -202 -278 -179 -383 25 -111 131 -164 262 -131 184 48 391 230 572 505 62 93 62 93 152 87 50 -3 119 -12 155 -20 627 -140 805 -162 1240 -153 458 9 741 60 1610 287 275 72 417 103 580 129 476 76 884 33 1079 -113 48 -36 94 -35 132 3 55 55 32 130 -56 187 -171 109 -513 176 -815 160 -270 -15 -497 -57 -990 -182 -437 -112 -589 -148 -795 -189 -602 -121 -1060 -124 -1600 -10 -94 20 -233 49 -310 65 -77 17 -152 30 -167 30 -15 0 -29 4 -32 9 -3 5 28 79 70 166 71 150 213 474 228 523 4 12 58 65 121 117 786 654 1594 1865 1595 2391 0 112 -57 226 -132 263 -51 24 -138 34 -191 21z m102 -209 c87 -87 -37 -464 -291 -884 -139 -230 -315 -480 -498 -707 -161 -199 -520 -582 -520 -554 0 18 141 365 247 609 337 772 561 1171 793 1407 129 131 222 176 269 129z m-3579 -3177 c0 -12 -337 -494 -478 -684 -520 -699 -969 -1159 -1406 -1437 -365 -232 -717 -345 -1025 -330 -304 15 -466 130 -479 337 -19 321 422 836 1054 1233 562 353 1201 611 2019 818 258 65 315 76 315 63z m1393 -354 c-63 -107 -244 -280 -340 -325 -68 -33 -97 -33 -88 -2 37 122 189 262 362 333 79 32 88 31 66 -6z"/>
+            </g>
+        </g>
+    </svg>
+    <span class="sr-only">Jul1en</span>
+</span>
+
+        </a>
+
+        <div class="site-header__right">
+            <nav id="primary-navigation" class="site-nav" aria-label="Primary navigation">
+                <ul class="site-nav__list"><li class="site-nav__item">
+                            <a class="site-nav__link is-active" href="/post/" aria-current="page">
+                                Blog
+                            </a>
+                        </li><li class="site-nav__item">
+                            <a class="site-nav__link" href="/search/">
+                                Search
+                            </a>
+                        </li><li class="site-nav__item">
+                            <a class="site-nav__link" href="/music/">
+                                Music
+                            </a>
+                        </li></ul>
+            </nav>
+
+            <div class="site-actions" role="group" aria-label="Social links and theme"><a class="site-action-link" href="https://github.com/Jul1en-Lin" target="_blank" rel="noopener noreferrer" aria-label="GitHub" title="GitHub">
+                        <span class="site-action-link__icon" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true">
+  <path fill="currentColor" d="M12 2.2c-5.5 0-9.9 4.5-9.9 9.9 0 4.4 2.8 8.1 6.8 9.4.5.1.7-.2.7-.5v-1.8c-2.8.6-3.4-1.2-3.4-1.2-.5-1.1-1.1-1.4-1.1-1.4-.9-.6.1-.6.1-.6 1 0 1.6 1.1 1.6 1.1.9 1.5 2.4 1.1 2.9.8.1-.7.4-1.1.7-1.4-2.2-.3-4.5-1.1-4.5-4.9 0-1.1.4-2 1.1-2.7-.1-.3-.5-1.3.1-2.7 0 0 .9-.3 2.8 1.1.8-.2 1.7-.3 2.5-.3s1.7.1 2.5.3c1.9-1.3 2.8-1.1 2.8-1.1.6 1.4.2 2.4.1 2.7.7.8 1.1 1.7 1.1 2.7 0 3.8-2.3 4.6-4.5 4.9.4.3.7.9.7 1.9V21c0 .3.2.6.7.5 4-1.3 6.8-5 6.8-9.4 0-5.4-4.4-9.9-9.9-9.9Z" />
+</svg>
+</span>
+                    </a><a class="site-action-link" href="https://www.instagram.com/jul1en_lin" target="_blank" rel="noopener noreferrer" aria-label="Instagram" title="Instagram">
+                        <span class="site-action-link__icon" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true">
+  <path fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" d="M7.5 3.5h9A4 4 0 0 1 20.5 7.5v9a4 4 0 0 1-4 4h-9a4 4 0 0 1-4-4v-9a4 4 0 0 1 4-4Z" />
+  <path fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" d="M8.8 12a3.2 3.2 0 1 0 6.4 0 3.2 3.2 0 0 0-6.4 0Z" />
+  <path fill="currentColor" d="M17.2 7.2a.9.9 0 1 1-1.8 0 .9.9 0 0 1 1.8 0Z" />
+</svg>
+</span>
+                    </a><button id="dark-mode-toggle" class="theme-toggle" type="button" aria-label="切换配色" title="切换配色">
+                    <span class="theme-toggle__icon theme-toggle__icon--sun" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <circle cx="12" cy="12" r="4.2" />
+    <path d="M12 2.8v2.2M12 19v2.2M4.2 4.2l1.6 1.6M18.2 18.2l1.6 1.6M2.8 12h2.2M19 12h2.2M4.2 19.8l1.6-1.6M18.2 5.8l1.6-1.6" />
+</svg>
+</span>
+                    <span class="theme-toggle__icon theme-toggle__icon--moon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <path d="M19.7 14.6c-1.3 2.9-4.6 4.8-8.1 4.2-4.3-.7-7.2-4.8-6.5-9.1.5-3.2 2.8-5.7 5.7-6.5-.9 2.1-.5 4.7 1.2 6.6 1.9 2.2 4.9 3 7.7 2.2-.1.9-.1 1.7 0 2.6z" />
+</svg>
+</span>
+                </button></div>
+
+            <button class="site-menu-toggle" type="button" aria-controls="primary-navigation" aria-expanded="false">
+                <span class="site-menu-toggle__bar" aria-hidden="true"></span>
+                <span class="site-menu-toggle__bar" aria-hidden="true"></span>
+                <span class="site-menu-toggle__bar" aria-hidden="true"></span>
+                <span class="sr-only">Menu</span>
+            </button>
+        </div>
+    </div>
+</header>
+<main id="main-content" class="main main-content full-width" tabindex="-1"><article class="article-detail">
+    <aside class="article-detail__toc-rail" aria-label="文章目录" data-article-toc>
+    <button class="article-detail__toc-toggle" type="button" aria-label="显示文章目录" aria-controls="TableOfContents" aria-expanded="false" data-article-toc-toggle>
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+    </button>
+
+    <div class="article-detail__toc-panel">
+        <div class="article-detail__toc-nav">
+            <nav id="TableOfContents">
+  <ol>
+    <li>
+      <ol>
+        <li><a href="#概述">概述</a></li>
+        <li><a href="#分片">分片</a></li>
+        <li><a href="#哈希求余">哈希求余</a></li>
+        <li><a href="#一致性哈希">一致性哈希</a></li>
+        <li><a href="#redis-哈希槽">Redis 哈希槽</a></li>
+        <li><a href="#槽位数量">槽位数量</a></li>
+        <li><a href="#集群部署">集群部署</a></li>
+        <li><a href="#故障转移">故障转移</a>
+          <ol>
+            <li><a href="#过程">过程</a>
+              <ol>
+                <li><a href="#故障判定">故障判定</a></li>
+                <li><a href="#故障迁移">故障迁移</a></li>
+              </ol>
+            </li>
+          </ol>
+        </li>
+        <li><a href="#集群扩容">集群扩容</a>
+          <ol>
+            <li><a href="#扩容主节点">扩容主节点</a></li>
+            <li><a href="#扩容从节点">扩容从节点</a></li>
+          </ol>
+        </li>
+        <li><a href="#总结">总结</a></li>
+      </ol>
+    </li>
+  </ol>
+</nav>
+        </div>
+    </div>
+
+    <div class="article-detail__toc-staff" aria-hidden="true">
+        <svg viewBox="0 0 320 110" preserveAspectRatio="none" focusable="false">
+            <g>
+                <path d="M-18 58 C 52 25, 106 82, 176 52 S 270 42, 338 66" />
+                <path d="M-18 69 C 52 36, 106 93, 176 63 S 270 53, 338 77" />
+                <path d="M-18 80 C 52 47, 106 104, 176 74 S 270 64, 338 88" />
+                <path d="M-18 91 C 52 58, 106 115, 176 85 S 270 75, 338 99" />
+                <path d="M-18 102 C 52 69, 106 126, 176 96 S 270 86, 338 110" />
+            </g>
+            <text x="72" y="83">♪</text>
+            <text x="176" y="63">♩</text>
+        </svg>
+    </div>
+</aside>
+
+    <div class="article-detail__layout">
+        <div class="article-detail__main">
+            <header class="article-detail__header">
+                <div class="article-detail__meta"><time datetime="2026-05-31T23:16:16&#43;08:00">2026-05-31</time><span aria-hidden="true">•</span>
+                        <a href="/categories/redis/">Redis</a></div>
+
+                <h1 class="article-detail__title">
+                    <span>Redis 集群</span>
+                    <span class="article-detail__title-note" aria-hidden="true">♪</span>
+                </h1>
+            </header>
+
+            <section class="article-content article-detail__content">
+                <h2 id="概述">
+    概述
+</h2>
+<p>其实集群的概念很广泛。广义上，只要多个机器共同组成一个分布式系统，都可以叫集群。之前的主从复制、哨兵模式，也可以看成广义集群。Redis 这里说的集群，一般指 Redis Cluster。它主要解决的是<strong>存储空间不足</strong>的问题：把数据拆到多台机器上，每台机器只保存一部分数据。</p>
+<p>哨兵模式解决的是可用性问题，但本质上还是主从节点都保存完整数据。只要数据全集超过单机能承受的内存，就需要引入分片。</p>
+<h2 id="分片">
+    分片
+</h2>
+<p>分片可以理解成把数据一片一片分开。分片就是把数据拆成多份，分别放到不同节点上。
+<strong>所以每一台机器上面的数据都是不一样的。</strong>
+比如有 1TB 数据，可以这样拆：</p>
+<ul>
+<li>2 台机器，每台大约存 512GB。</li>
+<li>3 台机器，每台大约存 300 多 GB。</li>
+<li>4 台机器，每台大约存 256GB。</li>
+</ul>
+<p>机器越多，每台机器承担的数据越少。但是实际部署时，每个存数据的主节点通常还要配从节点，用来提高可用性。所以扩容的时候并不是只需要一台，可能是需要很多台机器。对于数据存放的思路，有以下这几种算法可以实现。</p>
+<h2 id="哈希求余">
+    哈希求余
+</h2>
+<p><img src="/p/redis-%E9%9B%86%E7%BE%A4/assets/redis-cluster-hash-mod_hu_158921f365814859.webp" width="1600" height="881" srcset="/p/redis-%E9%9B%86%E7%BE%A4/assets/redis-cluster-hash-mod_hu_e91e2ce6166111a5.webp 800w, /p/redis-%E9%9B%86%E7%BE%A4/assets/redis-cluster-hash-mod_hu_158921f365814859.webp 1600w, /p/redis-%E9%9B%86%E7%BE%A4/assets/redis-cluster-hash-mod_hu_518e1d954cb26027.webp 2400w" sizes="(max-width: 860px) calc(100vw - 40px), 1060px" loading="lazy" decoding="async" alt="Hash modulo sharding" class="gallery-image" data-flex-grow="181" data-flex-basis="435px">
+</p>
+<p>哈希求余的思路是：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-txt" data-lang="txt"><span class="line"><span class="cl">hash(key) % N
+</span></span></code></pre></div><p><code>N</code> 是分片数量。Redis 的数据都是 key-value 结构，所以可以先对 key 做 hash，再对分片数量求余，得到应该放到哪个分片。查询时也一样：key 不变，hash 函数不变，算出来的分片编号也不变。</p>
+<p>这种方式简单，但是扩容很麻烦。因为一旦分片数量 <code>N</code> 改了，<code>hash(key) % N</code> 的结果会整体变化，很多数据都要重新搬运。</p>
+<h2 id="一致性哈希">
+    一致性哈希
+</h2>
+<p><img src="/p/redis-%E9%9B%86%E7%BE%A4/assets/redis-cluster-consistent-hash_hu_e7d93fb8389d091a.webp" width="1600" height="1600" srcset="/p/redis-%E9%9B%86%E7%BE%A4/assets/redis-cluster-consistent-hash_hu_4a5f7dbc25fb32cb.webp 800w, /p/redis-%E9%9B%86%E7%BE%A4/assets/redis-cluster-consistent-hash_hu_e7d93fb8389d091a.webp 1600w, /p/redis-%E9%9B%86%E7%BE%A4/assets/redis-cluster-consistent-hash_hu_299438d315a49070.webp 2400w" sizes="(max-width: 860px) calc(100vw - 40px), 1060px" loading="lazy" decoding="async" alt="Consistent hashing" class="gallery-image" data-flex-grow="100" data-flex-basis="240px">
+</p>
+<p>一致性哈希把 hash 空间看成一个环，比如范围是 <code>0 ~ 2^32 - 1</code>。分片也落在这个环上，key 计算 hash 后，按环上的位置往顺时针跑，找到第一个分片的分割点，那就属于是当前的分片。</p>
+<p>就像图里的，原本只有分片 012，若新增了分片 3，则扩容时不用让所有 key 重新分布，只需要搬动新节点影响到的一段数据。图中的 keyC 原本是属于分片 0 的，现在顺时针跑遇到的第一个分片是 3，那么它就属于新分片 3 的范围咯～</p>
+<p>优点：</p>
+<ul>
+<li>比哈希求余的数据搬运量小</li>
+<li>扩容成本更低</li>
+</ul>
+<p>但有个问题是如果节点分布不好，分片上的数据量可能不均匀，专业数据叫做数据倾斜～</p>
+<h2 id="redis-哈希槽">
+    Redis 哈希槽
+</h2>
+<p><img src="/p/redis-%E9%9B%86%E7%BE%A4/assets/redis-cluster-hash-slot_hu_85d66e1d3ca1de7c.webp" width="1600" height="1067" srcset="/p/redis-%E9%9B%86%E7%BE%A4/assets/redis-cluster-hash-slot_hu_e6df7f1d4a20c828.webp 800w, /p/redis-%E9%9B%86%E7%BE%A4/assets/redis-cluster-hash-slot_hu_85d66e1d3ca1de7c.webp 1600w, /p/redis-%E9%9B%86%E7%BE%A4/assets/redis-cluster-hash-slot_hu_bc2ab00c22f20500.webp 2400w" sizes="(max-width: 860px) calc(100vw - 40px), 1060px" loading="lazy" decoding="async" alt="Redis hash slots" class="gallery-image" data-flex-grow="150" data-flex-basis="360px">
+</p>
+<p>Redis Cluster 真正采用的是哈希槽方案，将哈希求余➕一致性哈希，结合起来了。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-txt" data-lang="txt"><span class="line"><span class="cl">slot = CRC16(key) % 16384
+</span></span></code></pre></div><p>Redis Cluster 固定有 <code>16384</code> 个槽位，也就是 <code>2^14</code> 个。key 不是直接映射到分片，而是先映射到槽位，再由槽位映射到分片。</p>
+<p>流程可以理解为：key -&gt; 槽位(slot) -&gt; 分片</p>
+<p>扩容或迁移时，不需要按单个 key 去重新分配，而是迁移一部分槽位。只有这些槽位对应的数据需要搬运，所以比简单的哈希求余更适合扩容。</p>
+<p>例如 3 个分片时，可以大致这样分：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-txt" data-lang="txt"><span class="line"><span class="cl">0 号分片：[0, 5461]
+</span></span><span class="line"><span class="cl">1 号分片：[5462, 10923]
+</span></span><span class="line"><span class="cl">2 号分片：[10924, 16383]
+</span></span></code></pre></div><p>如果扩成 4 个分片，也可以从原来的几个分片中各拿出一部分槽位给新分片。这样每个分片大约持有 <code>4096</code> 个槽位。</p>
+<h2 id="槽位数量">
+    槽位数量
+</h2>
+<p>Redis 使用 <code>16384</code> 个槽位，是一个折中的数量。可以简单的算一下它的大小的，看着挺多，其实没占多少空间</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-txt" data-lang="txt"><span class="line"><span class="cl">16384 bit = 2048 byte = 2KB
+</span></span></code></pre></div><p>如果槽位太少，每个分片能分到的槽位少，数据均衡性不容易保证，某些槽位可能有很多 key，某些槽位也可能没有 key。</p>
+<p>如果槽位太多，节点之间通信的元数据会变大。因为 Redis 节点之间需要通过心跳包通信，心跳包中包含了该节点持有哪些 slots，这个是使用位图这样的数据结构表示的。如果槽位数量变成 <code>65536</code>，位图就会变成 <code>8KB</code>，虽然看着也不大，但是在这种频繁发送心跳包的场景里，网络带宽负担还是比较明显。</p>
+<p>slots 通常会用位图表示：第 <code>i</code> 位为 <code>1</code>，表示这个节点持有第 <code>i</code> 个槽位；第 <code>i</code> 位为 <code>0</code>，表示不持有。注意这里表示的是节点是否持有槽位，不是这个槽位里有没有 key。</p>
+<h2 id="集群部署">
+    集群部署
+</h2>
+<p>具体部署步骤单独整理到：<a class="link" href="/p/docker-%E9%83%A8%E7%BD%B2-redis-%E9%9B%86%E7%BE%A4/">Docker 部署 Redis 集群</a>
+。</p>
+<p>部署集群后，可以通过 <code>docker-compose ps</code> 命令来查看各个节点的状态
+若想查看它们之间的分片主从关系，可通过 <code>cluster nodes</code> 查看，这个命令要在 redis-cli 中执行
+<img src="/p/redis-%E9%9B%86%E7%BE%A4/assets/cluster-nodes_hu_7c427d50a72be6f.webp" width="1600" height="657" srcset="/p/redis-%E9%9B%86%E7%BE%A4/assets/cluster-nodes_hu_99d7075b21207d3a.webp 800w, /p/redis-%E9%9B%86%E7%BE%A4/assets/cluster-nodes_hu_7c427d50a72be6f.webp 1600w, /p/redis-%E9%9B%86%E7%BE%A4/assets/cluster-nodes_hu_a0dbd1d6cc21399e.webp 2400w" sizes="(max-width: 860px) calc(100vw - 40px), 1060px" loading="lazy" decoding="async" alt="Redis cluster nodes" class="gallery-image" data-flex-grow="243" data-flex-basis="584px">
+</p>
+<p>Redis 分片后，每个分片的槽位都不同，如果在分片 1 中，写入的 key 刚好位于分片 2 的 slot，则会无法插入，如图（主节点与从节点同理）
+<img src="/p/redis-%E9%9B%86%E7%BE%A4/assets/cluster-set-without-c_hu_da74e5e847c925f3.webp" width="1600" height="291" srcset="/p/redis-%E9%9B%86%E7%BE%A4/assets/cluster-set-without-c_hu_69b0049da47b2aba.webp 800w, /p/redis-%E9%9B%86%E7%BE%A4/assets/cluster-set-without-c_hu_da74e5e847c925f3.webp 1600w, /p/redis-%E9%9B%86%E7%BE%A4/assets/cluster-set-without-c_hu_a27c7fb12ddc5bc9.webp 2400w" sizes="(max-width: 860px) calc(100vw - 40px), 1060px" loading="lazy" decoding="async" alt="Redis cluster moved error without client mode" class="gallery-image" data-flex-grow="549" data-flex-basis="1318px">
+
+如需要插入 key 1，则需要手动切换至 172.30.0.102:6379 这个节点，非常麻烦，有没有办法能够既可以插入，又可以无需手动切换 redis 节点呢？有的有的，只需要在进入 redis-cli 中加入 <code>-c</code> 命令，Redis 客户端就会根据当前 key 实际算出来的槽位号，自动找到匹配的分片主机，也就是能够在分片 1 节点上插入属于其他分片的 key 值。
+<img src="/p/redis-%E9%9B%86%E7%BE%A4/assets/cluster-set-with-c_hu_c970c62cc6c02848.webp" width="1600" height="366" srcset="/p/redis-%E9%9B%86%E7%BE%A4/assets/cluster-set-with-c_hu_7e1f8fb7196974fe.webp 800w, /p/redis-%E9%9B%86%E7%BE%A4/assets/cluster-set-with-c_hu_c970c62cc6c02848.webp 1600w, /p/redis-%E9%9B%86%E7%BE%A4/assets/cluster-set-with-c_hu_3eb1d157bf06dd14.webp 2400w" sizes="(max-width: 860px) calc(100vw - 40px), 1060px" loading="lazy" decoding="async" alt="Redis cluster client mode redirects key write" class="gallery-image" data-flex-grow="436" data-flex-basis="1048px">
+
+这次就能帮你切换到应该的节点，成功。仅需输入一次 <code>-c</code> 即可</p>
+<h2 id="故障转移">
+    故障转移
+</h2>
+<p>这里的故障转移与<a class="link" href="/p/redis-%E5%93%A8%E5%85%B5/">Redis 哨兵</a>
+的不太一样，主要的区别在于投票选出新的主节点上</p>
+<p>具体演示下，将 redis 1 主节点给手动停掉，命令 <code>docker stop redis1</code>
+<img src="/p/redis-%E9%9B%86%E7%BE%A4/assets/cluster-stop-redis1_hu_9323a33c159ed4c2.webp" width="1600" height="505" srcset="/p/redis-%E9%9B%86%E7%BE%A4/assets/cluster-stop-redis1_hu_f3287270c0d897f1.webp 800w, /p/redis-%E9%9B%86%E7%BE%A4/assets/cluster-stop-redis1_hu_9323a33c159ed4c2.webp 1600w, /p/redis-%E9%9B%86%E7%BE%A4/assets/cluster-stop-redis1_hu_e112fcbcf6ca8356.webp 2400w" sizes="(max-width: 860px) calc(100vw - 40px), 1060px" loading="lazy" decoding="async" alt="Stop redis1 container" class="gallery-image" data-flex-grow="317" data-flex-basis="760px">
+
+<img src="/p/redis-%E9%9B%86%E7%BE%A4/assets/cluster-failover-promote_hu_3784b73e71874238.webp" width="1600" height="520" srcset="/p/redis-%E9%9B%86%E7%BE%A4/assets/cluster-failover-promote_hu_a17bac8d54325080.webp 800w, /p/redis-%E9%9B%86%E7%BE%A4/assets/cluster-failover-promote_hu_3784b73e71874238.webp 1600w, /p/redis-%E9%9B%86%E7%BE%A4/assets/cluster-failover-promote_hu_44860b6dfaa43313.webp 2400w" sizes="(max-width: 860px) calc(100vw - 40px), 1060px" loading="lazy" decoding="async" alt="Redis cluster failover promotes replica" class="gallery-image" data-flex-grow="307" data-flex-basis="738px">
+
+可以看到，101 主节点挂了后，原先 101 的从节点：105 被提拔为了新的主节点，101 原本的从节点 106 此刻也变成了 105 的从节点，那么我们再试试重启 101 节点，看看是什么变化（<code>docker start redis1</code>）
+<img src="/p/redis-%E9%9B%86%E7%BE%A4/assets/cluster-redis1-restart_hu_925265a003da9fc9.webp" width="1600" height="486" srcset="/p/redis-%E9%9B%86%E7%BE%A4/assets/cluster-redis1-restart_hu_eae5c3ae9f50cf9c.webp 800w, /p/redis-%E9%9B%86%E7%BE%A4/assets/cluster-redis1-restart_hu_925265a003da9fc9.webp 1600w, /p/redis-%E9%9B%86%E7%BE%A4/assets/cluster-redis1-restart_hu_d2da24fa0ca4207e.webp 2400w" sizes="(max-width: 860px) calc(100vw - 40px), 1060px" loading="lazy" decoding="async" alt="Restarted redis1 becomes replica" class="gallery-image" data-flex-grow="329" data-flex-basis="790px">
+
+它也变成了 105 的从节点。
+能看出集群也能够处理故障转移，而且这看起来跟哨兵的故障转移很像，那我们说的不同点在哪呢？不同在于过程～</p>
+<h3 id="过程">
+    过程
+</h3>
+<h4 id="故障判定">
+    故障判定
+</h4>
+<ol>
+<li>节点 A 给节点 B 发送 ping 包，B 就会给 A 返回一个 pong 包。ping 和 pong 除了 message type 属性之外，其他部分都是一样的。这里包含了集群的配置信息（该节点的 id，该节点从属于哪个分片，是主节点还是从节点，从属于谁，持有哪些 slots 的位图……）</li>
+<li>每个节点，每秒钟，都会给一些随机的节点发起 ping 包，而不是全发一遍。这样设定是为了避免在节点很多的时候，心跳包也非常多（比如有 9 个节点，如果全发，就是 9 * 8 有 72 组心跳了，而且这是按照 N^2 这样的级别增长的）。</li>
+<li>当节点 A 给节点 B 发起 ping 包，B 不能如期回应的时候，此时 A 就会尝试重置和 B 的 TCP 连接，看能否连接成功。如果仍然连接失败，A 就会把 B 设为 <strong>PFAIL 状态</strong>（相当于主观下线）</li>
+<li>A 判定 B 为 PFAIL 之后，会通过 Redis 内置的 Gossip 协议，和其他节点进行沟通，向其他节点确认 B 的状态。（每个节点都会维护自己的“下线列表”，由于视角不同，每个节点的下线列表也不一定相同）。</li>
+<li>此时 A 发现其他很多节点，也认为 B 为 PFAIL，并且数目超过总集群个数的一半，那么 A 就会把 B 标记成 <strong>FAIL</strong> （相当于客观下线），并且把这个消息同步给其他节点（其他节点收到之后，也会把 B 标记成 FAIL）。</li>
+</ol>
+<h4 id="故障迁移">
+    故障迁移
+</h4>
+<p>如果 B 是从节点，那么不需要进行故障迁移
+如果 B 是主节点，那么就会由 B 的从节点（比如 C 和 D）触发故障迁移了</p>
+<ol>
+<li>从节点判定自己是否具有参选资格。如果从节点和主节点已经太久没通信（此时认为从节点的数据和主节点差异太大了，说明很久没有同步过数据），时间超过阈值，就失去竞选资格。</li>
+<li>具有资格的节点，比如 C 和 D，就会先休眠一定时间。休眠时间 = 500 ms 基础时间 + [0, 500 ms] 随机时间 + 排名 * 1000 ms。（offset 越大，数据就越接近主节点，排名就要靠前，休眠时间就更短）</li>
+<li>比如 C 的休眠时间到了，C 就会给其他所有集群中的节点，进行拉票操作。<strong>但是只有主节点才有投票资格</strong>（谁休眠时间短，大概率就是新的主节点了）</li>
+<li>主节点就会把自己的票投给 C（每个主节点只有 1 票）。当 C 收到的票数超过主节点数目的一半，C 就会晋升成主节点（C 自己负责执行 <code>slaveof no one</code>，并且让 D 执行 <code>slaveof C</code>）。</li>
+<li>同时，C 还会把自己成为主节点的消息，同步给其他集群的节点。大家也都会更新自己保存的集群结构信息。</li>
+</ol>
+<p>更多的时候，是为了选一个节点出来，至于选谁，没那么重要。所以你看，不同点在于：哨兵，是先竞选出 leader，leader 负责找一个从节点升级成主节点，<strong>这里是直接投票选出新的主节点</strong></p>
+<h2 id="集群扩容">
+    集群扩容
+</h2>
+<h3 id="扩容主节点">
+    扩容主节点
+</h3>
+<p>这里将 redis-10 作为主节点，redis-11 作为从节点。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># 添加 redis-10 的地址（172.30.0.110:6379）到集群中的任意一个节点地址（172.30.0.101:6379）</span>
+</span></span><span class="line"><span class="cl">redis-cli --cluster add-node 172.30.0.110:6379 172.30.0.101:6379
+</span></span></code></pre></div><p><img src="/p/redis-%E9%9B%86%E7%BE%A4/assets/cluster-add-master_hu_861718925a68abf2.webp" width="1600" height="1175" srcset="/p/redis-%E9%9B%86%E7%BE%A4/assets/cluster-add-master_hu_1cdfb137dac848be.webp 800w, /p/redis-%E9%9B%86%E7%BE%A4/assets/cluster-add-master_hu_861718925a68abf2.webp 1600w, /p/redis-%E9%9B%86%E7%BE%A4/assets/cluster-add-master_hu_fac1bf8c3b56c184.webp 2400w" sizes="(max-width: 860px) calc(100vw - 40px), 1060px" loading="lazy" decoding="async" alt="Add redis10 as cluster master" class="gallery-image" data-flex-grow="136" data-flex-basis="326px">
+</p>
+<p>添加成功后 <code>cluster nodes</code> 查看 redis-10 已经作为主节点进入集群，但还未分配到 slots
+<img src="/p/redis-%E9%9B%86%E7%BE%A4/assets/cluster-new-master-no-slots_hu_4f93f4ae6c54a8c2.webp" width="1600" height="589" srcset="/p/redis-%E9%9B%86%E7%BE%A4/assets/cluster-new-master-no-slots_hu_303ea656e8ad19fa.webp 800w, /p/redis-%E9%9B%86%E7%BE%A4/assets/cluster-new-master-no-slots_hu_4f93f4ae6c54a8c2.webp 1600w, /p/redis-%E9%9B%86%E7%BE%A4/assets/cluster-new-master-no-slots_hu_dda2bf3982bf7dd7.webp 2400w" sizes="(max-width: 860px) calc(100vw - 40px), 1060px" loading="lazy" decoding="async" alt="Redis10 joined with no slots" class="gallery-image" data-flex-grow="271" data-flex-basis="651px">
+
+<strong>重新分配 slots</strong></p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># reshard （重新切分）后的地址是集群中的任意节点地址</span>
+</span></span><span class="line"><span class="cl">redis-cli --cluster reshard 172.30.0.101:6379
+</span></span></code></pre></div><p>执行后会进行交互操作，具体有</p>
+<ol>
+<li>
+<p>选择多少个 slots 分配到该节点（原先有 3 个分片，现扩容至 4 分片，16384 slots 平均到一个分片为 4096）
+<img src="/p/redis-%E9%9B%86%E7%BE%A4/assets/cluster-reshard-slots-count_hu_ec9179da53455cf3.webp" width="1600" height="1419" srcset="/p/redis-%E9%9B%86%E7%BE%A4/assets/cluster-reshard-slots-count_hu_ca48175150b08f2d.webp 800w, /p/redis-%E9%9B%86%E7%BE%A4/assets/cluster-reshard-slots-count_hu_ec9179da53455cf3.webp 1600w, /p/redis-%E9%9B%86%E7%BE%A4/assets/cluster-reshard-slots-count_hu_675220c4bfc1bd1f.webp 2400w" sizes="(max-width: 860px) calc(100vw - 40px), 1060px" loading="lazy" decoding="async" alt="Choose reshard slot count" class="gallery-image" data-flex-grow="112" data-flex-basis="270px">
+</p>
+</li>
+<li>
+<p>选择将 slots 转移到哪个节点上（此处填写节点的 id，如图）
+<img src="/p/redis-%E9%9B%86%E7%BE%A4/assets/cluster-reshard-target-node_hu_9aaac0e5a4585fec.webp" width="1600" height="1366" srcset="/p/redis-%E9%9B%86%E7%BE%A4/assets/cluster-reshard-target-node_hu_795f72a8897a3c2a.webp 800w, /p/redis-%E9%9B%86%E7%BE%A4/assets/cluster-reshard-target-node_hu_9aaac0e5a4585fec.webp 1600w, /p/redis-%E9%9B%86%E7%BE%A4/assets/cluster-reshard-target-node_hu_a2a69713788a0325.webp 2400w" sizes="(max-width: 860px) calc(100vw - 40px), 1060px" loading="lazy" decoding="async" alt="Choose reshard target node" class="gallery-image" data-flex-grow="117" data-flex-basis="281px">
+</p>
+</li>
+<li>
+<p>这些 slots 从哪些节点搬运过来（all 表示每个主节点都搬一点，若选择 done 则需手动填写主节点 id）
+<img src="/p/redis-%E9%9B%86%E7%BE%A4/assets/cluster-reshard-source-nodes_hu_e09d9675efbb19f0.webp" width="1600" height="251" srcset="/p/redis-%E9%9B%86%E7%BE%A4/assets/cluster-reshard-source-nodes_hu_e8f66041a674d01c.webp 800w, /p/redis-%E9%9B%86%E7%BE%A4/assets/cluster-reshard-source-nodes_hu_e09d9675efbb19f0.webp 1600w, /p/redis-%E9%9B%86%E7%BE%A4/assets/cluster-reshard-source-nodes_hu_7bb90892296414ab.webp 2400w" sizes="(max-width: 860px) calc(100vw - 40px), 1060px" loading="lazy" decoding="async" alt="Choose reshard source nodes" class="gallery-image" data-flex-grow="637" data-flex-basis="1530px">
+</p>
+</li>
+<li>
+<p>确定之后，会初步打印出搬运方案，让用户确认，之后就会进行集群的 key 搬运工作，主节点就配置好了</p>
+</li>
+</ol>
+<h3 id="扩容从节点">
+    扩容从节点
+</h3>
+<p>仅需一行命令</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># 添加 redis-11（172.30.0.111:6379）到集群中（集群任意一个节点地址）作为从节点 （--cluster-slave），后跟上要跟随的主节点 id</span>
+</span></span><span class="line"><span class="cl">redis-cli --cluster add-node 172.30.0.111:6379 172.30.0.101:6379 --cluster-slave --cluster-master-id <span class="o">[</span>172.30.0.110 节点的 nodeId（主节点 id）<span class="o">]</span>
+</span></span></code></pre></div><p>执行完毕后，从节点就已经被添加完成了，可见 <strong>redis-10 占了其他三个分片的部分 slots</strong>，redis-11 也成功成为了 redis-10 的从节点
+<img src="/p/redis-%E9%9B%86%E7%BE%A4/assets/cluster-add-replica-result_hu_fac9cd3ff739230.webp" width="1600" height="877" srcset="/p/redis-%E9%9B%86%E7%BE%A4/assets/cluster-add-replica-result_hu_260572166d4e2833.webp 800w, /p/redis-%E9%9B%86%E7%BE%A4/assets/cluster-add-replica-result_hu_fac9cd3ff739230.webp 1600w, /p/redis-%E9%9B%86%E7%BE%A4/assets/cluster-add-replica-result_hu_b8f88894fd424bcd.webp 2400w" sizes="(max-width: 860px) calc(100vw - 40px), 1060px" loading="lazy" decoding="async" alt="Redis10 slots and redis11 replica result" class="gallery-image" data-flex-grow="182" data-flex-basis="437px">
+</p>
+<h2 id="总结">
+    总结
+</h2>
+<p>Redis Cluster 的核心是分片。主从复制和哨兵主要解决可用性，集群模式进一步解决单机存储容量限制。部署后可以通过 <code>redis-cli -c</code> 让客户端自动跟随槽位跳转；扩容时则先添加主节点，再通过 reshard 分配 slots，最后把新从节点挂到对应主节点下面。</p>
+
+            </section>
+
+            <footer class="article-detail__footer">
+                <div class="article-closing" aria-label="Article closing">
+    <ul class="article-closing__links">
+        <li>
+            <span class="article-closing__chevron" aria-hidden="true">›</span>
+            <span>written by <span class="article-closing__author">@Jul1en</span></span>
+        </li>
+        <li>
+            <span class="article-closing__chevron" aria-hidden="true">›</span>
+            <a href="/post/">cd ..</a>
+        </li>
+    </ul>
+
+</div>
+
+            </footer>
+        </div>
+    </div>
+</article>
+
+    </main><button id="back-to-top" class="back-to-top" type="button" aria-label="回到顶部" title="回到顶部">
+    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+        <path d="M6 14.5 12 8l6 6.5"></path>
+    </svg>
+</button>
+<div id="route-transition-mask" class="route-transition-mask" aria-hidden="true">
+    <span class="route-transition-mask__texture" aria-hidden="true"></span>
+    <span class="route-transition__loading" aria-hidden="true">LOADING...</span>
+</div>
+</body>
+
+</html>

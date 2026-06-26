@@ -1,14 +1,2 @@
-public
-resources
-.hugo_build.lock
-hugo.exe
-claude.md
-AGENTS.md
-agent.md
-AGENT.md
-agents.md
 
-# Local development research/reference artifacts
-docs/
-docs/design-references/
-docs/research/
+

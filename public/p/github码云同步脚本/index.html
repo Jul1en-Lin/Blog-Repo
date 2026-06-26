@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="zh-CN" dir="ltr">
+
+<head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1"><title>🪐 Github码云同步脚本 | Jul1en</title>
+<meta name="description" content="Github 、Gitee 自动同步脚本 解决 GitHub Actions 同步 Gitee 过程中遇到的一些问题 前言 由于是在CSDN上更新博客，随着不断学习，想了想应该不应该局限于这一个平台">
+<meta name="author" content="Jul1en">
+<link rel="canonical" href="https://Jul1en-Lin.github.io/p/github%E7%A0%81%E4%BA%91%E5%90%8C%E6%AD%A5%E8%84%9A%E6%9C%AC/">
+
+<link rel="icon" href="/favicon-signature.svg" type="image/svg+xml">
+<link rel="icon" href="/favicon-signature.png" type="image/png" sizes="512x512">
+<link rel="alternate icon" href="/favicon.ico" type="image/x-icon">
+<meta name="theme-color" content="#fdfdf7" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#090909" media="(prefers-color-scheme: dark)">
+<meta property="og:title" content="🪐 Github码云同步脚本 | Jul1en">
+<meta property="og:description" content="Github 、Gitee 自动同步脚本 解决 GitHub Actions 同步 Gitee 过程中遇到的一些问题 前言 由于是在CSDN上更新博客，随着不断学习，想了想应该不应该局限于这一个平台">
+<meta property="og:url" content="https://Jul1en-Lin.github.io/p/github%E7%A0%81%E4%BA%91%E5%90%8C%E6%AD%A5%E8%84%9A%E6%9C%AC/">
+<meta property="og:site_name" content="Jul1en">
+<meta property="og:type" content="article">
+<meta property="article:section" content="Post">
+<meta property="article:published_time" content="2025-10-05T22:47:19&#43;08:00">
+<meta property="article:modified_time" content="2026-05-21T14:32:14&#43;08:00">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="🪐 Github码云同步脚本 | Jul1en">
+<meta name="twitter:description" content="Github 、Gitee 自动同步脚本 解决 GitHub Actions 同步 Gitee 过程中遇到的一些问题 前言 由于是在CSDN上更新博客，随着不断学习，想了想应该不应该局限于这一个平台">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;600&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Noto+Sans+SC:wght@400;500;700&family=Noto+Serif:wght@400;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet"><script>
+    (function () {
+        var stored = null;
+        try {
+            stored = window.localStorage.getItem('ColorScheme');
+        } catch (error) {
+            stored = null;
+        }
+
+        var scheme = stored;
+        if (scheme !== 'light' && scheme !== 'dark') {
+            scheme = "light";
+        }
+        document.documentElement.dataset.scheme = scheme;
+    })();
+</script><link rel="stylesheet" href="/css/site.min.954818373eafb12c608d3f56fa7bff4c76c8574abd1940dbc983cf3318715029.css" integrity="sha256-lUgYNz6vsSxgjT9W&#43;nv/THbIV0q9GUDbyYPPMxhxUCk="><script src="/js/site.abbcb3538826a91399f254fdb11f18a958e7dc1361cb64ea6dbd74cdee2ad59b.js" integrity="sha256-q7yzU4gmqROZ8lT9sR8YqVjn3BNhy2Tqbb10ze4q1Zs=" defer></script>
+
+</head>
+
+<body class="melody-shell template-article-detail article-page">
+    <a class="skip-link" href="#main-content">Skip to content</a><header class="site-header" role="banner">
+    <div class="site-header__inner">
+        <a class="site-brand" href="/" aria-label="Jul1en home">
+            <span class="site-brand__signature" aria-hidden="true">
+    <svg class="site-signature" viewBox="0 0 1672 941" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+        <defs>
+            <mask id="sig-mask" maskUnits="userSpaceOnUse">
+                
+                <path class="site-signature__guide" pathLength="1"
+                      fill="none" stroke="white" stroke-width="20"
+                      stroke-linecap="round" stroke-linejoin="round"
+                      d="M 584 422 C 575 412, 564 415, 559 394 C 554 373, 556 386, 571 361 C 586 337, 580 347, 602 324 C 624 301, 614 311, 634 296 C 654 281, 639 292, 658 281 C 677 270, 668 275, 688 264 C 708 254, 697 258, 716 251 C 735 244, 723 249, 742 244 C 761 239, 752 239, 771 238 C 790 237, 781 235, 795 240 C 809 245, 803 241, 810 251 C 817 262, 815 255, 816 270 C 817 285, 817 277, 812 294 C 807 311, 810 301, 803 318 C 796 336, 800 327, 792 344 C 784 361, 789 350, 781 366 C 773 382, 777 374, 768 390 C 759 406, 763 398, 755 413 C 747 428, 753 419, 745 433 C 737 447, 750 425, 732 454 C 714 483, 721 472, 693 515 C 665 558, 678 540, 652 576 C 626 612, 641 590, 619 617 C 597 644, 609 631, 589 652 C 569 673, 583 659, 563 678 C 543 697, 558 685, 532 706 C 506 727, 515 722, 489 738 C 463 754, 480 745, 459 752 C 438 759, 450 755, 429 759 C 408 763, 419 763, 398 763 C 377 763, 387 768, 368 759 C 349 750, 355 755, 344 737 C 334 719, 333 731, 338 707 C 343 683, 341 694, 359 668 C 377 642, 366 656, 389 633 C 412 610, 399 623, 426 603 C 453 583, 436 595, 467 577 C 498 559, 483 566, 515 551 C 547 536, 523 547, 559 535 C 595 523, 582 527, 617 516 C 652 506, 631 512, 658 505 C 685 498, 666 502, 695 496 C 724 490, 710 493, 740 488 C 770 483, 753 487, 781 481 C 809 475, 796 478, 821 472 C 846 466, 831 472, 853 463 C 875 454, 858 465, 883 446 C 908 427, 896 436, 924 409 C 952 382, 939 397, 963 370 C 987 343, 973 358, 992 332 C 1011 306, 1001 322, 1018 295 C 1035 268, 1027 284, 1041 254 C 1055 224, 1051 234, 1057 210 C 1063 186, 1063 198, 1057 186 C 1051 174, 1051 176, 1039 176 C 1027 176, 1034 176, 1022 186 C 1010 196, 1017 190, 1005 204 C 993 218, 1001 209, 989 226 C 977 243, 983 232, 972 252 C 961 272, 967 262, 957 282 C 947 302, 953 288, 944 308 C 935 328, 942 311, 931 338 C 921 365, 925 356, 914 384 C 904 412, 915 387, 901 418 C 887 450, 893 436, 875 474 C 857 512, 868 495, 849 527 C 830 559, 839 545, 821 566 C 803 587, 812 579, 797 587 C 782 595, 785 594, 777 589 C 769 584, 768 586, 773 572 C 778 558, 776 563, 790 550 C 804 537, 795 543, 812 535 C 830 527, 822 531, 840 527 C 858 523, 847 522, 864 524 C 882 526, 870 527, 890 533 C 910 539, 899 536, 920 540 C 941 544, 929 542, 950 544 C 971 546, 959 545, 981 546 C 1003 547, 992 547, 1013 546 C 1034 545, 1021 545, 1042 542 C 1063 539, 1052 541, 1072 537 C 1092 533, 1078 536, 1100 531 C 1122 526, 1113 529, 1135 524 C 1157 519, 1141 522, 1163 516 C 1185 510, 1171 513, 1197 507 C 1223 501, 1212 503, 1238 500 C 1264 497, 1250 498, 1271 498 C 1292 498, 1281 498, 1297 500 C 1313 502, 1302 499, 1317 505 C 1332 511, 1332 512, 1340 516" />
+            </mask>
+        </defs>
+        
+        <g mask="url(#sig-mask)" fill="currentColor">
+            <g transform="translate(0,941) scale(0.1,-0.1)">
+                <path d="M10357 7720 c-89 -23 -208 -101 -303 -202 -182 -191 -341 -442 -549 -863 -188 -382 -306 -651 -562 -1285 -63 -157 -119 -290 -124 -297 -18 -21 -173 -121 -259 -167 -173 -91 -263 -114 -751 -190 -156 -25 -332 -53 -391 -64 -60 -11 -108 -16 -108 -11 0 4 37 70 83 146 234 389 414 710 541 968 291 589 368 917 268 1137 -77 168 -269 247 -530 218 -547 -60 -1348 -483 -1792 -947 -371 -386 -469 -744 -264 -963 56 -60 138 -103 201 -104 38 -1 49 4 74 32 54 60 29 124 -65 166 -140 62 -161 188 -66 391 72 153 222 331 436 515 467 402 1215 738 1599 717 106 -5 163 -26 204 -73 177 -201 -98 -876 -861 -2110 -99 -160 -99 -160 -211 -183 -409 -83 -952 -237 -1327 -376 -1006 -374 -1827 -945 -2156 -1501 -224 -379 -187 -706 100 -878 124 -74 276 -108 486 -108 217 0 414 43 650 142 742 311 1437 1016 2349 2383 72 108 135 197 139 197 4 0 120 20 257 45 138 25 354 61 480 81 399 61 525 93 690 173 44 22 81 38 82 37 5 -4 -124 -283 -183 -396 -59 -115 -59 -115 -146 -127 -187 -26 -378 -124 -520 -265 -137 -137 -202 -278 -179 -383 25 -111 131 -164 262 -131 184 48 391 230 572 505 62 93 62 93 152 87 50 -3 119 -12 155 -20 627 -140 805 -162 1240 -153 458 9 741 60 1610 287 275 72 417 103 580 129 476 76 884 33 1079 -113 48 -36 94 -35 132 3 55 55 32 130 -56 187 -171 109 -513 176 -815 160 -270 -15 -497 -57 -990 -182 -437 -112 -589 -148 -795 -189 -602 -121 -1060 -124 -1600 -10 -94 20 -233 49 -310 65 -77 17 -152 30 -167 30 -15 0 -29 4 -32 9 -3 5 28 79 70 166 71 150 213 474 228 523 4 12 58 65 121 117 786 654 1594 1865 1595 2391 0 112 -57 226 -132 263 -51 24 -138 34 -191 21z m102 -209 c87 -87 -37 -464 -291 -884 -139 -230 -315 -480 -498 -707 -161 -199 -520 -582 -520 -554 0 18 141 365 247 609 337 772 561 1171 793 1407 129 131 222 176 269 129z m-3579 -3177 c0 -12 -337 -494 -478 -684 -520 -699 -969 -1159 -1406 -1437 -365 -232 -717 -345 -1025 -330 -304 15 -466 130 -479 337 -19 321 422 836 1054 1233 562 353 1201 611 2019 818 258 65 315 76 315 63z m1393 -354 c-63 -107 -244 -280 -340 -325 -68 -33 -97 -33 -88 -2 37 122 189 262 362 333 79 32 88 31 66 -6z"/>
+            </g>
+        </g>
+    </svg>
+    <span class="sr-only">Jul1en</span>
+</span>
+
+        </a>
+
+        <div class="site-header__right">
+            <nav id="primary-navigation" class="site-nav" aria-label="Primary navigation">
+                <ul class="site-nav__list"><li class="site-nav__item">
+                            <a class="site-nav__link is-active" href="/post/" aria-current="page">
+                                Blog
+                            </a>
+                        </li><li class="site-nav__item">
+                            <a class="site-nav__link" href="/search/">
+                                Search
+                            </a>
+                        </li><li class="site-nav__item">
+                            <a class="site-nav__link" href="/music/">
+                                Music
+                            </a>
+                        </li></ul>
+            </nav>
+
+            <div class="site-actions" role="group" aria-label="Social links and theme"><a class="site-action-link" href="https://github.com/Jul1en-Lin" target="_blank" rel="noopener noreferrer" aria-label="GitHub" title="GitHub">
+                        <span class="site-action-link__icon" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true">
+  <path fill="currentColor" d="M12 2.2c-5.5 0-9.9 4.5-9.9 9.9 0 4.4 2.8 8.1 6.8 9.4.5.1.7-.2.7-.5v-1.8c-2.8.6-3.4-1.2-3.4-1.2-.5-1.1-1.1-1.4-1.1-1.4-.9-.6.1-.6.1-.6 1 0 1.6 1.1 1.6 1.1.9 1.5 2.4 1.1 2.9.8.1-.7.4-1.1.7-1.4-2.2-.3-4.5-1.1-4.5-4.9 0-1.1.4-2 1.1-2.7-.1-.3-.5-1.3.1-2.7 0 0 .9-.3 2.8 1.1.8-.2 1.7-.3 2.5-.3s1.7.1 2.5.3c1.9-1.3 2.8-1.1 2.8-1.1.6 1.4.2 2.4.1 2.7.7.8 1.1 1.7 1.1 2.7 0 3.8-2.3 4.6-4.5 4.9.4.3.7.9.7 1.9V21c0 .3.2.6.7.5 4-1.3 6.8-5 6.8-9.4 0-5.4-4.4-9.9-9.9-9.9Z" />
+</svg>
+</span>
+                    </a><a class="site-action-link" href="https://www.instagram.com/jul1en_lin" target="_blank" rel="noopener noreferrer" aria-label="Instagram" title="Instagram">
+                        <span class="site-action-link__icon" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true">
+  <path fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" d="M7.5 3.5h9A4 4 0 0 1 20.5 7.5v9a4 4 0 0 1-4 4h-9a4 4 0 0 1-4-4v-9a4 4 0 0 1 4-4Z" />
+  <path fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" d="M8.8 12a3.2 3.2 0 1 0 6.4 0 3.2 3.2 0 0 0-6.4 0Z" />
+  <path fill="currentColor" d="M17.2 7.2a.9.9 0 1 1-1.8 0 .9.9 0 0 1 1.8 0Z" />
+</svg>
+</span>
+                    </a><button id="dark-mode-toggle" class="theme-toggle" type="button" aria-label="切换配色" title="切换配色">
+                    <span class="theme-toggle__icon theme-toggle__icon--sun" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <circle cx="12" cy="12" r="4.2" />
+    <path d="M12 2.8v2.2M12 19v2.2M4.2 4.2l1.6 1.6M18.2 18.2l1.6 1.6M2.8 12h2.2M19 12h2.2M4.2 19.8l1.6-1.6M18.2 5.8l1.6-1.6" />
+</svg>
+</span>
+                    <span class="theme-toggle__icon theme-toggle__icon--moon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <path d="M19.7 14.6c-1.3 2.9-4.6 4.8-8.1 4.2-4.3-.7-7.2-4.8-6.5-9.1.5-3.2 2.8-5.7 5.7-6.5-.9 2.1-.5 4.7 1.2 6.6 1.9 2.2 4.9 3 7.7 2.2-.1.9-.1 1.7 0 2.6z" />
+</svg>
+</span>
+                </button></div>
+
+            <button class="site-menu-toggle" type="button" aria-controls="primary-navigation" aria-expanded="false">
+                <span class="site-menu-toggle__bar" aria-hidden="true"></span>
+                <span class="site-menu-toggle__bar" aria-hidden="true"></span>
+                <span class="site-menu-toggle__bar" aria-hidden="true"></span>
+                <span class="sr-only">Menu</span>
+            </button>
+        </div>
+    </div>
+</header>
+<main id="main-content" class="main main-content full-width" tabindex="-1"><article class="article-detail">
+    <aside class="article-detail__toc-rail" aria-label="文章目录" data-article-toc>
+    <button class="article-detail__toc-toggle" type="button" aria-label="显示文章目录" aria-controls="TableOfContents" aria-expanded="false" data-article-toc-toggle>
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+    </button>
+
+    <div class="article-detail__toc-panel">
+        <div class="article-detail__toc-nav">
+            <nav id="TableOfContents">
+  <ol>
+    <li><a href="#github-gitee-自动同步脚本">Github 、Gitee 自动同步脚本</a></li>
+    <li><a href="#解决-github-actions-同步-gitee-过程中遇到的一些问题">解决 GitHub Actions 同步 Gitee 过程中遇到的一些问题</a>
+      <ol>
+        <li><a href="#前言">前言</a></li>
+        <li><a href="#思路">思路</a></li>
+        <li><a href="#技术实现">技术实现</a></li>
+        <li><a href="#遇到的坑">遇到的坑</a>
+          <ol>
+            <li><a href="#坑一ssh的密钥格式问题">坑一：SSH的密钥格式问题</a></li>
+            <li><a href="#坑二仓库名称映射问题">坑二：仓库名称映射问题</a></li>
+          </ol>
+        </li>
+        <li><a href="#总结">总结</a></li>
+      </ol>
+    </li>
+  </ol>
+</nav>
+        </div>
+    </div>
+
+    <div class="article-detail__toc-staff" aria-hidden="true">
+        <svg viewBox="0 0 320 110" preserveAspectRatio="none" focusable="false">
+            <g>
+                <path d="M-18 58 C 52 25, 106 82, 176 52 S 270 42, 338 66" />
+                <path d="M-18 69 C 52 36, 106 93, 176 63 S 270 53, 338 77" />
+                <path d="M-18 80 C 52 47, 106 104, 176 74 S 270 64, 338 88" />
+                <path d="M-18 91 C 52 58, 106 115, 176 85 S 270 75, 338 99" />
+                <path d="M-18 102 C 52 69, 106 126, 176 96 S 270 86, 338 110" />
+            </g>
+            <text x="72" y="83">♪</text>
+            <text x="176" y="63">♩</text>
+        </svg>
+    </div>
+</aside>
+
+    <div class="article-detail__layout">
+        <div class="article-detail__main">
+            <header class="article-detail__header">
+                <div class="article-detail__meta"><time datetime="2025-10-05T22:47:19&#43;08:00">2025-10-05</time></div>
+
+                <h1 class="article-detail__title">
+                    <span>🪐 Github码云同步脚本</span>
+                    <span class="article-detail__title-note" aria-hidden="true">♪</span>
+                </h1>
+            </header>
+
+            <section class="article-content article-detail__content">
+                <h2 id="github-gitee-自动同步脚本">
+    Github 、Gitee 自动同步脚本
+</h2>
+<h2 id="解决-github-actions-同步-gitee-过程中遇到的一些问题">
+    解决 GitHub Actions 同步 Gitee 过程中遇到的一些问题
+</h2>
+<h2 id="前言">
+    前言
+</h2>
+<p>由于是在CSDN上更新博客，随着不断学习，想了想应该不应该局限于这一个平台</p>
+<p>于是萌生出搭建一个属于自己博客网站，最终决定采用Hugo + Github</p>
+<p>Hugo工具负责生成静态页面，然后在Github上来部署静态页面，免费搭建出自己的博客</p>
+<p>b站上有非常优质的up来手把手搭建博客网站，我这里看的是莱特雷</p>
+<iframe sandbox="allow-top-navigation-by-user-activation allow-same-origin allow-forms allow-scripts allow-popups" src="https://player.bilibili.com/player.html?bvid=BV1bovfeaEtQ&amp;page=1&amp;high_quality=1&amp;as_wide=1&amp;allowfullscreen=true&amp;autoplay=0&amp;spm_id_from=333.1007.top_right_bar_window_custom_collection.content.click&amp;vd_source=e01647f259a0769d95e99766835e2fde" border="0" frameborder="no" framespacing="0" allowfullscreen="true" style=""></iframe>
+<h2 id="思路">
+    思路
+</h2>
+<p>up实现了GitHub自动部署的功能，但由于结合实际情况，我主要的代码存在Gitee的仓库中，在Github上更新不能在我的码云主页上有完整体现</p>
+<p>而用普通的镜像仓库不能做到同步的功能，Gitee导入Github仓库功能本质上是一个一次性克隆的仓库。如果想在Gitee上看到还需要手动同步，非常低效且麻烦</p>
+<p>😶‍🌫️所以我想新增一个懒功能：在GitHub更新Hugo博客后，自动同步到Gitee，并点亮Gitee的 “小绿点”，同时也是为了解决国内访问速度问题</p>
+<p>所以就继续完善莱特雷博主写的GitHub Action，每次 Push 到 GitHub 后，自动推送到 Gitee</p>
+<h2 id="技术实现">
+    技术实现
+</h2>
+<p>配置了 <strong>GitHub Actions</strong>，利用 <strong>SSH 协议</strong> 将代码自动同步分发到 Gitee 仓库，实现了 ”一次提交，双端自动部署“ 的高效工作流，要注意：自动化脚本都不能生成密码，否则就不能自动执行了</p>
+<ol>
+<li>
+<p>SSH密钥生成</p>
+</li>
+<li>
+<p>密钥与 Token 配置，生成后，需要分发到不同平台：</p>
+<ul>
+<li>
+<p><strong>GitHub (Settings -&gt;</strong>  <strong>Secrets -&gt;</strong>  <strong>Actions):</strong></p>
+<ul>
+<li><code>GITEE_RSA_PRIVATE_KEY</code>: 填入 <strong>私钥</strong> (生成的 <code>gitee_id_rsa</code> 文件内容，是以 <code>-----BEGIN RSA PRIVATE KEY-----</code> 开头的格式)</li>
+<li><code>GITEE_TOKEN</code>: 填入 <strong>Gitee 私人令牌</strong> (在 Gitee 设置 -&gt; 私人令牌中生成，需勾选 <code>projects</code> 和 <code>hook</code> 权限)</li>
+</ul>
+</li>
+<li>
+<p><strong>Gitee (设置 -&gt;</strong>  <strong>SSH 公钥):</strong></p>
+<ul>
+<li>填入<strong>公钥</strong> (生成的 <code>gitee_id_rsa.pub</code> 文件内容)</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p>填写配置文件</p>
+</li>
+</ol>
+<h2 id="遇到的坑">
+    遇到的坑
+</h2>
+<h3 id="坑一ssh的密钥格式问题">
+    坑一：SSH的密钥格式问题
+</h3>
+<p>在同步Gitee仓库的时候出现了报错，虽然GitHub上可以完美推送到仓库中</p>
+<p><img src="/p/github%E7%A0%81%E4%BA%91%E5%90%8C%E6%AD%A5%E8%84%9A%E6%9C%AC/assets/image-20251208201034-ig9ur2f_hu_af55790008507f24.webp" width="1600" height="1186" srcset="/p/github%E7%A0%81%E4%BA%91%E5%90%8C%E6%AD%A5%E8%84%9A%E6%9C%AC/assets/image-20251208201034-ig9ur2f_hu_52348f37de4bc203.webp 800w, /p/github%E7%A0%81%E4%BA%91%E5%90%8C%E6%AD%A5%E8%84%9A%E6%9C%AC/assets/image-20251208201034-ig9ur2f_hu_af55790008507f24.webp 1600w, /p/github%E7%A0%81%E4%BA%91%E5%90%8C%E6%AD%A5%E8%84%9A%E6%9C%AC/assets/image-20251208201034-ig9ur2f_hu_5da674dbcad859ab.webp 2400w" sizes="(max-width: 860px) calc(100vw - 40px), 1060px" loading="lazy" decoding="async" alt="报错日志" class="gallery-image" data-flex-grow="134" data-flex-basis="323px">
+</p>
+<p><strong>原因：</strong></p>
+<ol>
+<li>
+<p>由于我是直接使用默认的<code>ssh-keygen</code>​生成密钥，生成的是新版 OpenSSH 格式（以 <code>BEGIN OPENSSH PRIVATE KEY</code>​ 开头），而这个脚本环境比较老，只支持<code>PEM</code>格式的私钥</p>
+</li>
+<li>
+<p><strong>配置在 GitHub Secrets 里的私钥格式，GitHub Actions 的环境无法识别，是格式不兼容的问题</strong></p>
+</li>
+</ol>
+<p><strong>解决方法：</strong></p>
+<ol>
+<li>
+<p>重新生成 PEM 格式密钥，在本地终端执行</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># 在你的本地终端执行（不要在服务器上）</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># 注意：文件名可以改，不要覆盖了你原本的id_rsa</span>
+</span></span><span class="line"><span class="cl">ssh-keygen -t rsa -b <span class="m">4096</span> -C <span class="s2">&#34;你的邮箱地址.com&#34;</span> -f ./gitee_id_rsa -m PEM
+</span></span></code></pre></div></li>
+<li>
+<p>更新Github配置（更新私钥）</p>
+<ul>
+<li>回到你 GitHub 仓库的 <strong>Settings -&gt;</strong>  <strong>Secrets and variables -&gt;</strong>  <strong>Actions</strong></li>
+<li>找到 <code>GITEE_RSA_PRIVATE_KEY</code>，更新新的私钥</li>
+<li>更新后记得保存</li>
+</ul>
+</li>
+<li>
+<p>更新Gitee配置（更新公钥）</p>
+<ul>
+<li>打开生成的 <code>gitee_id_rsa.pub</code> (公钥)</li>
+<li>去 Gitee -&gt; 设置 -&gt; SSH 公钥</li>
+<li>删除之前添加的那个报错的公钥，格式不兼容留着也没有用了</li>
+<li>添加这个新的公钥</li>
+</ul>
+</li>
+</ol>
+<h3 id="坑二仓库名称映射问题">
+    坑二：仓库名称映射问题
+</h3>
+<p>解决了密钥问题后，同步依然失败，我怀疑是同步到了错误的仓库</p>
+<p><strong>原因：</strong></p>
+<p>由于前期的维护问题，我的Github上的用户名与Gitee上的用户名并不一致，仓库名也有细微区别，这就使得<u><strong>同步工作变得困难</strong></u></p>
+<p><strong>解决方法：</strong></p>
+<p>经排查，我发现GitHub上博客仓库名是 <code>Jul1en-Lin.github.io</code>​， Gitee 那边在由于创建仓库的时，仓库访问URL路径默认是仓库名的小写形式，是<code>jul1en-lin.github.io</code>，两边名字不一样，导致不能正确同步</p>
+<p>在配置文件中<code>static_list</code>​列表正确填写上Gitee是正确的仓库访问路径：<code>jul1en-lin.github.io</code>，问题就解决了~</p>
+<p><img src="/p/github%E7%A0%81%E4%BA%91%E5%90%8C%E6%AD%A5%E8%84%9A%E6%9C%AC/assets/image-20251208203516-fotvncr_hu_42a7624fbf7f426b.webp" width="1600" height="651" srcset="/p/github%E7%A0%81%E4%BA%91%E5%90%8C%E6%AD%A5%E8%84%9A%E6%9C%AC/assets/image-20251208203516-fotvncr_hu_32aaf93a1a2ab8a3.webp 800w, /p/github%E7%A0%81%E4%BA%91%E5%90%8C%E6%AD%A5%E8%84%9A%E6%9C%AC/assets/image-20251208203516-fotvncr_hu_42a7624fbf7f426b.webp 1600w, /p/github%E7%A0%81%E4%BA%91%E5%90%8C%E6%AD%A5%E8%84%9A%E6%9C%AC/assets/image-20251208203516-fotvncr_hu_956b3080a7317cb.webp 2400w" sizes="(max-width: 860px) calc(100vw - 40px), 1060px" loading="lazy" decoding="async" alt="" class="gallery-image" data-flex-grow="245" data-flex-basis="589px">
+</p>
+<p>修改后的配置文件如下，注意要严格对应仓库路径</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">deploy</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c"># 代码提交到main分支时触发github action</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="nt">on</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">push</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">branches</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span>- <span class="l">main</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="nt">jobs</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">deploy</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">runs-on</span><span class="p">:</span><span class="w"> </span><span class="l">ubuntu-latest</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">steps</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">Checkout</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">          </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l">actions/checkout@v4</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">          </span><span class="nt">with</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">              </span><span class="nt">fetch-depth</span><span class="p">:</span><span class="w"> </span><span class="m">0</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">Setup Hugo</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">          </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l">peaceiris/actions-hugo@v3</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">          </span><span class="nt">with</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">              </span><span class="nt">hugo-version</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;latest&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">              </span><span class="nt">extended</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">Build Web</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">          </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="l">hugo -D</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">          </span><span class="c"># 推送到Github仓库的Jul1en-Lin.github.io 仓库</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">Deploy Web</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">          </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l">peaceiris/actions-gh-pages@v4</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">          </span><span class="nt">with</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">			  </span><span class="c"># 这里是自动化脚本仓库的TOKEN，HUGO_TOKEN是名字，需要自己生成替换</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">              </span><span class="nt">PERSONAL_TOKEN</span><span class="p">:</span><span class="w"> </span><span class="l">${{ secrets.HUGO_TOKEN }}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">			  </span><span class="c"># 需要填写你的博客仓库</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">              </span><span class="nt">EXTERNAL_REPOSITORY</span><span class="p">:</span><span class="w"> </span><span class="l">xxxx</span><span class="w"> </span><span class="c"># 用户名/仓库路径</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">              </span><span class="nt">PUBLISH_BRANCH</span><span class="p">:</span><span class="w"> </span><span class="l">main</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">              </span><span class="nt">PUBLISH_DIR</span><span class="p">:</span><span class="w"> </span><span class="l">./public</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">              </span><span class="nt">commit_message</span><span class="p">:</span><span class="w"> </span><span class="l">auto deploy</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">              </span><span class="c"># 关键：为了 Gitee 小绿点，这里必须填你 Gitee 绑定的邮箱和昵称</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">              </span><span class="c"># 这样生成的 Commit 会归属到你名下，同步过去才有绿点。</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">              </span><span class="nt">user_name</span><span class="p">:</span><span class="w"> </span><span class="s1">&#39;你的Github用户名&#39;</span><span class="w"> 
+</span></span></span><span class="line"><span class="cl"><span class="w">              </span><span class="nt">user_email</span><span class="p">:</span><span class="w"> </span><span class="s1">&#39;你的邮箱&#39;</span><span class="w"> </span><span class="c"># 这里最好两个地方邮箱都同步</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="c"># 同步到 Gitee</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">Sync to Gitee</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">          </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l">Yikun/hub-mirror-action@master</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">          </span><span class="nt">if</span><span class="p">:</span><span class="w"> </span><span class="l">always()</span><span class="w"> </span><span class="c"># 保证即使上面步骤偶尔抽风，这一步也尝试执行</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">          </span><span class="nt">with</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="c">#  GitHub 用户名</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="nt">src</span><span class="p">:</span><span class="w"> </span><span class="l">你的用户名</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="c">#  Gitee 用户名</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="nt">dst</span><span class="p">:</span><span class="w"> </span><span class="l">你的用户名</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="c"># 因格式问题重新配置SSH的私钥(对应 GITEE_RSA_PRIVATE_KEY)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="nt">dst_key</span><span class="p">:</span><span class="w"> </span><span class="l">${{ secrets.GITEE_RSA_PRIVATE_KEY }}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">			      </span><span class="c"># Gitee 个人访问令牌 (对应 GITEE_TOKEN)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="nt">dst_token</span><span class="p">:</span><span class="w"> </span><span class="l">${{ secrets.GITEE_TOKEN }}</span><span class="w"> </span><span class="c"># 需要去 Gitee 生成一个私人令牌(Access Token)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="nt">static_list</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;xxx&#34;</span><span class="w"> </span><span class="c"># 这里填你要同步的仓库名，注意路径问题</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="nt">force_update</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="nt">debug</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
+</span></span></span></code></pre></div><h2 id="总结">
+    总结
+</h2>
+<ul>
+<li>了解到 SSH 密钥还会有不同格式的区别，熟悉了 GitHub Actions 的配置，这也是第一次接触GitHub Actions，配置文件也是第一次接触，但是静下心来看还是能看的懂并尝试解决的🤗</li>
+<li>遇到报错不要慌，仔细看 Log。<strong>培养能仔细查看报错日志是非常重要的，遇到的问题可能千奇百怪，如果能看懂报错日志就可以定位出现问题的原因了，这样以后遇到问题也不会害怕。毕竟</strong>​**==授人以鱼不如授人以渔~==**</li>
+<li>第一次接触自动化部署，虽然配置时麻烦，但配好并且解决问题后的感觉真的很爽，满满自豪感！！！！🥳</li>
+</ul>
+<p>‍</p>
+
+            </section>
+
+            <footer class="article-detail__footer">
+                <div class="article-closing" aria-label="Article closing">
+    <ul class="article-closing__links">
+        <li>
+            <span class="article-closing__chevron" aria-hidden="true">›</span>
+            <span>written by <span class="article-closing__author">@Jul1en</span></span>
+        </li>
+        <li>
+            <span class="article-closing__chevron" aria-hidden="true">›</span>
+            <a href="/post/">cd ..</a>
+        </li>
+    </ul>
+
+</div>
+
+            </footer>
+        </div>
+    </div>
+</article>
+
+    </main><button id="back-to-top" class="back-to-top" type="button" aria-label="回到顶部" title="回到顶部">
+    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+        <path d="M6 14.5 12 8l6 6.5"></path>
+    </svg>
+</button>
+<div id="route-transition-mask" class="route-transition-mask" aria-hidden="true">
+    <span class="route-transition-mask__texture" aria-hidden="true"></span>
+    <span class="route-transition__loading" aria-hidden="true">LOADING...</span>
+</div>
+</body>
+
+</html>

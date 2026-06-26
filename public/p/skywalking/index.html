@@ -1,0 +1,918 @@
+<!DOCTYPE html>
+<html lang="zh-CN" dir="ltr">
+
+<head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1"><title>SkyWalking | Jul1en</title>
+<meta name="description" content="整理 SkyWalking 的链路追踪概念、核心组件、Docker Compose 部署、Spring Boot 接入、自定义追踪、日志关联、告警配置和排查顺序。">
+<meta name="author" content="Jul1en">
+<link rel="canonical" href="https://Jul1en-Lin.github.io/p/skywalking/">
+
+<link rel="icon" href="/favicon-signature.svg" type="image/svg+xml">
+<link rel="icon" href="/favicon-signature.png" type="image/png" sizes="512x512">
+<link rel="alternate icon" href="/favicon.ico" type="image/x-icon">
+<meta name="theme-color" content="#fdfdf7" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#090909" media="(prefers-color-scheme: dark)">
+<meta property="og:title" content="SkyWalking | Jul1en">
+<meta property="og:description" content="整理 SkyWalking 的链路追踪概念、核心组件、Docker Compose 部署、Spring Boot 接入、自定义追踪、日志关联、告警配置和排查顺序。">
+<meta property="og:url" content="https://Jul1en-Lin.github.io/p/skywalking/">
+<meta property="og:site_name" content="Jul1en">
+<meta property="og:type" content="article">
+<meta property="article:section" content="Post">
+<meta property="article:tag" content="Spring Cloud">
+<meta property="article:tag" content="SkyWalking">
+<meta property="article:tag" content="微服务">
+<meta property="article:tag" content="链路追踪">
+<meta property="article:tag" content="APM">
+<meta property="article:published_time" content="2026-06-15T12:06:13&#43;08:00">
+<meta property="article:modified_time" content="2026-06-15T12:07:43&#43;08:00">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="SkyWalking | Jul1en">
+<meta name="twitter:description" content="整理 SkyWalking 的链路追踪概念、核心组件、Docker Compose 部署、Spring Boot 接入、自定义追踪、日志关联、告警配置和排查顺序。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;600&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Noto+Sans+SC:wght@400;500;700&family=Noto+Serif:wght@400;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet"><script>
+    (function () {
+        var stored = null;
+        try {
+            stored = window.localStorage.getItem('ColorScheme');
+        } catch (error) {
+            stored = null;
+        }
+
+        var scheme = stored;
+        if (scheme !== 'light' && scheme !== 'dark') {
+            scheme = "light";
+        }
+        document.documentElement.dataset.scheme = scheme;
+    })();
+</script><link rel="stylesheet" href="/css/site.min.954818373eafb12c608d3f56fa7bff4c76c8574abd1940dbc983cf3318715029.css" integrity="sha256-lUgYNz6vsSxgjT9W&#43;nv/THbIV0q9GUDbyYPPMxhxUCk="><script src="/js/site.abbcb3538826a91399f254fdb11f18a958e7dc1361cb64ea6dbd74cdee2ad59b.js" integrity="sha256-q7yzU4gmqROZ8lT9sR8YqVjn3BNhy2Tqbb10ze4q1Zs=" defer></script>
+
+</head>
+
+<body class="melody-shell template-article-detail article-page">
+    <a class="skip-link" href="#main-content">Skip to content</a><header class="site-header" role="banner">
+    <div class="site-header__inner">
+        <a class="site-brand" href="/" aria-label="Jul1en home">
+            <span class="site-brand__signature" aria-hidden="true">
+    <svg class="site-signature" viewBox="0 0 1672 941" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+        <defs>
+            <mask id="sig-mask" maskUnits="userSpaceOnUse">
+                
+                <path class="site-signature__guide" pathLength="1"
+                      fill="none" stroke="white" stroke-width="20"
+                      stroke-linecap="round" stroke-linejoin="round"
+                      d="M 584 422 C 575 412, 564 415, 559 394 C 554 373, 556 386, 571 361 C 586 337, 580 347, 602 324 C 624 301, 614 311, 634 296 C 654 281, 639 292, 658 281 C 677 270, 668 275, 688 264 C 708 254, 697 258, 716 251 C 735 244, 723 249, 742 244 C 761 239, 752 239, 771 238 C 790 237, 781 235, 795 240 C 809 245, 803 241, 810 251 C 817 262, 815 255, 816 270 C 817 285, 817 277, 812 294 C 807 311, 810 301, 803 318 C 796 336, 800 327, 792 344 C 784 361, 789 350, 781 366 C 773 382, 777 374, 768 390 C 759 406, 763 398, 755 413 C 747 428, 753 419, 745 433 C 737 447, 750 425, 732 454 C 714 483, 721 472, 693 515 C 665 558, 678 540, 652 576 C 626 612, 641 590, 619 617 C 597 644, 609 631, 589 652 C 569 673, 583 659, 563 678 C 543 697, 558 685, 532 706 C 506 727, 515 722, 489 738 C 463 754, 480 745, 459 752 C 438 759, 450 755, 429 759 C 408 763, 419 763, 398 763 C 377 763, 387 768, 368 759 C 349 750, 355 755, 344 737 C 334 719, 333 731, 338 707 C 343 683, 341 694, 359 668 C 377 642, 366 656, 389 633 C 412 610, 399 623, 426 603 C 453 583, 436 595, 467 577 C 498 559, 483 566, 515 551 C 547 536, 523 547, 559 535 C 595 523, 582 527, 617 516 C 652 506, 631 512, 658 505 C 685 498, 666 502, 695 496 C 724 490, 710 493, 740 488 C 770 483, 753 487, 781 481 C 809 475, 796 478, 821 472 C 846 466, 831 472, 853 463 C 875 454, 858 465, 883 446 C 908 427, 896 436, 924 409 C 952 382, 939 397, 963 370 C 987 343, 973 358, 992 332 C 1011 306, 1001 322, 1018 295 C 1035 268, 1027 284, 1041 254 C 1055 224, 1051 234, 1057 210 C 1063 186, 1063 198, 1057 186 C 1051 174, 1051 176, 1039 176 C 1027 176, 1034 176, 1022 186 C 1010 196, 1017 190, 1005 204 C 993 218, 1001 209, 989 226 C 977 243, 983 232, 972 252 C 961 272, 967 262, 957 282 C 947 302, 953 288, 944 308 C 935 328, 942 311, 931 338 C 921 365, 925 356, 914 384 C 904 412, 915 387, 901 418 C 887 450, 893 436, 875 474 C 857 512, 868 495, 849 527 C 830 559, 839 545, 821 566 C 803 587, 812 579, 797 587 C 782 595, 785 594, 777 589 C 769 584, 768 586, 773 572 C 778 558, 776 563, 790 550 C 804 537, 795 543, 812 535 C 830 527, 822 531, 840 527 C 858 523, 847 522, 864 524 C 882 526, 870 527, 890 533 C 910 539, 899 536, 920 540 C 941 544, 929 542, 950 544 C 971 546, 959 545, 981 546 C 1003 547, 992 547, 1013 546 C 1034 545, 1021 545, 1042 542 C 1063 539, 1052 541, 1072 537 C 1092 533, 1078 536, 1100 531 C 1122 526, 1113 529, 1135 524 C 1157 519, 1141 522, 1163 516 C 1185 510, 1171 513, 1197 507 C 1223 501, 1212 503, 1238 500 C 1264 497, 1250 498, 1271 498 C 1292 498, 1281 498, 1297 500 C 1313 502, 1302 499, 1317 505 C 1332 511, 1332 512, 1340 516" />
+            </mask>
+        </defs>
+        
+        <g mask="url(#sig-mask)" fill="currentColor">
+            <g transform="translate(0,941) scale(0.1,-0.1)">
+                <path d="M10357 7720 c-89 -23 -208 -101 -303 -202 -182 -191 -341 -442 -549 -863 -188 -382 -306 -651 -562 -1285 -63 -157 -119 -290 -124 -297 -18 -21 -173 -121 -259 -167 -173 -91 -263 -114 -751 -190 -156 -25 -332 -53 -391 -64 -60 -11 -108 -16 -108 -11 0 4 37 70 83 146 234 389 414 710 541 968 291 589 368 917 268 1137 -77 168 -269 247 -530 218 -547 -60 -1348 -483 -1792 -947 -371 -386 -469 -744 -264 -963 56 -60 138 -103 201 -104 38 -1 49 4 74 32 54 60 29 124 -65 166 -140 62 -161 188 -66 391 72 153 222 331 436 515 467 402 1215 738 1599 717 106 -5 163 -26 204 -73 177 -201 -98 -876 -861 -2110 -99 -160 -99 -160 -211 -183 -409 -83 -952 -237 -1327 -376 -1006 -374 -1827 -945 -2156 -1501 -224 -379 -187 -706 100 -878 124 -74 276 -108 486 -108 217 0 414 43 650 142 742 311 1437 1016 2349 2383 72 108 135 197 139 197 4 0 120 20 257 45 138 25 354 61 480 81 399 61 525 93 690 173 44 22 81 38 82 37 5 -4 -124 -283 -183 -396 -59 -115 -59 -115 -146 -127 -187 -26 -378 -124 -520 -265 -137 -137 -202 -278 -179 -383 25 -111 131 -164 262 -131 184 48 391 230 572 505 62 93 62 93 152 87 50 -3 119 -12 155 -20 627 -140 805 -162 1240 -153 458 9 741 60 1610 287 275 72 417 103 580 129 476 76 884 33 1079 -113 48 -36 94 -35 132 3 55 55 32 130 -56 187 -171 109 -513 176 -815 160 -270 -15 -497 -57 -990 -182 -437 -112 -589 -148 -795 -189 -602 -121 -1060 -124 -1600 -10 -94 20 -233 49 -310 65 -77 17 -152 30 -167 30 -15 0 -29 4 -32 9 -3 5 28 79 70 166 71 150 213 474 228 523 4 12 58 65 121 117 786 654 1594 1865 1595 2391 0 112 -57 226 -132 263 -51 24 -138 34 -191 21z m102 -209 c87 -87 -37 -464 -291 -884 -139 -230 -315 -480 -498 -707 -161 -199 -520 -582 -520 -554 0 18 141 365 247 609 337 772 561 1171 793 1407 129 131 222 176 269 129z m-3579 -3177 c0 -12 -337 -494 -478 -684 -520 -699 -969 -1159 -1406 -1437 -365 -232 -717 -345 -1025 -330 -304 15 -466 130 -479 337 -19 321 422 836 1054 1233 562 353 1201 611 2019 818 258 65 315 76 315 63z m1393 -354 c-63 -107 -244 -280 -340 -325 -68 -33 -97 -33 -88 -2 37 122 189 262 362 333 79 32 88 31 66 -6z"/>
+            </g>
+        </g>
+    </svg>
+    <span class="sr-only">Jul1en</span>
+</span>
+
+        </a>
+
+        <div class="site-header__right">
+            <nav id="primary-navigation" class="site-nav" aria-label="Primary navigation">
+                <ul class="site-nav__list"><li class="site-nav__item">
+                            <a class="site-nav__link is-active" href="/post/" aria-current="page">
+                                Blog
+                            </a>
+                        </li><li class="site-nav__item">
+                            <a class="site-nav__link" href="/search/">
+                                Search
+                            </a>
+                        </li><li class="site-nav__item">
+                            <a class="site-nav__link" href="/music/">
+                                Music
+                            </a>
+                        </li></ul>
+            </nav>
+
+            <div class="site-actions" role="group" aria-label="Social links and theme"><a class="site-action-link" href="https://github.com/Jul1en-Lin" target="_blank" rel="noopener noreferrer" aria-label="GitHub" title="GitHub">
+                        <span class="site-action-link__icon" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true">
+  <path fill="currentColor" d="M12 2.2c-5.5 0-9.9 4.5-9.9 9.9 0 4.4 2.8 8.1 6.8 9.4.5.1.7-.2.7-.5v-1.8c-2.8.6-3.4-1.2-3.4-1.2-.5-1.1-1.1-1.4-1.1-1.4-.9-.6.1-.6.1-.6 1 0 1.6 1.1 1.6 1.1.9 1.5 2.4 1.1 2.9.8.1-.7.4-1.1.7-1.4-2.2-.3-4.5-1.1-4.5-4.9 0-1.1.4-2 1.1-2.7-.1-.3-.5-1.3.1-2.7 0 0 .9-.3 2.8 1.1.8-.2 1.7-.3 2.5-.3s1.7.1 2.5.3c1.9-1.3 2.8-1.1 2.8-1.1.6 1.4.2 2.4.1 2.7.7.8 1.1 1.7 1.1 2.7 0 3.8-2.3 4.6-4.5 4.9.4.3.7.9.7 1.9V21c0 .3.2.6.7.5 4-1.3 6.8-5 6.8-9.4 0-5.4-4.4-9.9-9.9-9.9Z" />
+</svg>
+</span>
+                    </a><a class="site-action-link" href="https://www.instagram.com/jul1en_lin" target="_blank" rel="noopener noreferrer" aria-label="Instagram" title="Instagram">
+                        <span class="site-action-link__icon" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true">
+  <path fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" d="M7.5 3.5h9A4 4 0 0 1 20.5 7.5v9a4 4 0 0 1-4 4h-9a4 4 0 0 1-4-4v-9a4 4 0 0 1 4-4Z" />
+  <path fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" d="M8.8 12a3.2 3.2 0 1 0 6.4 0 3.2 3.2 0 0 0-6.4 0Z" />
+  <path fill="currentColor" d="M17.2 7.2a.9.9 0 1 1-1.8 0 .9.9 0 0 1 1.8 0Z" />
+</svg>
+</span>
+                    </a><button id="dark-mode-toggle" class="theme-toggle" type="button" aria-label="切换配色" title="切换配色">
+                    <span class="theme-toggle__icon theme-toggle__icon--sun" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <circle cx="12" cy="12" r="4.2" />
+    <path d="M12 2.8v2.2M12 19v2.2M4.2 4.2l1.6 1.6M18.2 18.2l1.6 1.6M2.8 12h2.2M19 12h2.2M4.2 19.8l1.6-1.6M18.2 5.8l1.6-1.6" />
+</svg>
+</span>
+                    <span class="theme-toggle__icon theme-toggle__icon--moon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <path d="M19.7 14.6c-1.3 2.9-4.6 4.8-8.1 4.2-4.3-.7-7.2-4.8-6.5-9.1.5-3.2 2.8-5.7 5.7-6.5-.9 2.1-.5 4.7 1.2 6.6 1.9 2.2 4.9 3 7.7 2.2-.1.9-.1 1.7 0 2.6z" />
+</svg>
+</span>
+                </button></div>
+
+            <button class="site-menu-toggle" type="button" aria-controls="primary-navigation" aria-expanded="false">
+                <span class="site-menu-toggle__bar" aria-hidden="true"></span>
+                <span class="site-menu-toggle__bar" aria-hidden="true"></span>
+                <span class="site-menu-toggle__bar" aria-hidden="true"></span>
+                <span class="sr-only">Menu</span>
+            </button>
+        </div>
+    </div>
+</header>
+<main id="main-content" class="main main-content full-width" tabindex="-1"><article class="article-detail">
+    <aside class="article-detail__toc-rail" aria-label="文章目录" data-article-toc>
+    <button class="article-detail__toc-toggle" type="button" aria-label="显示文章目录" aria-controls="TableOfContents" aria-expanded="false" data-article-toc-toggle>
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+    </button>
+
+    <div class="article-detail__toc-panel">
+        <div class="article-detail__toc-nav">
+            <nav id="TableOfContents">
+  <ol>
+    <li><a href="#skywalking">SkyWalking</a>
+      <ol>
+        <li><a href="#链路追踪">链路追踪</a></li>
+        <li><a href="#常见方案">常见方案</a></li>
+        <li><a href="#选择-skywalking-的原因">选择 SkyWalking 的原因</a></li>
+        <li><a href="#核心组件">核心组件</a></li>
+        <li><a href="#关键术语">关键术语</a></li>
+        <li><a href="#安装部署">安装部署</a>
+          <ol>
+            <li><a href="#下载包说明">下载包说明</a></li>
+            <li><a href="#docker-compose-部署">Docker Compose 部署</a></li>
+          </ol>
+        </li>
+        <li><a href="#spring-boot-服务接入">Spring Boot 服务接入</a>
+          <ol>
+            <li><a href="#下载与放置-java-agent">下载与放置 Java Agent</a></li>
+            <li><a href="#启动参数接入">启动参数接入</a></li>
+            <li><a href="#docker-中接入">Docker 中接入</a></li>
+          </ol>
+        </li>
+        <li><a href="#自定义追踪">自定义追踪</a>
+          <ol>
+            <li><a href="#toolkit-依赖">Toolkit 依赖</a></li>
+            <li><a href="#相关注解">相关注解</a></li>
+          </ol>
+        </li>
+        <li><a href="#日志关联与上传">日志关联与上传</a>
+          <ol>
+            <li><a href="#添加依赖">添加依赖</a></li>
+            <li><a href="#编写-xml-文件">编写 xml 文件</a></li>
+            <li><a href="#上传日志">上传日志</a></li>
+          </ol>
+        </li>
+        <li><a href="#告警">告警</a>
+          <ol>
+            <li><a href="#规则字段">规则字段</a></li>
+            <li><a href="#webhook">Webhook</a></li>
+            <li><a href="#配置">配置</a></li>
+          </ol>
+        </li>
+        <li><a href="#排查顺序">排查顺序</a></li>
+      </ol>
+    </li>
+  </ol>
+</nav>
+        </div>
+    </div>
+
+    <div class="article-detail__toc-staff" aria-hidden="true">
+        <svg viewBox="0 0 320 110" preserveAspectRatio="none" focusable="false">
+            <g>
+                <path d="M-18 58 C 52 25, 106 82, 176 52 S 270 42, 338 66" />
+                <path d="M-18 69 C 52 36, 106 93, 176 63 S 270 53, 338 77" />
+                <path d="M-18 80 C 52 47, 106 104, 176 74 S 270 64, 338 88" />
+                <path d="M-18 91 C 52 58, 106 115, 176 85 S 270 75, 338 99" />
+                <path d="M-18 102 C 52 69, 106 126, 176 96 S 270 86, 338 110" />
+            </g>
+            <text x="72" y="83">♪</text>
+            <text x="176" y="63">♩</text>
+        </svg>
+    </div>
+</aside>
+
+    <div class="article-detail__layout">
+        <div class="article-detail__main">
+            <header class="article-detail__header">
+                <div class="article-detail__meta"><time datetime="2026-06-15T12:06:13&#43;08:00">2026-06-15</time><span aria-hidden="true">•</span>
+                        <a href="/categories/%E5%BE%AE%E6%9C%8D%E5%8A%A1/">微服务</a></div>
+
+                <h1 class="article-detail__title">
+                    <span>SkyWalking</span>
+                    <span class="article-detail__title-note" aria-hidden="true">♪</span>
+                </h1>
+            </header>
+
+            <section class="article-content article-detail__content">
+                
+<blockquote>
+<p>相关笔记：<a class="link" href="/p/spring-cloud-%E6%A0%B8%E5%BF%83%E6%A6%82%E5%BF%B5/">Spring Cloud 核心概念</a>
+</p>
+</blockquote>
+<h2 id="链路追踪">
+    链路追踪
+</h2>
+<p>微服务拆分后，一次请求可能经历下面的过程：</p>
+<ol>
+<li>用户请求进入 Gateway</li>
+<li>Gateway 调用商品服务、订单服务或库存服务</li>
+<li>订单服务继续调用支付服务</li>
+<li>服务访问 MySQL、Redis 或消息队列</li>
+<li>部分调用串行执行，部分调用并行执行</li>
+</ol>
+<p>这些服务可能由不同团队开发，部署在不同服务器上，甚至使用不同语言。只看单个服务的日志是很难追溯到问题的，比如</p>
+<ul>
+<li>请求具体经过了哪些服务</li>
+<li>服务之间是什么依赖关系</li>
+<li>各个接口的性能怎么样</li>
+</ul>
+<p>这就需要链路追踪。<mark class="hltr-green-light">链路追踪会记录一次请求在多个服务之间的流转路径、耗时和状态，把分散在各个服务里的调用信息集中展示。它的核心是通过唯一的 <code>Trace ID</code> 串联跨服务调用，用 <code>Span</code> 表示一次具体处理单元，再通过 <code>Context</code> 传递让链路可以连续下去。</mark></p>
+<p>这里用快递包裹的物流追踪来类比链路追踪。看物流轨迹时，我们会关心包裹经过了哪些转运节点、每个节点花了多少时间、派送过程有没有异常。链路追踪也是类似的思路：给复杂的网络请求画一张“流程图”，记录一次操作经过了哪些服务、每个环节耗时多少、是否出现异常。</p>
+<p><img src="/p/skywalking/assets/skywalking-trace-logistics_hu_a046d9eee6016d48.webp" width="1600" height="901" srcset="/p/skywalking/assets/skywalking-trace-logistics_hu_84d88884f6ff6905.webp 800w, /p/skywalking/assets/skywalking-trace-logistics_hu_a046d9eee6016d48.webp 1600w, /p/skywalking/assets/skywalking-trace-logistics_hu_73a8e179c4c10bce.webp 2400w" sizes="(max-width: 860px) calc(100vw - 40px), 1060px" loading="lazy" decoding="async" alt="skywalking trace logistics" class="gallery-image" data-flex-grow="177" data-flex-basis="426px">
+</p>
+<div class="table-wrapper"><table>
+  <thead>
+      <tr>
+          <th>链路追踪</th>
+          <th>快递物流</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Trace</td>
+          <td>整个物流链路</td>
+      </tr>
+      <tr>
+          <td>Trace ID</td>
+          <td>快递单号</td>
+      </tr>
+      <tr>
+          <td>Span</td>
+          <td>包裹每经过一个转运中心产生的一条记录，包含到达时间、状态等信息</td>
+      </tr>
+  </tbody>
+</table></div>
+<p>链路追踪的作用主要有四个：</p>
+<ul>
+<li><strong>保障系统可用性</strong>：结合 CPU、内存、成功率等指标，提前发现异常并触发告警</li>
+<li><strong>优化性能和资源使用</strong>：通过完整 Trace 看清每个服务节点耗时，找到慢调用</li>
+<li><strong>提升故障排查效率</strong>：用 Trace ID 把跨服务日志、错误信息串成统一视图</li>
+<li><strong>理解服务依赖与拓扑</strong>：自动展示服务间调用关系、调用频率和成功率，辅助架构分析</li>
+</ul>
+<p><mark class="hltr-orange">链路追踪适合找调用关系和慢点，但不完全等同于日志。</mark> Trace 说明“哪一步慢、哪一步错”，日志继续解释“当时的参数和业务状态是什么”。如果还要定位到具体方法和代码行，再进入性能剖析。</p>
+<h2 id="常见方案">
+    常见方案
+</h2>
+<p>链路追踪本身是一类问题，不是 SkyWalking 独有的能力。常见方案大概有这些：</p>
+<ul>
+<li><strong>Zipkin</strong>：Twitter 开源的分布式链路追踪系统，设计思路来自 Google Dapper 论文，常用于请求链路采集、存储和查询</li>
+<li><strong>CAT</strong>：美团点评开源的分布式实时监控系统，理念来源于 eBay 的 CAL 系统，报表和监控能力比较完整，但通常需要代码埋点</li>
+<li><strong>SkyWalking</strong>：Apache 顶级项目，面向微服务和分布式架构，支持 Agent 自动采集，UI 功能较完整，也支持插件扩展</li>
+</ul>
+<p>简单对比图：</p>
+<div class="table-wrapper"><table>
+  <thead>
+      <tr>
+          <th>维度</th>
+          <th>Zipkin</th>
+          <th>CAT</th>
+          <th>SkyWalking</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>接入复杂度</td>
+          <td>接入相对简单，常和 Spring Cloud 生态集成</td>
+          <td>需要代码埋点</td>
+          <td>通过 Java Agent 启动，代码无侵入</td>
+      </tr>
+      <tr>
+          <td>数据粒度</td>
+          <td>接口级</td>
+          <td>代码级，可细化到具体代码块</td>
+          <td>方法级，支持 RPC、HTTP</td>
+      </tr>
+      <tr>
+          <td>支持语言</td>
+          <td>Java、C#、Python、Node.js、Go、Ruby、Scala 等</td>
+          <td>Java、C/C++、Python、Node.js、Go 等</td>
+          <td>Java、Python、Node.js、PHP、Go、Ruby 等</td>
+      </tr>
+      <tr>
+          <td>调用链可视化</td>
+          <td>支持</td>
+          <td>支持</td>
+          <td>支持</td>
+      </tr>
+      <tr>
+          <td>聚合报表</td>
+          <td>较少</td>
+          <td>很丰富</td>
+          <td>较丰富</td>
+      </tr>
+      <tr>
+          <td>服务依赖图</td>
+          <td>简单</td>
+          <td>简单</td>
+          <td>较好</td>
+      </tr>
+      <tr>
+          <td>告警支持</td>
+          <td>不直接提供</td>
+          <td>支持</td>
+          <td>支持</td>
+      </tr>
+      <tr>
+          <td>存储机制</td>
+          <td>内存、Elasticsearch、MySQL 等</td>
+          <td>MySQL、本地文件、HDFS 等</td>
+          <td>Elasticsearch、MySQL、BanyanDB、PostgreSQL 等</td>
+      </tr>
+      <tr>
+          <td>社区情况</td>
+          <td>文档丰富，功能迭代相对慢</td>
+          <td>国内使用多，社区活跃度一般</td>
+          <td>社区活跃，更新较频繁</td>
+      </tr>
+      <tr>
+          <td>主要优势</td>
+          <td>部署简单，适合快速接入基础 Trace</td>
+          <td>报表完整，适合综合监控</td>
+          <td>无侵入、Apache 项目、生态较完整</td>
+      </tr>
+      <tr>
+          <td>主要不足</td>
+          <td>报表能力弱，功能相对单一</td>
+          <td>代码侵入性高</td>
+          <td>插件开发门槛较高</td>
+      </tr>
+  </tbody>
+</table></div>
+<h2 id="选择-skywalking-的原因">
+    选择 SkyWalking 的原因
+</h2>
+<p>综合来看，SkyWalking 的能力更完整，无代码侵入接入、多语言、报表、告警和插件体系都比较适合当前 Java Spring 微服务项目。</p>
+<h2 id="核心组件">
+    核心组件
+</h2>
+<p>SkyWalking 架构分为三类组件：探针 Agent、后端 Backend 和前端 UI。<mark class="hltr-green-light">其中 OAP 是后端的核心部分，负责接收、处理和存储来自探针的数据，并生成聚合指标。</mark></p>
+<div class="table-wrapper"><table>
+  <thead>
+      <tr>
+          <th>组件</th>
+          <th>作用</th>
+          <th>比喻（交通网系统）</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Agent</td>
+          <td>探针，通过字节码增强收集应用运行时数据</td>
+          <td>摄像头</td>
+      </tr>
+      <tr>
+          <td>OAP</td>
+          <td>接收、分析、聚合数据，并提供查询和告警能力</td>
+          <td>交通数据处理系统（后端）</td>
+      </tr>
+      <tr>
+          <td>UI</td>
+          <td>展示拓扑、服务指标、Trace、日志、剖析任务和告警</td>
+          <td>Dashboard 看板（前端）</td>
+      </tr>
+  </tbody>
+</table></div>
+<h2 id="关键术语">
+    关键术语
+</h2>
+<div class="table-wrapper"><table>
+  <thead>
+      <tr>
+          <th>术语</th>
+          <th>含义</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>APM</td>
+          <td>Application Performance Monitor，应用性能监控，通过收集和分析响应时间、吞吐量、错误率等数据来帮助优化系统性能</td>
+      </tr>
+      <tr>
+          <td>OAP</td>
+          <td>Observability Analysis Platform，观测分析平台，是 SkyWalking 后端的核心部分</td>
+      </tr>
+      <tr>
+          <td>Agent</td>
+          <td>探针，通过字节码增强无侵入采集应用运行时数据</td>
+      </tr>
+      <tr>
+          <td>Metrics</td>
+          <td>指标，比如服务响应时间、服务成功率、分钟请求数</td>
+      </tr>
+      <tr>
+          <td>Trace</td>
+          <td>一次完整的分布式请求，由多个 Span 或 Segment 组成</td>
+      </tr>
+      <tr>
+          <td>Trace ID</td>
+          <td>一次 Trace 的全局标识，常用于 Trace 与日志互查</td>
+      </tr>
+      <tr>
+          <td>Span</td>
+          <td>一次具体操作，比如接收 HTTP 请求、执行方法、调用数据库</td>
+      </tr>
+      <tr>
+          <td>Endpoint</td>
+          <td>服务入口，比如 <code>GET:/orders/{id}</code> 或一个 RPC 方法</td>
+      </tr>
+      <tr>
+          <td>Context Propagation</td>
+          <td>把 Trace 上下文传到下游服务或异步任务</td>
+      </tr>
+      <tr>
+          <td>Sampling</td>
+          <td>只采集部分请求，控制 Agent、网络和存储开销</td>
+      </tr>
+      <tr>
+          <td>Topology</td>
+          <td>根据调用数据得到的服务依赖关系</td>
+      </tr>
+      <tr>
+          <td>Apdex</td>
+          <td>根据响应时间评估用户体验的指标</td>
+      </tr>
+      <tr>
+          <td>OAL</td>
+          <td>OAP 中用于分析 Trace 和 Mesh 流量的规则语言</td>
+      </tr>
+      <tr>
+          <td>MQE</td>
+          <td>Metrics Query Expression，当前告警规则使用的指标表达式</td>
+      </tr>
+  </tbody>
+</table></div>
+<h2 id="安装部署">
+    安装部署
+</h2>
+<h3 id="下载包说明">
+    下载包说明
+</h3>
+<p>课件里是手动下载安装 SkyWalking，需下载两个包：</p>
+<ul>
+<li><strong>SkyWalking APM</strong>：服务端包，里面包含 OAP、UI、配置文件和启动脚本，用来启动 SkyWalking 后端与可视化界面</li>
+<li><strong>Java Agent</strong>：探针包，用来接入 Spring Boot 服务，通过 <code>-javaagent</code> 挂到业务 JVM 上采集 Trace、Metrics 等数据</li>
+</ul>
+<p>从 <code>8.8.0</code> 之后，APM 和 Agent 分开安装，所以只下载 Java Agent 不够。需要先准备 SkyWalking APM 服务端，再给业务服务接入 Java Agent。</p>
+<ul>
+<li>APM 历史版本：<code>https://archive.apache.org/dist/skywalking</code></li>
+<li>Java Agent 历史版本：<code>https://archive.apache.org/dist/skywalking/java-agent</code></li>
+</ul>
+<h3 id="docker-compose-部署">
+    Docker Compose 部署
+</h3>
+<p>目录可以这样放：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">skywalking/
+</span></span><span class="line"><span class="cl">├── compose.yaml
+</span></span><span class="line"><span class="cl">└── config/
+</span></span><span class="line"><span class="cl">    └── alarm-settings.yml
+</span></span></code></pre></div><p><code>compose.yaml</code>：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="nt">services</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">banyandb</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l">apache/skywalking-banyandb:0.10.2</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">container_name</span><span class="p">:</span><span class="w"> </span><span class="l">skywalking-banyandb</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">command</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span>- <span class="l">standalone</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span>- --<span class="l">stream-root-path</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span>- <span class="l">/data/stream-data</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span>- --<span class="l">measure-root-path</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span>- <span class="l">/data/measure-data</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">ports</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span>- <span class="s2">&#34;17912:17912&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span>- <span class="s2">&#34;17913:17913&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">volumes</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span>- <span class="l">banyandb-data:/data</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">healthcheck</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">test</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&#34;CMD&#34;</span><span class="p">,</span><span class="w"> </span><span class="s2">&#34;sh&#34;</span><span class="p">,</span><span class="w"> </span><span class="s2">&#34;-c&#34;</span><span class="p">,</span><span class="w"> </span><span class="s2">&#34;nc -nz 127.0.0.1 17912&#34;</span><span class="p">]</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">interval</span><span class="p">:</span><span class="w"> </span><span class="l">5s</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">timeout</span><span class="p">:</span><span class="w"> </span><span class="l">5s</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">retries</span><span class="p">:</span><span class="w"> </span><span class="m">60</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">oap</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l">apache/skywalking-oap-server:10.4.0</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">container_name</span><span class="p">:</span><span class="w"> </span><span class="l">skywalking-oap</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">depends_on</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">banyandb</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">condition</span><span class="p">:</span><span class="w"> </span><span class="l">service_healthy</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">environment</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">SW_STORAGE</span><span class="p">:</span><span class="w"> </span><span class="l">banyandb</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">SW_STORAGE_BANYANDB_TARGETS</span><span class="p">:</span><span class="w"> </span><span class="l">banyandb:17912</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">SW_HEALTH_CHECKER</span><span class="p">:</span><span class="w"> </span><span class="l">default</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">JAVA_OPTS</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;-Xms1g -Xmx1g&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">ports</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span>- <span class="s2">&#34;11800:11800&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span>- <span class="s2">&#34;12800:12800&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">volumes</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span>- <span class="l">./config/alarm-settings.yml:/skywalking/ext-config/alarm-settings.yml:ro</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">healthcheck</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">test</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&#34;CMD-SHELL&#34;</span><span class="p">,</span><span class="w"> </span><span class="s2">&#34;bash -c &#39;echo &gt;/dev/tcp/127.0.0.1/12800&#39;&#34;</span><span class="p">]</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">interval</span><span class="p">:</span><span class="w"> </span><span class="l">15s</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">timeout</span><span class="p">:</span><span class="w"> </span><span class="l">5s</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">retries</span><span class="p">:</span><span class="w"> </span><span class="m">20</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">start_period</span><span class="p">:</span><span class="w"> </span><span class="l">60s</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">ui</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l">apache/skywalking-ui:10.4.0</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">container_name</span><span class="p">:</span><span class="w"> </span><span class="l">skywalking-ui</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">depends_on</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">oap</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">condition</span><span class="p">:</span><span class="w"> </span><span class="l">service_healthy</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">environment</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">SW_OAP_ADDRESS</span><span class="p">:</span><span class="w"> </span><span class="l">http://oap:12800</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">ports</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span>- <span class="s2">&#34;8080:8080&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="nt">volumes</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">banyandb-data</span><span class="p">:</span><span class="w">
+</span></span></span></code></pre></div><p>先创建一个可用的 <code>config/alarm-settings.yml</code>：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="nt">rules</span><span class="p">:</span><span class="w"> </span>{}<span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="nt">hooks</span><span class="p">:</span><span class="w"> </span>{}<span class="w">
+</span></span></span></code></pre></div><p>启动：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="nb">cd</span> skywalking
+</span></span><span class="line"><span class="cl">docker compose up -d
+</span></span><span class="line"><span class="cl">docker compose ps
+</span></span></code></pre></div><p>检查 OAP：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">curl http://localhost:12800/internal/l7check
+</span></span></code></pre></div><p>如果 Spring Boot 运行在宿主机，Agent 连接 <code>127.0.0.1:11800</code>。如果应用也在 Compose 中，地址应写成 <code>oap:11800</code>，不能写 <code>localhost:11800</code>，因为容器内的 <code>localhost</code> 指向应用容器自己。</p>
+<h2 id="spring-boot-服务接入">
+    Spring Boot 服务接入
+</h2>
+<p>接入 SkyWalking 前先确认两件事：</p>
+<ol>
+<li>SkyWalking OAP 和 UI 已经启动，能访问 <code>http://127.0.0.1:8080</code>，如果改过 UI 端口就换成自己的端口</li>
+<li>微服务本身能正常跑通业务请求，否则后面 UI 上即使没有 Trace，也不好判断是业务问题还是 Agent 接入问题</li>
+</ol>
+<h3 id="下载与放置-java-agent">
+    下载与放置 Java Agent
+</h3>
+<p>从 SkyWalking 官方 Downloads 页面下载 Java Agent 后，一般先解压 SkyWalking APM 包，再在 APM 目录中新建 <code>agent</code> 文件夹，把 Java Agent 解压后的内容复制进去。这样后面启动业务服务时，就可以指向这个 <code>agent/skywalking-agent.jar</code>，也比较方便。</p>
+<h3 id="启动参数接入">
+    启动参数接入
+</h3>
+<p>以 <code>order-service</code> 为例，通过 <code>-javaagent</code> 参数配置 SkyWalking Agent 来追踪微服务。
+最直接的启动方式是在 Java 启动参数里增加：
+<img src="/p/skywalking/assets/skywalking-java-agent-startup_hu_f43ce30e233dda5f.webp" width="1600" height="879" srcset="/p/skywalking/assets/skywalking-java-agent-startup_hu_68ea101d41d33f53.webp 800w, /p/skywalking/assets/skywalking-java-agent-startup_hu_f43ce30e233dda5f.webp 1600w, /p/skywalking/assets/skywalking-java-agent-startup_hu_39f60a22dbd8c54c.webp 2400w" sizes="(max-width: 860px) calc(100vw - 40px), 1060px" loading="lazy" decoding="async" alt="skywalking java agent startup" class="gallery-image" data-flex-grow="182" data-flex-basis="436px">
+</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># 换成自己本地的 agent 安装路径</span>
+</span></span><span class="line"><span class="cl">java <span class="se">\
+</span></span></span><span class="line"><span class="cl">  -javaagent:/opt/skywalking-agent/skywalking-agent.jar <span class="se">\
+</span></span></span><span class="line"><span class="cl">  -Dskywalking.agent.service_name<span class="o">=</span>order-service <span class="se">\
+</span></span></span><span class="line"><span class="cl">  -Dskywalking.collector.backend_service<span class="o">=</span>127.0.0.1:11800 <span class="se">\
+</span></span></span><span class="line"><span class="cl">  -jar order-service.jar
+</span></span></code></pre></div><p><code>-javaagent</code> 必须放在 <code>-jar</code> 前面。</p>
+<p>几个参数含义：</p>
+<ul>
+<li><code>-javaagent</code>：后面换成自己本地的 <code>skywalking-agent.jar</code> 路径</li>
+<li><code>-Dskywalking.agent.service_name</code>：服务名称，比如 <code>order-service</code></li>
+<li><code>-Dskywalking.collector.backend_service</code>：SkyWalking OAP 的 gRPC 地址，默认是 <code>127.0.0.1:11800</code>（需开放端口号）</li>
+</ul>
+<p>启动完成后，打开 SkyWalking UI 左侧的服务页面，就能看到已经接入的服务。其他服务也按同样方式加 Agent 参数，只是 <code>service_name</code> 要改成各自的服务名。</p>
+<p>也可以通过环境变量配置：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="nb">export</span> <span class="nv">SW_AGENT_NAME</span><span class="o">=</span>order-service
+</span></span><span class="line"><span class="cl"><span class="nb">export</span> <span class="nv">SW_AGENT_INSTANCE_NAME</span><span class="o">=</span>order-service-local-01
+</span></span><span class="line"><span class="cl"><span class="nb">export</span> <span class="nv">SW_AGENT_COLLECTOR_BACKEND_SERVICES</span><span class="o">=</span>127.0.0.1:11800
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">java -javaagent:/opt/skywalking-agent/skywalking-agent.jar <span class="se">\
+</span></span></span><span class="line"><span class="cl">  -jar order-service.jar
+</span></span></code></pre></div><p>常用配置：</p>
+<div class="table-wrapper"><table>
+  <thead>
+      <tr>
+          <th>Agent 配置</th>
+          <th>环境变量</th>
+          <th>说明</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>agent.service_name</code></td>
+          <td><code>SW_AGENT_NAME</code></td>
+          <td>服务名，同一业务服务的多个实例保持一致</td>
+      </tr>
+      <tr>
+          <td><code>agent.instance_name</code></td>
+          <td><code>SW_AGENT_INSTANCE_NAME</code></td>
+          <td>实例名，同一服务内保持唯一</td>
+      </tr>
+      <tr>
+          <td><code>agent.namespace</code></td>
+          <td><code>SW_AGENT_NAMESPACE</code></td>
+          <td>可用于区分环境或命名空间</td>
+      </tr>
+      <tr>
+          <td><code>agent.cluster</code></td>
+          <td><code>SW_AGENT_CLUSTER</code></td>
+          <td>标记数据中心或集群</td>
+      </tr>
+      <tr>
+          <td><code>collector.backend_service</code></td>
+          <td><code>SW_AGENT_COLLECTOR_BACKEND_SERVICES</code></td>
+          <td>OAP gRPC 地址</td>
+      </tr>
+  </tbody>
+</table></div>
+<p>服务名建议使用明确且固定的英文名，比如 <code>gateway-service</code>、<code>order-service</code>、<code>inventory-service</code>。不要把 Pod IP 或随机端口放到服务名里，这类信息应该放在实例名中。</p>
+<h3 id="docker-中接入">
+    Docker 中接入
+</h3>
+<p>Spring Boot 镜像可以把 Agent 放进镜像：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-dockerfile" data-lang="dockerfile"><span class="line"><span class="cl"><span class="k">FROM</span><span class="w"> </span><span class="s">eclipse-temurin:21-jre</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="k">WORKDIR</span><span class="w"> </span><span class="s">/app</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="k">COPY</span> agent /opt/skywalking-agent<span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="k">COPY</span> target/order-service.jar /app/app.jar<span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="k">ENTRYPOINT</span> <span class="o">[</span><span class="s2">&#34;java&#34;</span>,<span class="err">
+</span></span></span><span class="line"><span class="cl">  <span class="s2">&#34;-javaagent:/opt/skywalking-agent/skywalking-agent.jar&#34;</span>,<span class="err">
+</span></span></span><span class="line"><span class="cl">  <span class="s2">&#34;-jar&#34;</span>,<span class="err">
+</span></span></span><span class="line"><span class="cl">  <span class="s2">&#34;/app/app.jar&#34;</span><span class="o">]</span><span class="err">
+</span></span></span></code></pre></div><p>应用服务配置：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="nt">order-service</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l">example/order-service:1.0.0</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">environment</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">SW_AGENT_NAME</span><span class="p">:</span><span class="w"> </span><span class="l">order-service</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">SW_AGENT_INSTANCE_NAME</span><span class="p">:</span><span class="w"> </span><span class="l">order-service-01</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">SW_AGENT_COLLECTOR_BACKEND_SERVICES</span><span class="p">:</span><span class="w"> </span><span class="l">oap:11800</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">depends_on</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">oap</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">condition</span><span class="p">:</span><span class="w"> </span><span class="l">service_healthy</span><span class="w">
+</span></span></span></code></pre></div><p>如果同一个镜像启动多个副本，不要把 <code>SW_AGENT_INSTANCE_NAME</code> 写死。可以不配置，让 Agent 生成实例名，或者由 Kubernetes 使用 Pod 名注入。</p>
+<h2 id="自定义追踪">
+    自定义追踪
+</h2>
+<p>自动插件主要覆盖框架入口和常见中间件。纯业务方法、自研协议、特殊线程模型可能不会自动出现，这时可以使用 Java Agent Toolkit。</p>
+<h3 id="toolkit-依赖">
+    Toolkit 依赖
+</h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-xml" data-lang="xml"><span class="line"><span class="cl"><span class="nt">&lt;properties&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;skywalking.version&gt;</span>9.6.0<span class="nt">&lt;/skywalking.version&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="nt">&lt;/properties&gt;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nt">&lt;dependency&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;groupId&gt;</span>org.apache.skywalking<span class="nt">&lt;/groupId&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;artifactId&gt;</span>apm-toolkit-trace<span class="nt">&lt;/artifactId&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;version&gt;</span>${skywalking.version}<span class="nt">&lt;/version&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="nt">&lt;/dependency&gt;</span>
+</span></span></code></pre></div><p>Toolkit 版本建议和 Java Agent 版本保持一致。</p>
+<h3 id="相关注解">
+    相关注解
+</h3>
+<p><code>@Trace</code> 会把方法加入链路追踪，自动生成 Span 并记录方法耗时和调用关系。<code>operationName</code> 可以自定义 Span 名称，方便在 Trace 页面里阅读。<code>@Tag</code> 顾名思义打上标签，可以把参数或返回值写入当前入口，方便辨认</p>
+<p><code>@Tag</code> 里的 <code>key</code> 是标签名，<code>value</code> 是取值表达式。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kn">import</span><span class="w"> </span><span class="nn">org.apache.skywalking.apm.toolkit.trace.Trace</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kn">import</span><span class="w"> </span><span class="nn">org.apache.skywalking.apm.toolkit.trace.Tag</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="nd">@Trace</span><span class="p">(</span><span class="n">operationName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&#34;OrderService/createOrder&#34;</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="nd">@Tag</span><span class="p">(</span><span class="n">key</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&#34;order.userId&#34;</span><span class="p">,</span><span class="w"> </span><span class="n">value</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&#34;arg[0]&#34;</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="nd">@Tag</span><span class="p">(</span><span class="n">key</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&#34;order.id&#34;</span><span class="p">,</span><span class="w"> </span><span class="n">value</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&#34;returnedObj.id&#34;</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">public</span><span class="w"> </span><span class="n">Order</span><span class="w"> </span><span class="nf">createOrder</span><span class="p">(</span><span class="n">Long</span><span class="w"> </span><span class="n">userId</span><span class="p">,</span><span class="w"> </span><span class="n">CreateOrderCommand</span><span class="w"> </span><span class="n">command</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">orderRepository</span><span class="p">.</span><span class="na">save</span><span class="p">(</span><span class="n">userId</span><span class="p">,</span><span class="w"> </span><span class="n">command</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p>如果要同时记录多个信息，可以使用 <code>@Tags</code>：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kn">import</span><span class="w"> </span><span class="nn">org.apache.skywalking.apm.toolkit.trace.Tag</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kn">import</span><span class="w"> </span><span class="nn">org.apache.skywalking.apm.toolkit.trace.Tags</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kn">import</span><span class="w"> </span><span class="nn">org.apache.skywalking.apm.toolkit.trace.Trace</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="nd">@Trace</span><span class="p">(</span><span class="n">operationName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&#34;queryById&#34;</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="nd">@Tags</span><span class="p">({</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nd">@Tag</span><span class="p">(</span><span class="n">key</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&#34;request&#34;</span><span class="p">,</span><span class="w"> </span><span class="n">value</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&#34;arg[0]&#34;</span><span class="p">),</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nd">@Tag</span><span class="p">(</span><span class="n">key</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&#34;response&#34;</span><span class="p">,</span><span class="w"> </span><span class="n">value</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&#34;returnedObj&#34;</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">})</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">public</span><span class="w"> </span><span class="n">OrderInfo</span><span class="w"> </span><span class="nf">queryById</span><span class="p">(</span><span class="n">Integer</span><span class="w"> </span><span class="n">orderId</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">orderMapper</span><span class="p">.</span><span class="na">selectById</span><span class="p">(</span><span class="n">orderId</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p><code>arg[n]</code> 表示第 <code>n</code> 个入参，从 <code>0</code> 开始；<code>returnedObj</code> 表示方法返回值，<code>returnedObj.id</code> 表示取返回对象里的 <code>id</code> 字段。</p>
+<h2 id="日志关联与上传">
+    日志关联与上传
+</h2>
+<p>要想在 SkyWalking UI 里查看日志，并把日志和 Trace 关联起来，需要分成两件事：</p>
+<ol>
+<li>在本地日志中打印 Trace ID，方便从日志跳到 Trace</li>
+<li>通过 gRPC 把日志上传到 OAP，在 SkyWalking UI 中统一查询</li>
+</ol>
+<h3 id="添加依赖">
+    添加依赖
+</h3>
+<p>Spring Boot 默认常用 Logback：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-xml" data-lang="xml"><span class="line"><span class="cl"><span class="nt">&lt;dependency&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;groupId&gt;</span>org.apache.skywalking<span class="nt">&lt;/groupId&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;artifactId&gt;</span>apm-toolkit-logback-1.x<span class="nt">&lt;/artifactId&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;version&gt;</span>9.6.0<span class="nt">&lt;/version&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="nt">&lt;/dependency&gt;</span>
+</span></span></code></pre></div><h3 id="编写-xml-文件">
+    编写 xml 文件
+</h3>
+<p>在 <code>src/main/resources</code> 下新建 <code>logback-spring.xml</code>。Spring Boot 会优先加载 <code>logback-spring.xml</code>，它比普通 <code>logback.xml</code> 更适合 Spring Boot 项目，也能使用 Spring 的扩展能力。</p>
+<p>下面这个配置只负责把 Trace ID 打到本地控制台日志里：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-xml" data-lang="xml"><span class="line"><span class="cl"><span class="cp">&lt;?xml version=&#34;1.0&#34; encoding=&#34;UTF-8&#34;?&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="nt">&lt;configuration&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;appender</span> <span class="na">name=</span><span class="s">&#34;CONSOLE&#34;</span> <span class="na">class=</span><span class="s">&#34;ch.qos.logback.core.ConsoleAppender&#34;</span><span class="nt">&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&lt;encoder</span> <span class="na">class=</span><span class="s">&#34;ch.qos.logback.core.encoder.LayoutWrappingEncoder&#34;</span><span class="nt">&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&lt;layout</span> <span class="na">class=</span><span class="s">&#34;org.apache.skywalking.apm.toolkit.log.logback.v1.x.mdc.TraceIdMDCPatternLogbackLayout&#34;</span><span class="nt">&gt;</span>
+</span></span><span class="line"><span class="cl">                <span class="nt">&lt;Pattern&gt;</span>
+</span></span><span class="line"><span class="cl">                    %d{yyyy-MM-dd HH:mm:ss.SSS} [%X{tid}] [%thread] %-5level %logger{36} - %msg%n
+</span></span><span class="line"><span class="cl">                <span class="nt">&lt;/Pattern&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&lt;/layout&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&lt;/encoder&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;/appender&gt;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;root</span> <span class="na">level=</span><span class="s">&#34;INFO&#34;</span><span class="nt">&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&lt;appender-ref</span> <span class="na">ref=</span><span class="s">&#34;CONSOLE&#34;</span><span class="nt">/&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;/root&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="nt">&lt;/configuration&gt;</span>
+</span></span></code></pre></div><p>有 Agent 且当前线程处于 Trace 中时，<code>%X{tid}</code> 会输出 Trace ID；没有可用 Trace 时会显示 <code>TID: N/A</code>。</p>
+<p>如果希望写出完整 SkyWalking 上下文，可以把 <code>%X{tid}</code> 换成 <code>%X{sw_ctx}</code>，内容包括：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">serviceName, instanceName, traceId, traceSegmentId, spanId
+</span></span></code></pre></div><h3 id="上传日志">
+    上传日志
+</h3>
+<p>只打印 Trace ID 还不等于上传日志。上面的配置只能让应用自己的控制台日志带上 Trace ID，SkyWalking UI 的 Log 页面还看不到这些日志。</p>
+<p>如果要把日志上传到 OAP，需要在 <code>logback-spring.xml</code> 里添加 <code>GRPCLogClientAppender</code>：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-xml" data-lang="xml"><span class="line"><span class="cl"><span class="nt">&lt;appender</span> <span class="na">name=</span><span class="s">&#34;GRPC_LOG&#34;</span>
+</span></span><span class="line"><span class="cl">          <span class="na">class=</span><span class="s">&#34;org.apache.skywalking.apm.toolkit.log.logback.v1.x.log.GRPCLogClientAppender&#34;</span><span class="nt">&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;encoder</span> <span class="na">class=</span><span class="s">&#34;ch.qos.logback.core.encoder.LayoutWrappingEncoder&#34;</span><span class="nt">&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&lt;layout</span> <span class="na">class=</span><span class="s">&#34;org.apache.skywalking.apm.toolkit.log.logback.v1.x.mdc.TraceIdMDCPatternLogbackLayout&#34;</span><span class="nt">&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&lt;Pattern&gt;</span>
+</span></span><span class="line"><span class="cl">                %d{yyyy-MM-dd HH:mm:ss.SSS} [%X{tid}] [%thread] %-5level %logger{36} - %msg%n
+</span></span><span class="line"><span class="cl">            <span class="nt">&lt;/Pattern&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&lt;/layout&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;/encoder&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="nt">&lt;/appender&gt;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nt">&lt;root</span> <span class="na">level=</span><span class="s">&#34;INFO&#34;</span><span class="nt">&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;appender-ref</span> <span class="na">ref=</span><span class="s">&#34;CONSOLE&#34;</span><span class="nt">/&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;appender-ref</span> <span class="na">ref=</span><span class="s">&#34;GRPC_LOG&#34;</span><span class="nt">/&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="nt">&lt;/root&gt;</span>
+</span></span></code></pre></div><p>这里要注意：<code>GRPCLogClientAppender</code> 上报日志时，会自动附带 Trace ID、Segment ID 和 Span ID。也就是说，layout 控制的是日志正文格式；日志与 Trace 的关联信息由 gRPC reporter 自动带上。
+等重启服务并发起请求后，就可以在 SkyWalking UI 的 Log 页面查询日志，也可以根据 Trace ID 过滤日志并跳转到对应 Trace。</p>
+<h2 id="告警">
+    告警
+</h2>
+<p>SkyWalking OAP 的告警规则位于 apm 的 <code>config/alarm-settings.yml</code>。Docker 镜像可以把同名文件挂载到 <code>/skywalking/ext-config</code> 来覆盖默认配置。</p>
+<p>可以把告警类比成烟雾报警器：当系统出现响应慢、成功率低这类异常时，就像检测到烟雾一样触发通知，提醒研发或运维尽快处理。</p>
+<p>SkyWalking 默认规则主要覆盖这些场景：</p>
+<ol>
+<li>服务平均响应时间超过阈值</li>
+<li>服务成功率低于阈值</li>
+<li>服务响应时间百分位数超过阈值，比如 P50、P75、P90、P95、P99</li>
+<li>服务实例平均响应时间超过阈值</li>
+<li>Endpoint 平均响应时间超过阈值</li>
+<li>数据库访问平均响应时间超过阈值</li>
+<li>Endpoint 关系平均响应时间超过阈值</li>
+</ol>
+<h3 id="规则字段">
+    规则字段
+</h3>
+<p>简单罗列一些规则字段，用到的时候再查即可。</p>
+<div class="table-wrapper"><table>
+  <thead>
+      <tr>
+          <th>字段</th>
+          <th>说明</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>规则 ID</td>
+          <td>必须以 <code>_rule</code> 结尾</td>
+      </tr>
+      <tr>
+          <td><code>expression</code></td>
+          <td>MQE 表达式，结果必须是单值布尔结果</td>
+      </tr>
+      <tr>
+          <td><code>period</code></td>
+          <td>参与判断的分钟窗口</td>
+      </tr>
+      <tr>
+          <td><code>silence-period</code></td>
+          <td>告警触发后的静默时间</td>
+      </tr>
+      <tr>
+          <td><code>recovery-observation-period</code></td>
+          <td>条件恢复后连续观察多少个周期再发送恢复通知</td>
+      </tr>
+      <tr>
+          <td><code>include-names</code></td>
+          <td>只匹配指定实体</td>
+      </tr>
+      <tr>
+          <td><code>exclude-names</code></td>
+          <td>排除指定实体</td>
+      </tr>
+      <tr>
+          <td><code>include-names-regex</code></td>
+          <td>用正则匹配实体名</td>
+      </tr>
+      <tr>
+          <td><code>tags</code></td>
+          <td>附加标签，常用 <code>level</code> 标记告警级别</td>
+      </tr>
+      <tr>
+          <td><code>hooks</code></td>
+          <td>指定本规则调用哪些通知目标</td>
+      </tr>
+      <tr>
+          <td><code>message</code></td>
+          <td>告警文本，<code>{name}</code> 会替换成实体名</td>
+      </tr>
+  </tbody>
+</table></div>
+<h3 id="webhook">
+    Webhook
+</h3>
+<p>Webhook 是 OAP 把告警推送给外部系统的一种方式。告警触发后，OAP 会使用 <code>HTTP POST</code> 和 <code>application/json</code> 请求目标地址，请求体是告警消息数组，在编写代码时需要注意用 List&lt;&gt;~</p>
+<p>接收方只要提供一个可访问的 HTTP 地址，就可以接收 SkyWalking 推送的告警数据。常见用途包括推送到钉钉、企业微信、飞书、邮箱，或者转给内部告警服务继续处理。</p>
+<h3 id="配置">
+    配置
+</h3>
+<p>完整的 <code>alarm-settings.yml</code> 可以这样写：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="nt">rules</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">service_resp_time_rule</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">expression</span><span class="p">:</span><span class="w"> </span><span class="l">sum(service_resp_time &gt; 1000) &gt;= 3</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">period</span><span class="p">:</span><span class="w"> </span><span class="m">5</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">silence-period</span><span class="p">:</span><span class="w"> </span><span class="m">10</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">recovery-observation-period</span><span class="p">:</span><span class="w"> </span><span class="m">2</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">message</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;服务 {name} 最近 5 分钟内多次超过 1000ms&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">tags</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">level</span><span class="p">:</span><span class="w"> </span><span class="l">WARNING</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">hooks</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span>- <span class="l">webhook.ops</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="nt">hooks</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">webhook</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">ops</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">urls</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span>- <span class="l">http://host.docker.internal:8088/webhooks/skywalking</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">recovery-urls</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span>- <span class="l">http://host.docker.internal:8088/webhooks/skywalking</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">headers</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">Authorization</span><span class="p">:</span><span class="w"> </span><span class="l">Bearer replace-with-your-token</span><span class="w">
+</span></span></span></code></pre></div><h2 id="排查顺序">
+    排查顺序
+</h2>
+<p>实际遇到问题需要排查时可以按这个顺序：</p>
+<ol>
+<li>先看服务拓扑，确认调用方向和异常节点</li>
+<li>再看 Service、Instance、Endpoint 指标，缩小时间范围</li>
+<li>打开慢请求 Trace，查看哪个 Span 占用时间最多</li>
+<li>用 Trace ID 查询关联日志，检查参数、异常和业务状态</li>
+<li>接口内部仍看不出原因时，创建 Trace Profiling 任务</li>
+<li>JVM 出现 CPU、分配或锁问题时，创建 Java App Profiling 任务</li>
+<li>确认指标规则后配置告警，再接 Webhook 通知</li>
+</ol>
+
+            </section>
+
+            <footer class="article-detail__footer">
+                <div class="article-closing" aria-label="Article closing">
+    <ul class="article-closing__links">
+        <li>
+            <span class="article-closing__chevron" aria-hidden="true">›</span>
+            <span>written by <span class="article-closing__author">@Jul1en</span></span>
+        </li>
+        <li>
+            <span class="article-closing__chevron" aria-hidden="true">›</span>
+            <a href="/post/">cd ..</a>
+        </li>
+    </ul>
+
+</div>
+
+            </footer>
+        </div>
+    </div>
+</article>
+
+    </main><button id="back-to-top" class="back-to-top" type="button" aria-label="回到顶部" title="回到顶部">
+    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+        <path d="M6 14.5 12 8l6 6.5"></path>
+    </svg>
+</button>
+<div id="route-transition-mask" class="route-transition-mask" aria-hidden="true">
+    <span class="route-transition-mask__texture" aria-hidden="true"></span>
+    <span class="route-transition__loading" aria-hidden="true">LOADING...</span>
+</div>
+</body>
+
+</html>

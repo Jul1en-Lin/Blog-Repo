@@ -5,6 +5,8 @@
 /public/
 /resources/
 .hugo_build.lock
+/docs/
+/output/
 
 # Local env / logs
 .env

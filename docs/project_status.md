@@ -1,6 +1,6 @@
 # Project Status
 
-Last updated: 2026-06-26
+Last updated: 2026-06-29
 
 ## Current Snapshot
 
@@ -13,6 +13,12 @@ Last updated: 2026-06-26
 
 ## Recent Notes
 
+### 2026-06-29 Navigation Overlay Removal
+
+- Removed the internal navigation overlay and its global click interception.
+- Changed the theme toggle view-transition origin to use the toggle button center instead of click-event coordinates.
+- Kept the later Codex workflow post and ignore-file updates.
+
 ### 2026-06-26 Agent Instructions Refresh
 
 - Updated `AGENTS.md` to match the current standalone Hugo file layout.
@@ -24,12 +30,6 @@ Last updated: 2026-06-26
 - Imported `/AI/Codex 工作流更新-v3` as a published Hugo post.
 - Copied the two command screenshots and the workflow overview image into the post bundle.
 - Replaced the opening Obsidian related-note link with a Hugo link to the existing v2 post.
-
-### 2026-06-17 Route Transition Demo
-
-- Added a global route-transition overlay for internal navigation.
-- The demo uses a click-origin circular cover, subtle line texture, and centered `LOADING...` text before navigation.
-- External links, modifier-key opens, downloads, and same-page anchors are skipped; reduced-motion users get near-instant transitions.
 
 ### 2026-06-15 Article Rendering Updates
 
@@ -62,5 +62,5 @@ Last updated: 2026-06-26
 ## Latest Checks
 
 - Preferred local build command: `hugo -D --cleanDestinationDir --printI18nWarnings --printPathWarnings`.
-- Recent passing checks included the Hugo command above, `tests/theme-independence.sh`, `tests/music-album-flip.sh`, `tests/scroll-reveal.sh`, and `git diff --check`.
+- Recent passing checks included the Hugo command above, `tests/theme-independence.sh`, `tests/music-album-flip.sh`, the scroll reveal check, the navigation-overlay absence check, and `git diff --check`.
 - Recent browser checks covered Home, Blog, article detail, Music, Search, Archives, and 404 on desktop and mobile.

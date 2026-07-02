@@ -46,8 +46,9 @@ function initThemeToggle() {
         event.preventDefault();
         event.stopImmediatePropagation();
 
-        const x = event.clientX;
-        const y = event.clientY;
+        const rect = toggle.getBoundingClientRect();
+        const x = rect.left + rect.width / 2;
+        const y = rect.top + rect.height / 2;
         const willBeDark = getCurrentScheme() !== 'dark';
         const nextScheme: ColorScheme = willBeDark ? 'dark' : 'light';
         const endRadius = Math.hypot(

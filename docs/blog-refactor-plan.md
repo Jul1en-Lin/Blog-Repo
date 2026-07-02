@@ -1,5 +1,7 @@
 # 黑白极简音乐主题 · Hugo 博客前端重构方案
 
+> Historical note: this is an old refactor plan. For current architecture, use `docs/project_status.md` and `docs/architecture.md`.
+
 ## 1. 设计语言总结
 
 ### 视觉关键词

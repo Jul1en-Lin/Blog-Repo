@@ -2,27 +2,26 @@
 
 This file keeps a compact record of meaningful user-visible or developer-visible changes. Detailed execution logs should stay in task notes or archived phase reports, not here.
 
-## Current Snapshot - 2026-05-05
+## Current Snapshot - 2026-07-02
 
-The Phase 0-6 blog refactor is complete. The site is a Hugo personal blog that still depends on `hugo-theme-stack`, while the visible shell is now controlled by project-level templates, partials, SCSS, and content instead of the original theme sidebar layout.
+The site is now a standalone Hugo personal blog with project-owned `layouts/`, `assets/`, `content/`, and `static/`. It no longer depends on `hugo-theme-stack` or a `theme:` setting.
 
 Current user-facing state:
 
-- Home, Blog list, Blog detail, About, Music, and Contact have been implemented or refined against the black-and-white minimal editorial music direction.
+- Home, Blog list, Blog detail, Archives, Search, Music, and 404 are covered by project-owned templates.
 - The global shell uses a top navigation, wider header rail, light-mode-first visual baseline, custom typography, a low-opacity Antfu-style plum canvas background on non-article surfaces, and manually toggleable dark mode.
 - Blog list includes featured content, category filter buttons, search, responsive cards, accessible keyboard filtering, and restrained hover motion.
 - Blog detail uses a wide no-right-sidebar reading layout, header quote, larger readable body text, line-number-free code blocks, improved table readability, and bottom related posts.
-- About, Music, and Contact are standalone editorial pages with dedicated project-level layouts.
+- Archives, Search, and Music are standalone pages with dedicated project-level layouts or outputs.
 - Music uses a static album gallery backed by `[[albums]]` front matter and page-bundle album covers; each front face is cover artwork only, clicking a card flips it to an editorial details face, and the page intentionally has no audio, video, playback button, playlist, progress, sorting, filtering, or media-player UI.
 - Project-level SEO metadata, responsive WebP image processing, focus states, semantic heading cleanup, and accessibility refinements are in place.
 - Real images and portraits render in original color by default; grayscale is no longer applied globally to image surfaces.
 
 Current technical state:
 
-- Keep using `hugo-theme-stack` for the Hugo pipeline and theme scripts.
-- Do not modify files under `themes/` unless explicitly requested.
 - Use `params.primaryNav` in `hugo.yaml` as the navigation source.
-- Prefer project-level overrides in `layouts/`, `assets/`, `content/`, and `static/`.
+- Use project-owned templates and resources in `layouts/`, `assets/`, `content/`, and `static/`.
+- `public/` and `resources/` are generated output and should not be edited by hand.
 - `static/js/particles.js`, `static/js/fireworks.js`, `static/js/avatar-colors.js`, and the old Gemini background images have been removed.
 - Optional future optimization: deeper CSS pruning could reduce unused CSS, but current Lighthouse desktop targets were met.
 
@@ -30,7 +29,7 @@ Latest verification snapshot:
 
 - `hugo -D --cleanDestinationDir --printI18nWarnings --printPathWarnings` / previous Windows equivalent passed.
 - Build generated 113 pages and processed 771 images in the latest recorded pass.
-- Browser checks covered Home, Blog list, Blog detail, About, Music, and Contact across desktop, tablet, and mobile viewports.
+- Browser checks have covered Home, Blog list, Blog detail, Archives, Search, Music, and 404 across desktop and mobile viewports in recent passes.
 - No horizontal overflow was detected on checked routes.
 - Mobile navigation opened, locked body scroll, closed correctly, and restored `aria-expanded`.
 - Music rendered no player, audio, video, progress, playlist, or playback-control UI.

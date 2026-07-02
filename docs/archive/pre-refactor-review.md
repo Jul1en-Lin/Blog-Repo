@@ -4,7 +4,7 @@
 
 > Historical note: this review predates theme removal. Do not use it as current architecture truth.
 
-本报告基于当前仓库结构、`AGENTS.md`、`docs/blog-refactor-plan.md`、Hugo 配置、项目级 layouts/assets/content 覆盖情况整理。审查阶段未修改代码、未创建运行时产物、未执行重构。
+本报告基于当时仓库结构、`AGENTS.md`、`docs/archive/blog-refactor-plan.md`、Hugo 配置、项目级 layouts/assets/content 覆盖情况整理。审查阶段未修改代码、未创建运行时产物、未执行重构。
 
 ## 1. 当前项目技术栈判断
 

@@ -513,7 +513,7 @@ body.is-article-toc-visible .article-detail__toc-staff,
 .article-content.article-detail__content pre {
   overflow-x: auto;
   padding: var(--space-5);
-  color: var(--pre-text-color);
+  color: var(--code-text);
   font-family: var(--font-mono);
   font-size: clamp(13.5px, 0.82vw, 14.5px);
   line-height: 1.7;

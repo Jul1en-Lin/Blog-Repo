@@ -17,7 +17,7 @@
   - `tests/`: shell regression checks for generated output and browser-facing behavior.
   - `docs/`: current status, decisions, plans, specs, and changelog. Read `docs/project_status.md` first when it exists.
   - `public/` and `resources/`: generated output and Hugo caches; do not edit them by hand.
-- Preserve the quiet, minimal, editorial music visual direction documented in `docs/blog-refactor-plan.md` and the current notes in `docs/project_status.md`.
+- Preserve the quiet, minimal, editorial music visual direction documented in `docs/archive/blog-refactor-plan.md` and the current notes in `docs/project_status.md`.
 - For future design work, reference the mature existing project at `/Users/lien/GitRepo/hugo-antfustyle` first; adapt its proven patterns while preserving this blog's own content, colors, and editorial music direction.
 - For navigation changes, use `params.primaryNav` in `hugo.yaml` as the source of truth.
 - For local verification, prefer `hugo -D --cleanDestinationDir --printI18nWarnings --printPathWarnings` when Hugo is available.
@@ -26,7 +26,7 @@
 
 - Published blog articles live under `content/post/<Post Title>/index.md` as Hugo page bundles.
 - Article-local images and screenshots live under `content/post/<Post Title>/assets/`.
-- Some older post folders still contain source-note `.md` files or nested Obsidian-style subfolders. Do not copy that pattern for new imports unless the user asks to preserve the source note.
+- Do not keep source-note `.md` backups inside post bundles unless the user asks to preserve them.
 - When importing from Obsidian, start by inspecting existing folders under `content/post/` to match front matter, categories, tags, image paths, and article style.
 - Convert Obsidian wikilinks such as `[[Spring Cloud|微服务 知识总结]]` to Hugo-compatible Markdown links or `relref` shortcodes.
 - Convert Obsidian image embeds such as `![[image.png|500]]` to Markdown image links like `![description](assets/image.png)` and copy the referenced image into the article bundle.

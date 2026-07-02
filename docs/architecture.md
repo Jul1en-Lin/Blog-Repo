@@ -22,7 +22,7 @@ Current architecture notes for this standalone Hugo blog.
 ## Content
 
 - Blog posts use Hugo page bundles: `content/post/<Post Title>/index.md` plus local files under `content/post/<Post Title>/assets/`.
-- Some older post bundles still contain source-note `.md` files or nested Obsidian-style folders. Do not copy that pattern for new imports.
+- Do not keep source-note `.md` backups inside post bundles unless explicitly requested.
 - `content/page/` drives Archives, Search, and Music.
 - Music data and cover images live in the Music page bundle.
 - `content/categories/` owns taxonomy landing content.

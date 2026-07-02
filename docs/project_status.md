@@ -18,6 +18,7 @@ Last updated: 2026-07-02
 - Updated docs for the standalone Hugo file layout.
 - Added current architecture notes and marked older refactor docs as historical.
 - Removed legacy source-note Markdown backups from older post bundles.
+- Moved old refactor docs into `docs/archive/` and cleaned SCSS legacy variables.
 
 ### 2026-06-26 Agent Instructions Refresh
 

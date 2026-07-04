@@ -13,6 +13,11 @@ Last updated: 2026-07-05
 
 ## Recent Notes
 
+### 2026-07-05 Claude Fable 5 Prompt Guide Refresh
+
+- Synced the latest Obsidian edits for `/AI/Claude Fable 5 提示指南` into the published Hugo post on `main`.
+- Kept the import-specific cleanup rules in place and updated article highlights plus wording to match the source note.
+
 ### 2026-07-05 Main Test Artifact Cleanup
 
 - Removed committed `.playwright-cli/*.yml` browser test snapshots from `main`.

@@ -1,0 +1,198 @@
+- generic [active] [ref=e1]:
+  - link "Skip to content" [ref=e2] [cursor=pointer]:
+    - /url: "#main-content"
+  - banner [ref=e3]:
+    - generic [ref=e4]:
+      - link "Jul1en home" [ref=e5] [cursor=pointer]:
+        - /url: /
+        - generic [ref=e6]:
+          - img
+          - generic [ref=e7]: Jul1en
+      - generic [ref=e8]:
+        - navigation "Primary navigation" [ref=e9]:
+          - list [ref=e10]:
+            - listitem [ref=e11]:
+              - link "Blog" [ref=e12] [cursor=pointer]:
+                - /url: /post/
+            - listitem [ref=e13]:
+              - link "Search" [ref=e14] [cursor=pointer]:
+                - /url: /search/
+            - listitem [ref=e15]:
+              - link "Music" [ref=e16] [cursor=pointer]:
+                - /url: /music/
+        - group "Social links and theme" [ref=e17]:
+          - link "GitHub" [ref=e18] [cursor=pointer]:
+            - /url: https://github.com/Jul1en-Lin
+            - img [ref=e20]
+          - link "Instagram" [ref=e22] [cursor=pointer]:
+            - /url: https://www.instagram.com/jul1en_lin
+            - img [ref=e24]
+          - button "切换配色" [ref=e28] [cursor=pointer]:
+            - img [ref=e30]
+  - main [ref=e33]:
+    - generic [ref=e34]:
+      - generic "Music" [ref=e35]:
+        - heading "Music" [level=1] [ref=e36]:
+          - generic [ref=e37]: Music
+        - paragraph [ref=e44]: My favorite albums, songs, and the music that inspires me.
+      - region "Favorite albums" [ref=e45]:
+        - article [ref=e46]:
+          - generic [ref=e47]:
+            - img "Sweatshirt album cover" [ref=e49]
+            - generic [ref=e50]:
+              - generic [ref=e51]:
+                - text: Album details
+                - heading [level=2] [ref=e52]: Sweatshirt
+                - paragraph [ref=e53]: Patrick Hizon / EJEAN
+              - generic [ref=e54]: Click to return
+          - button "Show details for Sweatshirt" [ref=e55] [cursor=pointer]
+        - article [ref=e56]:
+          - generic [ref=e57]:
+            - img "Saturn album cover" [ref=e59]
+            - generic [ref=e60]:
+              - generic [ref=e61]:
+                - text: Album details
+                - heading [level=2] [ref=e62]: Saturn
+                - paragraph [ref=e63]: Milena
+              - generic [ref=e64]: Click to return
+          - button "Show details for Saturn" [ref=e65] [cursor=pointer]
+        - article [ref=e66]:
+          - generic [ref=e67]:
+            - img "Rest Assured album cover" [ref=e69]
+            - generic [ref=e70]:
+              - generic [ref=e71]:
+                - text: Album details
+                - heading [level=2] [ref=e72]: Rest Assured (feat. PRVDNT)
+                - paragraph [ref=e73]: Jeff Bernat / Albert Posis / Jesse Barrera / PRVDNT
+              - generic [ref=e74]: Click to return
+          - button "Show details for Rest Assured (feat. PRVDNT)" [ref=e75] [cursor=pointer]
+        - article [ref=e76]:
+          - generic [ref=e77]:
+            - img "生活麻辣烫 album cover" [ref=e79]
+            - generic [ref=e80]:
+              - generic [ref=e81]:
+                - text: Album details
+                - heading [level=2] [ref=e82]: 生活麻辣烫
+                - paragraph [ref=e83]: 王齐铭WatchMe
+              - generic [ref=e84]: Click to return
+          - button "Show details for 生活麻辣烫" [ref=e85] [cursor=pointer]
+        - article [ref=e86]:
+          - generic [ref=e87]:
+            - img "to be honest album cover" [ref=e89]
+            - generic [ref=e90]:
+              - generic [ref=e91]:
+                - text: Album details
+                - heading [level=2] [ref=e92]: to be honest
+                - paragraph [ref=e93]: Gareth.T
+              - generic [ref=e94]: Click to return
+          - button "Show details for to be honest" [ref=e95] [cursor=pointer]
+        - article [ref=e96]:
+          - generic [ref=e97]:
+            - img "Dawn FM album cover" [ref=e99]
+            - generic [ref=e100]:
+              - generic [ref=e101]:
+                - text: Album details
+                - heading [level=2] [ref=e102]: Dawn FM
+                - paragraph [ref=e103]: The Weeknd
+              - generic [ref=e104]: Click to return
+          - button "Show details for Dawn FM" [ref=e105] [cursor=pointer]
+        - article [ref=e106]:
+          - generic [ref=e107]:
+            - img "꽃갈피 셋 album cover" [ref=e109]
+            - generic [ref=e110]:
+              - generic [ref=e111]:
+                - text: Album details
+                - heading [level=2] [ref=e112]: 꽃갈피 셋
+                - paragraph [ref=e113]: IU
+              - generic [ref=e114]: Click to return
+          - button "Show details for 꽃갈피 셋" [ref=e115] [cursor=pointer]
+        - article [ref=e116]:
+          - generic [ref=e117]:
+            - img "Ctrl album cover" [ref=e119]
+            - generic [ref=e120]:
+              - generic [ref=e121]:
+                - text: Album details
+                - heading [level=2] [ref=e122]: Ctrl
+                - paragraph [ref=e123]: SZA
+              - generic [ref=e124]: Click to return
+          - button "Show details for Ctrl" [ref=e125] [cursor=pointer]
+        - article [ref=e126]:
+          - generic [ref=e127]:
+            - img "在雨后醒来 album cover" [ref=e129]
+            - generic [ref=e130]:
+              - generic [ref=e131]:
+                - text: Album details
+                - heading [level=2] [ref=e132]: 在雨后醒来
+                - paragraph [ref=e133]: Asen
+              - generic [ref=e134]: Click to return
+          - button "Show details for 在雨后醒来" [ref=e135] [cursor=pointer]
+        - article [ref=e136]:
+          - generic [ref=e137]:
+            - img "SOS album cover" [ref=e139]
+            - generic [ref=e140]:
+              - generic [ref=e141]:
+                - text: Album details
+                - heading [level=2] [ref=e142]: SOS
+                - paragraph [ref=e143]: SZA
+              - generic [ref=e144]: Click to return
+          - button "Show details for SOS" [ref=e145] [cursor=pointer]
+        - article [ref=e146]:
+          - generic [ref=e147]:
+            - img "映畫「歩いても 歩いても」サウンドトラック album cover" [ref=e149]
+            - generic [ref=e150]:
+              - generic [ref=e151]:
+                - text: Album details
+                - heading [level=2] [ref=e152]: 映畫「歩いても 歩いても」サウンドトラック
+                - paragraph [ref=e153]: ゴンチチ
+              - generic [ref=e154]: Click to return
+          - button "Show details for 映畫「歩いても 歩いても」サウンドトラック" [ref=e155] [cursor=pointer]
+        - article [ref=e156]:
+          - generic [ref=e157]:
+            - img "Fearless Taylor's Version album cover" [ref=e159]
+            - generic [ref=e160]:
+              - generic [ref=e161]:
+                - text: Album details
+                - heading [level=2] [ref=e162]: Fearless (Taylor's Version)
+                - paragraph [ref=e163]: Taylor Swift
+              - generic [ref=e164]: Click to return
+          - button "Show details for Fearless (Taylor's Version)" [ref=e165] [cursor=pointer]
+        - article [ref=e166]:
+          - generic [ref=e167]:
+            - img "Believer album cover" [ref=e169]
+            - generic [ref=e170]:
+              - generic [ref=e171]:
+                - text: Album details
+                - heading [level=2] [ref=e172]: Believer
+                - paragraph [ref=e173]: J.Fla
+              - generic [ref=e174]: Click to return
+          - button "Show details for Believer" [ref=e175] [cursor=pointer]
+        - article [ref=e176]:
+          - generic [ref=e177]:
+            - img "Live Today album cover" [ref=e179]
+            - generic [ref=e180]:
+              - generic [ref=e181]:
+                - text: Album details
+                - heading [level=2] [ref=e182]: Live Today
+                - paragraph [ref=e183]: Nana Ou-Yang
+              - generic [ref=e184]: Click to return
+          - button "Show details for Live Today" [ref=e185] [cursor=pointer]
+        - article [ref=e186]:
+          - generic [ref=e187]:
+            - img "NANA I album cover" [ref=e189]
+            - generic [ref=e190]:
+              - generic [ref=e191]:
+                - text: Album details
+                - heading [level=2] [ref=e192]: NANA I
+                - paragraph [ref=e193]: Nana Ou-Yang
+              - generic [ref=e194]: Click to return
+          - button "Show details for NANA I" [ref=e195] [cursor=pointer]
+        - article [ref=e196]:
+          - generic [ref=e197]:
+            - img "네가 좋아 Feat. 박원 single cover" [ref=e199]
+            - generic [ref=e200]:
+              - generic [ref=e201]:
+                - text: Album details
+                - heading [level=2] [ref=e202]: 네가 좋아 (Feat. 박원)
+                - paragraph [ref=e203]: Hello Ga-Young
+              - generic [ref=e204]: Click to return
+          - button "Show details for 네가 좋아 (Feat. 박원)" [ref=e205] [cursor=pointer]

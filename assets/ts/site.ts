@@ -19,6 +19,13 @@ function initThemeToggle() {
     toggle.dataset.projectThemeToggleReady = 'true';
 
     type ColorScheme = 'light' | 'dark';
+    type ThemeSnapshotName = 'root' | 'theme-header' | 'theme-content';
+    type ThemeSnapshotTarget = {
+        name: ThemeSnapshotName;
+        element: Element | null;
+    };
+
+    let activeThemeAnimations: Animation[] = [];
 
     function getCurrentScheme() {
         return document.documentElement.dataset.scheme === 'dark' ? 'dark' : 'light';
@@ -42,6 +49,39 @@ function initThemeToggle() {
         window.dispatchEvent(new CustomEvent('onColorSchemeChange', { detail: scheme }));
     }
 
+    function getSnapshotClipPath(target: ThemeSnapshotTarget, x: number, y: number) {
+        const rect = target.element?.getBoundingClientRect() || {
+            left: 0,
+            top: 0,
+            width: window.innerWidth,
+            height: window.innerHeight
+        };
+        const localX = x - rect.left;
+        const localY = y - rect.top;
+        const radius = Math.hypot(
+            Math.max(localX, rect.width - localX),
+            Math.max(localY, rect.height - localY)
+        );
+
+        return [
+            `circle(0px at ${localX}px ${localY}px)`,
+            `circle(${radius}px at ${localX}px ${localY}px)`
+        ];
+    }
+
+    function getThemeSnapshotTargets(): ThemeSnapshotTarget[] {
+        return [
+            { name: 'root', element: null },
+            { name: 'theme-header', element: document.querySelector('.site-header') },
+            { name: 'theme-content', element: document.querySelector('.main-content') }
+        ].filter((target) => target.name === 'root' || target.element);
+    }
+
+    function stopActiveThemeAnimations() {
+        activeThemeAnimations.forEach((animation) => animation.cancel());
+        activeThemeAnimations = [];
+    }
+
     toggle.addEventListener('click', (event) => {
         event.preventDefault();
         event.stopImmediatePropagation();
@@ -49,43 +89,75 @@ function initThemeToggle() {
         const rect = toggle.getBoundingClientRect();
         const x = rect.left + rect.width / 2;
         const y = rect.top + rect.height / 2;
-        const willBeDark = getCurrentScheme() !== 'dark';
-        const nextScheme: ColorScheme = willBeDark ? 'dark' : 'light';
-        const endRadius = Math.hypot(
-            Math.max(x, window.innerWidth - x),
-            Math.max(y, window.innerHeight - y)
-        );
+        const currentScheme = getCurrentScheme();
+        const isLeavingDark = currentScheme === 'dark';
+        const nextScheme: ColorScheme = currentScheme === 'dark' ? 'light' : 'dark';
+        const transitionDirection = isLeavingDark ? 'dark-to-light' : 'light-to-dark';
 
         if (!('startViewTransition' in document)) {
             applyScheme(nextScheme);
             return;
         }
 
+        const root = document.documentElement;
+        root.dataset.themeTransitionDirection = transitionDirection;
+
+        const clearThemeTransitionDirection = () => {
+            if (root.dataset.themeTransitionDirection === transitionDirection) {
+                delete root.dataset.themeTransitionDirection;
+            }
+        };
+
+        stopActiveThemeAnimations();
+
         const transition = (document as Document & {
             startViewTransition: (callback: () => void) => {
                 ready: Promise<void>;
+                finished: Promise<void>;
             };
         }).startViewTransition(() => {
             applyScheme(nextScheme);
         });
 
         transition.ready.then(() => {
-            const clipPath = willBeDark
-                ? [`circle(${endRadius}px at ${x}px ${y}px)`, `circle(0px at ${x}px ${y}px)`]
-                : [`circle(0px at ${x}px ${y}px)`, `circle(${endRadius}px at ${x}px ${y}px)`];
+            activeThemeAnimations = getThemeSnapshotTargets().flatMap((target) => {
+                const revealClipPath = getSnapshotClipPath(target, x, y);
+                const clipPath = isLeavingDark ? [...revealClipPath].reverse() : revealClipPath;
+                const pseudoElement = isLeavingDark
+                    ? ({
+                        root: '::view-transition-old(root)',
+                        'theme-header': '::view-transition-old(theme-header)',
+                        'theme-content': '::view-transition-old(theme-content)'
+                    } satisfies Record<ThemeSnapshotName, string>)[target.name]
+                    : ({
+                        root: '::view-transition-new(root)',
+                        'theme-header': '::view-transition-new(theme-header)',
+                        'theme-content': '::view-transition-new(theme-content)'
+                    } satisfies Record<ThemeSnapshotName, string>)[target.name];
 
-            document.documentElement.animate(
-                { clipPath },
-                {
-                    duration: 500,
-                    easing: 'ease-in-out',
-                    fill: 'forwards',
-                    pseudoElement: willBeDark
-                        ? '::view-transition-old(root)'
-                        : '::view-transition-new(root)'
+                try {
+                    return [root.animate(
+                        { clipPath },
+                        {
+                            duration: 500,
+                            easing: 'ease-in-out',
+                            fill: 'forwards',
+                            pseudoElement
+                        }
+                    )];
+                } catch {
+                    return [];
                 }
-            );
-        });
+            });
+
+            Promise.allSettled([
+                transition.finished,
+                ...activeThemeAnimations.map((animation) => animation.finished)
+            ]).then(() => {
+                stopActiveThemeAnimations();
+                clearThemeTransitionDirection();
+            });
+        }).catch(clearThemeTransitionDirection);
     }, { capture: true });
 }
 
@@ -456,63 +528,198 @@ function initArticleTocHover() {
     if (!toc || !articleMain) return;
 
     const toggle = toc.querySelector<HTMLButtonElement>('[data-article-toc-toggle]');
+    const panel = toc.querySelector<HTMLElement>('[data-article-toc-panel]');
+    const nav = toc.querySelector<HTMLElement>('[data-article-toc-nav]');
+    const desktopQuery = window.matchMedia('(min-width: 981px)');
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
     let lockedOpen = false;
+    let pointerInside = false;
+    let focusInside = false;
+    let autoOpen = false;
 
-    function setVisible(visible: boolean) {
-        document.body.classList.toggle('is-article-toc-visible', visible);
-        toggle?.setAttribute('aria-expanded', visible ? 'true' : 'false');
-        toggle?.setAttribute('aria-label', visible ? '隐藏文章目录' : '显示文章目录');
+    function syncVisible() {
+        const shouldShow = desktopQuery.matches && (lockedOpen || pointerInside || focusInside || autoOpen);
+        document.body.classList.toggle('is-article-toc-visible', shouldShow);
+        toc.classList.toggle('is-article-toc-active', shouldShow);
+        toc.classList.toggle('is-article-toc-auto-revealing', shouldShow && autoOpen);
+        panel?.setAttribute('aria-hidden', shouldShow ? 'false' : 'true');
+        toggle?.setAttribute('aria-expanded', shouldShow ? 'true' : 'false');
+        toggle?.setAttribute('aria-label', shouldShow ? '隐藏文章目录' : '显示文章目录');
     }
 
-    function isInsideReadingColumn(x: number, y: number) {
-        const rect = articleMain?.getBoundingClientRect();
-        if (!rect) return false;
-
-        const top = Math.min(rect.top, 0) - 48;
-        const bottom = Math.max(rect.bottom, window.innerHeight) + 48;
-        return x >= rect.left - 72 && x <= rect.right + 32 && y >= top && y <= bottom;
+    function setAutoReveal(active: boolean) {
+        autoOpen = active;
+        syncVisible();
     }
 
-    document.addEventListener('pointermove', (event) => {
-        if (lockedOpen) return;
-        const revealZone = Math.min(380, Math.max(280, window.innerWidth * 0.22));
-        setVisible(event.clientX <= revealZone || isInsideReadingColumn(event.clientX, event.clientY));
-    }, { passive: true });
+    function closeToc() {
+        lockedOpen = false;
+        pointerInside = false;
+        focusInside = false;
+        setAutoReveal(false);
+    }
 
-    document.addEventListener('pointerleave', () => {
-        if (!lockedOpen) setVisible(false);
+    toc.addEventListener('pointerenter', () => {
+        pointerInside = true;
+        syncVisible();
     });
 
-    toc.addEventListener('focusin', () => setVisible(true));
+    toc.addEventListener('pointerleave', () => {
+        pointerInside = false;
+        syncVisible();
+    });
+
+    toc.addEventListener('focusin', () => {
+        focusInside = true;
+        syncVisible();
+    });
     toc.addEventListener('focusout', (event) => {
         const relatedTarget = event.relatedTarget;
-        if (lockedOpen || (relatedTarget instanceof Node && toc.contains(relatedTarget))) return;
-        setVisible(false);
+        if (relatedTarget instanceof Node && toc.contains(relatedTarget)) return;
+        focusInside = false;
+        syncVisible();
     });
 
     toggle?.addEventListener('click', () => {
         if (lockedOpen && document.body.classList.contains('is-article-toc-visible')) {
-            lockedOpen = false;
-            setVisible(false);
+            closeToc();
             return;
         }
         lockedOpen = true;
-        setVisible(true);
+        syncVisible();
     });
 
     document.addEventListener('click', (event) => {
         const target = event.target;
         if (!lockedOpen || !(target instanceof Node)) return;
         if (toc.contains(target) || articleMain.contains(target)) return;
-        lockedOpen = false;
-        setVisible(false);
+        closeToc();
     });
 
     document.addEventListener('keydown', (event) => {
         if (event.key !== 'Escape') return;
-        lockedOpen = false;
-        setVisible(false);
+        closeToc();
     });
+
+    addMediaQueryChangeListener(desktopQuery, (event) => {
+        if (event.matches) return;
+        closeToc();
+    });
+
+    if (!nav) return;
+
+    type TocEntry = {
+        heading: HTMLElement;
+        item: HTMLLIElement | null;
+        link: HTMLAnchorElement;
+    };
+
+    function getTocLinkId(link: HTMLAnchorElement) {
+        const href = link.getAttribute('href') || '';
+        const hashIndex = href.indexOf('#');
+        if (hashIndex === -1) return '';
+
+        const rawHash = href.slice(hashIndex + 1);
+        try {
+            return decodeURIComponent(rawHash);
+        } catch {
+            return rawHash;
+        }
+    }
+
+    const headings = Array.from(articleMain.querySelectorAll<HTMLElement>('h1[id], h2[id], h3[id], h4[id]'));
+    const headingById = new Map(headings.map((heading) => [heading.id, heading]));
+    const tocEntries = Array.from(nav.querySelectorAll<HTMLAnchorElement>('a[href*="#"]')).flatMap((link): TocEntry[] => {
+        link.setAttribute('data-article-toc-link', '');
+        const heading = headingById.get(getTocLinkId(link));
+        if (!heading) return [];
+
+        return [{
+            heading,
+            item: link.closest<HTMLLIElement>('li'),
+            link
+        }];
+    });
+
+    if (!tocEntries.length) return;
+
+    let currentEntry: TocEntry | null = null;
+    let currentUpdateFrame: number | undefined;
+    let lastKnownScrollY = window.scrollY;
+
+    function keepCurrentLinkVisible(link: HTMLAnchorElement) {
+        if (!toc.classList.contains('is-article-toc-active')) return;
+
+        const navRect = nav.getBoundingClientRect();
+        const linkRect = link.getBoundingClientRect();
+        const topOverflow = linkRect.top - navRect.top;
+        const bottomOverflow = linkRect.bottom - navRect.bottom;
+        if (topOverflow >= 0 && bottomOverflow <= 0) return;
+
+        nav.scrollBy({
+            top: topOverflow < 0 ? topOverflow - 8 : bottomOverflow + 8,
+            behavior: reducedMotion.matches ? 'auto' : 'smooth'
+        });
+    }
+
+    function setArticleTocCurrent(nextEntry: TocEntry) {
+        if (currentEntry === nextEntry) return;
+        currentEntry = nextEntry;
+
+        tocEntries.forEach((entry) => {
+            entry.link.removeAttribute('aria-current');
+            entry.item?.classList.remove(
+                'is-article-toc-active',
+                'is-article-toc-ancestor',
+                'is-article-toc-current',
+                'active-class'
+            );
+        });
+
+        nextEntry.link.setAttribute('aria-current', 'location');
+        nextEntry.item?.classList.add('is-article-toc-active', 'is-article-toc-current', 'active-class');
+
+        let ancestor = nextEntry.item?.parentElement?.closest<HTMLLIElement>('li') || null;
+        while (ancestor && toc.contains(ancestor)) {
+            ancestor.classList.add('is-article-toc-active', 'is-article-toc-ancestor');
+            ancestor = ancestor.parentElement?.closest<HTMLLIElement>('li') || null;
+        }
+
+        keepCurrentLinkVisible(nextEntry.link);
+    }
+
+    function updateCurrentTocEntry() {
+        currentUpdateFrame = undefined;
+        const scrolledSinceLastUpdate = window.scrollY !== lastKnownScrollY;
+        lastKnownScrollY = window.scrollY;
+
+        const targetLine = Math.max(120, window.innerHeight * 0.32);
+        const nextEntry = tocEntries.reduce((activeEntry, entry) => {
+            const top = entry.heading.getBoundingClientRect().top;
+            return top <= targetLine ? entry : activeEntry;
+        }, tocEntries[0]);
+
+        const entryChanged = currentEntry !== null && currentEntry !== nextEntry;
+        setArticleTocCurrent(nextEntry);
+        if (scrolledSinceLastUpdate && entryChanged && !lockedOpen) setAutoReveal(true);
+    }
+
+    function scheduleCurrentTocUpdate() {
+        if (currentUpdateFrame !== undefined) return;
+        currentUpdateFrame = window.requestAnimationFrame(updateCurrentTocEntry);
+    }
+
+    tocEntries.forEach((entry) => {
+        entry.link.addEventListener('click', () => {
+            setArticleTocCurrent(entry);
+            window.setTimeout(scheduleCurrentTocUpdate, 80);
+        });
+    });
+
+    window.addEventListener('scroll', scheduleCurrentTocUpdate, { passive: true });
+    window.addEventListener('resize', scheduleCurrentTocUpdate);
+    window.addEventListener('hashchange', scheduleCurrentTocUpdate);
+    updateCurrentTocEntry();
 }
 
 function initRevealOnScroll() {

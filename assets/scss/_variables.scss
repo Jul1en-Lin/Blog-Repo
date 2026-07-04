@@ -64,6 +64,8 @@
   --header-height: 72px;
   --layout-wide: 1360px;
   --layout-reading: 720px;
+  --layout-header-width: min(1280px, calc(100vw - clamp(48px, 6vw, 104px)));
+  --layout-header-left: calc((100vw - var(--layout-header-width)) / 2);
 }
 
 :root[data-scheme="dark"] {

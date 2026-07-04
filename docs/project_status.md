@@ -13,6 +13,40 @@ Last updated: 2026-07-04
 
 ## Recent Notes
 
+### 2026-07-04 Theme Toggle View Transition Patch
+
+- Kept the circular View Transition theme animation, but made snapshot stacking depend on the active transition direction instead of the final color scheme.
+- Dark-to-light now animates the old root snapshot above the new one so body text, primary navigation, social icons, and the theme icon remain visible during the switch.
+- Header and main content now get temporary `theme-header` and `theme-content` View Transition groups during theme changes, with matching circular clip animations above the root snapshots so browser root overlays cannot cover text or icons.
+- Added `tests/theme-toggle-view-transition.sh` for source and generated CSS coverage.
+
+### 2026-07-04 Article Vertical Spacing
+
+- Tightened article body vertical rhythm for Chinese-heavy posts while preserving content width, TOC layout, media boundaries, code block boundaries, and table boundaries.
+- Added `tests/article-spacing.sh` to cover paragraph, heading, list, image, code block, Mermaid, and table outer spacing.
+
+### 2026-07-04 Global Header Layout
+
+- Moved the compact `1280px` header shell into global layout variables so Home, Blog, Search, Music, and article pages share the same desktop navigation width.
+- Removed the article-only header width override and kept the article TOC aligned to the shared header shell offset.
+- Added `tests/site-header-layout.sh` to cover the shared header shell and primary generated pages.
+
+### 2026-07-04 Article Layout Tightening
+
+- Tightened article detail desktop spacing so the header shell, floating TOC, and reading column sit closer together on wide screens.
+- Kept the existing TOC hover/click reveal behavior and mobile hidden behavior unchanged.
+- Added CSS regression checks to `tests/article-toc.sh` for the article shell width, TOC placement, TOC width, and article top padding.
+
+### 2026-07-04 Article TOC Refresh
+
+- Created `feat/article-toc-anthropic` for the article detail left TOC update.
+- Reworked the desktop article TOC into an Anthropic-style quiet section index with divider rows, hover/click reveal, and scroll-aware current section state.
+- Removed the old TOC music staff decoration and kept the TOC hidden on mobile widths.
+- Aligned TOC links with the article reading font stack.
+- Added persistent automatic TOC reveal when scrolling reaches a new article heading.
+- Kept Hugo's first TOC heading group readable so article section titles do not collapse under the wrapper title.
+- Added `tests/article-toc.sh` for generated HTML/CSS/JS regression coverage.
+
 ### 2026-07-04 Claude Fable 5 Prompt Guide Import
 
 - Imported `/AI/Claude Fable 5 提示指南` as a published Hugo post.

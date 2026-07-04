@@ -13,6 +13,11 @@ Last updated: 2026-07-04
 
 ## Recent Notes
 
+### 2026-07-04 Article Vertical Spacing
+
+- Tightened article body vertical rhythm for Chinese-heavy posts while preserving content width, TOC layout, media boundaries, code block boundaries, and table boundaries.
+- Added `tests/article-spacing.sh` to cover paragraph, heading, list, image, code block, Mermaid, and table outer spacing.
+
 ### 2026-07-04 Global Header Layout
 
 - Moved the compact `1280px` header shell into global layout variables so Home, Blog, Search, Music, and article pages share the same desktop navigation width.

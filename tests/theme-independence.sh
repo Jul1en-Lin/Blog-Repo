@@ -78,7 +78,7 @@ assert_contains 'mermaid@11.15.0/dist/mermaid.esm.min.mjs' public/p/seata/index.
     'Mermaid articles must load the pinned Mermaid module'
 assert_contains 'svg.viewBox.baseVal.width' public/p/seata/index.html \
     'Mermaid diagrams must preserve their readable intrinsic width on narrow screens'
-assert_contains '.article-detail__content .mermaid-diagram{width:100%;max-width:100%;margin:var(--space-6)0' public/css \
+assert_contains '.article-detail__content .mermaid-diagram{width:100%;max-width:100%;margin:28px 0' public/css \
     'Mermaid diagram boundaries must match article images and tables'
 assert_contains '--mermaid-intrinsic-width' public/css \
     'Narrow Mermaid diagrams must scroll inside their container instead of overflowing the page'

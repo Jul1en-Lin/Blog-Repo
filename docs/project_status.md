@@ -1,6 +1,6 @@
 # Project Status
 
-Last updated: 2026-07-04
+Last updated: 2026-07-05
 
 ## Current Snapshot
 
@@ -12,6 +12,11 @@ Last updated: 2026-07-04
 - Generated files live under `public/` and `resources/`; do not edit them by hand.
 
 ## Recent Notes
+
+### 2026-07-05 Main Test Artifact Cleanup
+
+- Removed committed `.playwright-cli/*.yml` browser test snapshots from `main`.
+- Added `.playwright-cli/` to `.gitignore` so future browser test artifacts stay local.
 
 ### 2026-07-04 Theme Toggle View Transition Patch
 

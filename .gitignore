@@ -16,3 +16,6 @@
 # Local deps / caches
 node_modules/
 .cache/
+
+# Browser test artifacts
+.playwright-cli/

@@ -13,6 +13,13 @@ Last updated: 2026-07-04
 
 ## Recent Notes
 
+### 2026-07-04 Theme Toggle View Transition Patch
+
+- Kept the circular View Transition theme animation, but made snapshot stacking depend on the active transition direction instead of the final color scheme.
+- Dark-to-light now animates the old root snapshot above the new one so body text, primary navigation, social icons, and the theme icon remain visible during the switch.
+- Header and main content now get temporary `theme-header` and `theme-content` View Transition groups during theme changes, with matching circular clip animations above the root snapshots so browser root overlays cannot cover text or icons.
+- Added `tests/theme-toggle-view-transition.sh` for source and generated CSS coverage.
+
 ### 2026-07-04 Article Vertical Spacing
 
 - Tightened article body vertical rhythm for Chinese-heavy posts while preserving content width, TOC layout, media boundaries, code block boundaries, and table boundaries.

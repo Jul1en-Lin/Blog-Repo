@@ -19,6 +19,13 @@ function initThemeToggle() {
     toggle.dataset.projectThemeToggleReady = 'true';
 
     type ColorScheme = 'light' | 'dark';
+    type ThemeSnapshotName = 'root' | 'theme-header' | 'theme-content';
+    type ThemeSnapshotTarget = {
+        name: ThemeSnapshotName;
+        element: Element | null;
+    };
+
+    let activeThemeAnimations: Animation[] = [];
 
     function getCurrentScheme() {
         return document.documentElement.dataset.scheme === 'dark' ? 'dark' : 'light';
@@ -42,6 +49,39 @@ function initThemeToggle() {
         window.dispatchEvent(new CustomEvent('onColorSchemeChange', { detail: scheme }));
     }
 
+    function getSnapshotClipPath(target: ThemeSnapshotTarget, x: number, y: number) {
+        const rect = target.element?.getBoundingClientRect() || {
+            left: 0,
+            top: 0,
+            width: window.innerWidth,
+            height: window.innerHeight
+        };
+        const localX = x - rect.left;
+        const localY = y - rect.top;
+        const radius = Math.hypot(
+            Math.max(localX, rect.width - localX),
+            Math.max(localY, rect.height - localY)
+        );
+
+        return [
+            `circle(0px at ${localX}px ${localY}px)`,
+            `circle(${radius}px at ${localX}px ${localY}px)`
+        ];
+    }
+
+    function getThemeSnapshotTargets(): ThemeSnapshotTarget[] {
+        return [
+            { name: 'root', element: null },
+            { name: 'theme-header', element: document.querySelector('.site-header') },
+            { name: 'theme-content', element: document.querySelector('.main-content') }
+        ].filter((target) => target.name === 'root' || target.element);
+    }
+
+    function stopActiveThemeAnimations() {
+        activeThemeAnimations.forEach((animation) => animation.cancel());
+        activeThemeAnimations = [];
+    }
+
     toggle.addEventListener('click', (event) => {
         event.preventDefault();
         event.stopImmediatePropagation();
@@ -49,43 +89,75 @@ function initThemeToggle() {
         const rect = toggle.getBoundingClientRect();
         const x = rect.left + rect.width / 2;
         const y = rect.top + rect.height / 2;
-        const willBeDark = getCurrentScheme() !== 'dark';
-        const nextScheme: ColorScheme = willBeDark ? 'dark' : 'light';
-        const endRadius = Math.hypot(
-            Math.max(x, window.innerWidth - x),
-            Math.max(y, window.innerHeight - y)
-        );
+        const currentScheme = getCurrentScheme();
+        const isLeavingDark = currentScheme === 'dark';
+        const nextScheme: ColorScheme = currentScheme === 'dark' ? 'light' : 'dark';
+        const transitionDirection = isLeavingDark ? 'dark-to-light' : 'light-to-dark';
 
         if (!('startViewTransition' in document)) {
             applyScheme(nextScheme);
             return;
         }
 
+        const root = document.documentElement;
+        root.dataset.themeTransitionDirection = transitionDirection;
+
+        const clearThemeTransitionDirection = () => {
+            if (root.dataset.themeTransitionDirection === transitionDirection) {
+                delete root.dataset.themeTransitionDirection;
+            }
+        };
+
+        stopActiveThemeAnimations();
+
         const transition = (document as Document & {
             startViewTransition: (callback: () => void) => {
                 ready: Promise<void>;
+                finished: Promise<void>;
             };
         }).startViewTransition(() => {
             applyScheme(nextScheme);
         });
 
         transition.ready.then(() => {
-            const clipPath = willBeDark
-                ? [`circle(${endRadius}px at ${x}px ${y}px)`, `circle(0px at ${x}px ${y}px)`]
-                : [`circle(0px at ${x}px ${y}px)`, `circle(${endRadius}px at ${x}px ${y}px)`];
+            activeThemeAnimations = getThemeSnapshotTargets().flatMap((target) => {
+                const revealClipPath = getSnapshotClipPath(target, x, y);
+                const clipPath = isLeavingDark ? [...revealClipPath].reverse() : revealClipPath;
+                const pseudoElement = isLeavingDark
+                    ? ({
+                        root: '::view-transition-old(root)',
+                        'theme-header': '::view-transition-old(theme-header)',
+                        'theme-content': '::view-transition-old(theme-content)'
+                    } satisfies Record<ThemeSnapshotName, string>)[target.name]
+                    : ({
+                        root: '::view-transition-new(root)',
+                        'theme-header': '::view-transition-new(theme-header)',
+                        'theme-content': '::view-transition-new(theme-content)'
+                    } satisfies Record<ThemeSnapshotName, string>)[target.name];
 
-            document.documentElement.animate(
-                { clipPath },
-                {
-                    duration: 500,
-                    easing: 'ease-in-out',
-                    fill: 'forwards',
-                    pseudoElement: willBeDark
-                        ? '::view-transition-old(root)'
-                        : '::view-transition-new(root)'
+                try {
+                    return [root.animate(
+                        { clipPath },
+                        {
+                            duration: 500,
+                            easing: 'ease-in-out',
+                            fill: 'forwards',
+                            pseudoElement
+                        }
+                    )];
+                } catch {
+                    return [];
                 }
-            );
-        });
+            });
+
+            Promise.allSettled([
+                transition.finished,
+                ...activeThemeAnimations.map((animation) => animation.finished)
+            ]).then(() => {
+                stopActiveThemeAnimations();
+                clearThemeTransitionDirection();
+            });
+        }).catch(clearThemeTransitionDirection);
     }, { capture: true });
 }
 

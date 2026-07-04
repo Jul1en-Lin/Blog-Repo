@@ -1,0 +1,51 @@
+- generic [active] [ref=e1]:
+  - link "Skip to content" [ref=e2] [cursor=pointer]:
+    - /url: "#main-content"
+  - banner [ref=e3]:
+    - generic [ref=e4]:
+      - link "Jul1en home" [ref=e5] [cursor=pointer]:
+        - /url: /
+        - generic [ref=e6]:
+          - img
+          - generic [ref=e7]: Jul1en
+      - generic [ref=e8]:
+        - navigation "Primary navigation" [ref=e9]:
+          - list [ref=e10]:
+            - listitem [ref=e11]:
+              - link "Blog" [ref=e12] [cursor=pointer]:
+                - /url: /post/
+            - listitem [ref=e13]:
+              - link "Search" [ref=e14] [cursor=pointer]:
+                - /url: /search/
+            - listitem [ref=e15]:
+              - link "Music" [ref=e16] [cursor=pointer]:
+                - /url: /music/
+        - group "Social links and theme" [ref=e17]:
+          - link "GitHub" [ref=e18] [cursor=pointer]:
+            - /url: https://github.com/Jul1en-Lin
+            - img [ref=e20]
+          - link "Instagram" [ref=e22] [cursor=pointer]:
+            - /url: https://www.instagram.com/jul1en_lin
+            - img [ref=e24]
+          - button "切换配色" [ref=e28] [cursor=pointer]:
+            - img [ref=e30]
+  - main [ref=e33]:
+    - region "搜索" [ref=e34]:
+      - generic [ref=e35]:
+        - generic [ref=e36]: 关键词
+        - searchbox "关键词" [ref=e37]: seata
+        - button "搜索" [ref=e38] [cursor=pointer]:
+          - img [ref=e39]
+      - generic [ref=e42]:
+        - paragraph [ref=e43]: 找到 1 篇文章
+        - article [ref=e45]:
+          - link "Seata Seata Seata 是 Spring Cloud Alibaba 体系里常用的分布式事务解决方案。它解决的核心问题是：微服务拆分之后，一个业务请求可能跨多个服务、多个数据库，Seata 负责把这些分散的本地事务组织成一个全局事务，让整条业务链路尽量保持一致。 可以先这样记： Eureka、Nacos、OpenFeign、Gateway 解决服务治理：注册…" [ref=e46] [cursor=pointer]:
+            - /url: http://localhost:1320/p/seata/
+            - paragraph [ref=e47]:
+              - mark [ref=e48]: Seata
+            - paragraph [ref=e49]:
+              - mark [ref=e50]: Seata
+              - mark [ref=e51]: Seata
+              - text: 是 Spring Cloud Alibaba 体系里常用的分布式事务解决方案。它解决的核心问题是：微服务拆分之后，一个业务请求可能跨多个服务、多个数据库，
+              - mark [ref=e52]: Seata
+              - text: 负责把这些分散的本地事务组织成一个全局事务，让整条业务链路尽量保持一致。 可以先这样记： Eureka、Nacos、OpenFeign、Gateway 解决服务治理：注册…

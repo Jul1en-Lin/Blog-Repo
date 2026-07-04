@@ -13,6 +13,16 @@ Last updated: 2026-07-04
 
 ## Recent Notes
 
+### 2026-07-04 Article TOC Refresh
+
+- Created `feat/article-toc-anthropic` for the article detail left TOC update.
+- Reworked the desktop article TOC into an Anthropic-style quiet section index with divider rows, hover/click reveal, and scroll-aware current section state.
+- Removed the old TOC music staff decoration and kept the TOC hidden on mobile widths.
+- Aligned TOC links with the article reading font stack.
+- Added persistent automatic TOC reveal when scrolling reaches a new article heading.
+- Kept Hugo's first TOC heading group readable so article section titles do not collapse under the wrapper title.
+- Added `tests/article-toc.sh` for generated HTML/CSS/JS regression coverage.
+
 ### 2026-07-04 Claude Fable 5 Prompt Guide Import
 
 - Imported `/AI/Claude Fable 5 提示指南` as a published Hugo post.

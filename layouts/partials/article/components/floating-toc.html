@@ -3,29 +3,15 @@
 {{- if $tocEnabled -}}
 <aside class="article-detail__toc-rail" aria-label="文章目录" data-article-toc>
     <button class="article-detail__toc-toggle" type="button" aria-label="显示文章目录" aria-controls="TableOfContents" aria-expanded="false" data-article-toc-toggle>
-        <span aria-hidden="true"></span>
-        <span aria-hidden="true"></span>
-        <span aria-hidden="true"></span>
+        <span class="article-detail__toc-toggle-line" aria-hidden="true"></span>
+        <span class="article-detail__toc-toggle-line" aria-hidden="true"></span>
+        <span class="article-detail__toc-toggle-line" aria-hidden="true"></span>
     </button>
 
-    <div class="article-detail__toc-panel">
-        <div class="article-detail__toc-nav">
+    <div class="article-detail__toc-panel" data-article-toc-panel aria-hidden="true">
+        <div class="article-detail__toc-nav" data-article-toc-nav>
             {{ .TableOfContents }}
         </div>
-    </div>
-
-    <div class="article-detail__toc-staff" aria-hidden="true">
-        <svg viewBox="0 0 320 110" preserveAspectRatio="none" focusable="false">
-            <g>
-                <path d="M-18 58 C 52 25, 106 82, 176 52 S 270 42, 338 66" />
-                <path d="M-18 69 C 52 36, 106 93, 176 63 S 270 53, 338 77" />
-                <path d="M-18 80 C 52 47, 106 104, 176 74 S 270 64, 338 88" />
-                <path d="M-18 91 C 52 58, 106 115, 176 85 S 270 75, 338 99" />
-                <path d="M-18 102 C 52 69, 106 126, 176 96 S 270 86, 338 110" />
-            </g>
-            <text x="72" y="83">♪</text>
-            <text x="176" y="63">♩</text>
-        </svg>
     </div>
 </aside>
 {{- end -}}

@@ -40,6 +40,11 @@ Latest verification snapshot:
 
 ## Condensed History
 
+### 2026-07-04 - Claude Fable 5 Prompt Guide
+
+- Imported the Obsidian `AI/Claude Fable 5 提示指南` note as a Hugo page-bundle post.
+- Removed the opening related-note backlink from the published body.
+
 ### 2026-06-24 - Codex Workflow V3 Post
 
 - Imported the Obsidian `AI/Codex 工作流更新-v3` note as a Hugo page-bundle post.

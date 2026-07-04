@@ -1,6 +1,6 @@
 # Project Status
 
-Last updated: 2026-07-02
+Last updated: 2026-07-04
 
 ## Current Snapshot
 
@@ -12,6 +12,12 @@ Last updated: 2026-07-02
 - Generated files live under `public/` and `resources/`; do not edit them by hand.
 
 ## Recent Notes
+
+### 2026-07-04 Claude Fable 5 Prompt Guide Import
+
+- Imported `/AI/Claude Fable 5 提示指南` as a published Hugo post.
+- Removed the opening Obsidian `相关笔记` backlink line; the note has no local image assets.
+- Checks for this change: `hugo -D --cleanDestinationDir --printI18nWarnings --printPathWarnings`, `bash tests/highlightr-markup.sh`, and `git diff --check`.
 
 ### 2026-07-02 File Structure Cleanup
 

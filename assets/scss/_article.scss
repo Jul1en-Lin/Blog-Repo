@@ -1,3 +1,12 @@
+body.template-article-detail {
+  --article-shell-width: min(1280px, calc(100vw - clamp(48px, 6vw, 104px)));
+  --article-shell-left: calc((100vw - var(--article-shell-width)) / 2);
+}
+
+body.template-article-detail .site-header__inner {
+  width: var(--article-shell-width);
+}
+
 body.template-article-detail .main-content {
   width: 100%;
   min-height: 100vh;
@@ -7,7 +16,7 @@ body.template-article-detail .main-content {
 .article-detail {
   position: relative;
   min-height: 100vh;
-  padding: var(--space-9) clamp(28px, 3vw, 56px) var(--space-8);
+  padding: clamp(40px, 5vh, 56px) clamp(28px, 3vw, 56px) var(--space-8);
   overflow: clip;
 }
 
@@ -24,9 +33,9 @@ body.template-article-detail .main-content {
 }
 
 .article-detail__toc-rail {
-  --article-toc-left: clamp(28px, 3.25vw, 58px);
-  --article-toc-top: clamp(132px, 18vh, 206px);
-  --article-toc-width: clamp(218px, 16vw, 284px);
+  --article-toc-left: max(clamp(28px, 3.25vw, 58px), var(--article-shell-left));
+  --article-toc-top: clamp(104px, 14vh, 152px);
+  --article-toc-width: clamp(204px, 11vw, 220px);
   --article-toc-rule: color-mix(in srgb, var(--color-text) 14%, transparent);
   --article-toc-muted: color-mix(in srgb, var(--color-text) 48%, transparent);
   position: fixed;
@@ -34,7 +43,7 @@ body.template-article-detail .main-content {
   top: 0;
   bottom: 0;
   left: 0;
-  width: calc(var(--article-toc-left) + var(--article-toc-width) + 28px);
+  width: calc(var(--article-toc-left) + var(--article-toc-width) + 24px);
   color: var(--color-text);
   overflow: hidden;
 }
@@ -99,7 +108,7 @@ body.is-article-toc-visible .article-detail__toc-toggle-line:nth-child(2),
 
 .article-detail__toc-panel {
   position: absolute;
-  top: calc(var(--article-toc-top) + 44px);
+  top: calc(var(--article-toc-top) + 40px);
   bottom: clamp(72px, 13vh, 136px);
   left: var(--article-toc-left);
   width: var(--article-toc-width);

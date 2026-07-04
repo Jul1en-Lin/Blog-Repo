@@ -58,6 +58,16 @@ assert_contains '.article-detail__toc-nav #TableOfContents a[aria-current=locati
     'Article TOC should style aria-current links'
 assert_contains '.article-detail__toc-nav #TableOfContents a{position:relative;display:block;width:100%;padding:12px 0;border-bottom:1px solid var(--article-toc-rule);color:var(--article-toc-muted);font-family:var(--font-display),noto sans sc,serif' public/css \
     'Article TOC should use the article reading font stack'
+assert_contains 'body.template-article-detail{--article-shell-width:min(1280px, calc(100vw - clamp(48px, 6vw, 104px)));--article-shell-left:calc((100vw - var(--article-shell-width)) / 2)}' public/css \
+    'Article pages should use a compact desktop shell width'
+assert_contains 'body.template-article-detail .site-header__inner{width:var(--article-shell-width)}' public/css \
+    'Article page header should align to the compact reading shell'
+assert_contains '--article-toc-left:max(clamp(28px, 3.25vw, 58px), var(--article-shell-left));' public/css \
+    'Article TOC should sit near the compact reading shell on wide screens'
+assert_contains '--article-toc-width:clamp(204px, 11vw, 220px);' public/css \
+    'Article TOC should use a narrower Anthropic-style width'
+assert_contains '.article-detail{position:relative;min-height:100vh;padding:clamp(40px,5vh,56px)clamp(28px,3vw,56px)var(--space-8);overflow:clip}' public/css \
+    'Article detail top spacing should be tightened on desktop'
 assert_not_contains '.article-detail__toc-nav #TableOfContents a:hover,.article-detail__toc-nav #TableOfContents a:focus-visible{transform:translateX(2px)}' public/css \
     'Article TOC hover should highlight without shifting text'
 

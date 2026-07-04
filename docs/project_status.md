@@ -13,6 +13,12 @@ Last updated: 2026-07-04
 
 ## Recent Notes
 
+### 2026-07-04 Article Layout Tightening
+
+- Tightened article detail desktop spacing so the header shell, floating TOC, and reading column sit closer together on wide screens.
+- Kept the existing TOC hover/click reveal behavior and mobile hidden behavior unchanged.
+- Added CSS regression checks to `tests/article-toc.sh` for the article shell width, TOC placement, TOC width, and article top padding.
+
 ### 2026-07-04 Article TOC Refresh
 
 - Created `feat/article-toc-anthropic` for the article detail left TOC update.

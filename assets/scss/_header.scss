@@ -11,7 +11,7 @@
   align-items: center;
   justify-content: space-between;
   gap: clamp(var(--space-5), 4vw, var(--space-8));
-  width: unquote("calc(100% - clamp(48px, 6vw, 104px))");
+  width: var(--layout-header-width);
   min-height: var(--header-height);
   margin: 0 auto;
 }

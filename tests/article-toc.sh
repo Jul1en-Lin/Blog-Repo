@@ -58,12 +58,16 @@ assert_contains '.article-detail__toc-nav #TableOfContents a[aria-current=locati
     'Article TOC should style aria-current links'
 assert_contains '.article-detail__toc-nav #TableOfContents a{position:relative;display:block;width:100%;padding:12px 0;border-bottom:1px solid var(--article-toc-rule);color:var(--article-toc-muted);font-family:var(--font-display),noto sans sc,serif' public/css \
     'Article TOC should use the article reading font stack'
-assert_contains 'body.template-article-detail{--article-shell-width:min(1280px, calc(100vw - clamp(48px, 6vw, 104px)));--article-shell-left:calc((100vw - var(--article-shell-width)) / 2)}' public/css \
-    'Article pages should use a compact desktop shell width'
-assert_contains 'body.template-article-detail .site-header__inner{width:var(--article-shell-width)}' public/css \
-    'Article page header should align to the compact reading shell'
-assert_contains '--article-toc-left:max(clamp(28px, 3.25vw, 58px), var(--article-shell-left));' public/css \
-    'Article TOC should sit near the compact reading shell on wide screens'
+assert_contains '--layout-header-width:min(1280px, calc(100vw - clamp(48px, 6vw, 104px)))' public/css \
+    'Article pages should inherit the compact global header shell width'
+assert_contains '--layout-header-left:calc((100vw - var(--layout-header-width)) / 2)' public/css \
+    'Article pages should inherit the compact global header shell offset'
+assert_contains '.site-header__inner{display:flex;align-items:center;justify-content:space-between;gap:clamp(var(--space-5),4vw,var(--space-8));width:var(--layout-header-width)' public/css \
+    'Article page header should align to the global compact shell'
+assert_not_contains 'body.template-article-detail .site-header__inner' public/css \
+    'Article pages should not keep a page-specific header width override'
+assert_contains '--article-toc-left:max(clamp(28px, 3.25vw, 58px), var(--layout-header-left));' public/css \
+    'Article TOC should sit near the global compact header shell on wide screens'
 assert_contains '--article-toc-width:clamp(204px, 11vw, 220px);' public/css \
     'Article TOC should use a narrower Anthropic-style width'
 assert_contains '.article-detail{position:relative;min-height:100vh;padding:clamp(40px,5vh,56px)clamp(28px,3vw,56px)var(--space-8);overflow:clip}' public/css \

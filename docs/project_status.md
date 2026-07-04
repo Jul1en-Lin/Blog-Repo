@@ -13,6 +13,12 @@ Last updated: 2026-07-04
 
 ## Recent Notes
 
+### 2026-07-04 Global Header Layout
+
+- Moved the compact `1280px` header shell into global layout variables so Home, Blog, Search, Music, and article pages share the same desktop navigation width.
+- Removed the article-only header width override and kept the article TOC aligned to the shared header shell offset.
+- Added `tests/site-header-layout.sh` to cover the shared header shell and primary generated pages.
+
 ### 2026-07-04 Article Layout Tightening
 
 - Tightened article detail desktop spacing so the header shell, floating TOC, and reading column sit closer together on wide screens.

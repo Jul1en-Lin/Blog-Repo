@@ -16,7 +16,7 @@ Last updated: 2026-07-05
 ### 2026-07-05 Search Anthropic Illustration
 
 - Added the provided magnifier PNG to the Search page bundle and rendered it inside an Anthropic-style `16:9` rounded color block using `#ebcece`.
-- Set the Search illustration color block to `#ccc9dc` in dark mode.
+- Set the Search illustration color block to `#b8607e` in dark mode.
 - Changed Search page interaction from live input search to submit-triggered search, with explicit empty/result/no-result/error states and a one-time result intro animation.
 - Added a ready-for-next-search state: focusing the input after a search hides the previous result list, animates the illustration back to full size, and lets the next submit replay the intro animation.
 - Centered the Search page input placeholder/text and removed the right-side search icon button; 404 keeps its search button.

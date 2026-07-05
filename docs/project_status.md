@@ -13,6 +13,12 @@ Last updated: 2026-07-05
 
 ## Recent Notes
 
+### 2026-07-05 Home Social Hover Polish
+
+- Updated the Home `Find me on` social links so hover/focus uses a left-to-right underline reveal matching the primary navigation.
+- Removed the social link hover lift and active press scale so the icons stay visually still during interaction.
+- Added `tests/home-social-hover.sh` for generated CSS coverage.
+
 ### 2026-07-05 Claude Fable 5 Prompt Guide Refresh
 
 - Synced the latest Obsidian edits for `/AI/Claude Fable 5 提示指南` into the published Hugo post on `main`.

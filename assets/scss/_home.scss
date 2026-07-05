@@ -220,22 +220,31 @@ body.template-home .home-profile__social {
 }
 
 .home-profile__social-link {
+  position: relative;
   display: inline-flex;
   align-items: center;
   gap: 5px;
   color: var(--color-text);
-  border-bottom: 1px solid color-mix(in srgb, var(--color-text) 22%, transparent);
   line-height: 1.55;
-  transition:
-    border-color var(--duration-fast) var(--ease-out),
-    color var(--duration-fast) var(--ease-out),
-    transform var(--duration-fast) var(--ease-out);
+  transition: color var(--duration-fast) var(--ease-out);
 }
 
-.home-profile__social-link:hover,
-.home-profile__social-link:focus-visible {
-  border-color: var(--color-text);
-  transform: translateY(-1px);
+.home-profile__social-link::after {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 1px;
+  content: "";
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform var(--duration-normal) var(--ease-out);
+}
+
+.home-profile__social-link:hover::after,
+.home-profile__social-link:focus-visible::after {
+  transform: scaleX(1);
 }
 
 .home-profile__social-link span[aria-hidden="true"],

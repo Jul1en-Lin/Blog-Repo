@@ -16,11 +16,23 @@ assert_contains() {
     fi
 }
 
+assert_not_contains() {
+    local pattern="$1"
+    local path="$2"
+    local description="$3"
+
+    if rg -Fq -- "$pattern" "$path"; then
+        printf 'FAIL: %s\n' "$description" >&2
+        exit 1
+    fi
+}
+
 assert_contains 'data-album-card' "$music_html" 'Music cards expose flip-card state hooks'
 assert_contains 'data-album-toggle' "$music_html" 'Music cards render semantic flip controls'
 assert_contains 'aria-pressed="false"' "$music_html" 'Music flip controls expose their initial state'
 assert_contains 'music-album-card__inner' "$music_html" 'Music cards render a 3D inner wrapper'
 assert_contains 'music-album-card__face--back' "$music_html" 'Music cards render a details back face'
+assert_not_contains '生活麻辣烫' "$music_html" 'Music page should not render the removed album'
 assert_contains '<h2>Sweatshirt</h2>' "$music_html" 'The album title remains available on the details face'
 assert_contains '<p class="music-album-card__artist">Patrick Hizon / EJEAN</p>' "$music_html" 'The album artist remains available on the details face'
 assert_contains '[data-album-card]' 'public/js' 'The custom script initializes album flipping'

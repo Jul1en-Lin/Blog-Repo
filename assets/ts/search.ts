@@ -8,15 +8,30 @@ interface SearchResult extends SearchIndexItem {
     matchCount: number;
 }
 
+type SearchState = 'empty' | 'ready' | 'has-results' | 'no-results' | 'error';
+
 const form = document.querySelector<HTMLFormElement>('[data-search-form]');
 const input = form?.querySelector<HTMLInputElement>('input[name="keyword"]');
+const searchRoot = form?.closest<HTMLElement>('[data-search-root]');
+const resultRegion = searchRoot?.querySelector<HTMLElement>('[data-search-result]')
+    ?? document.querySelector<HTMLElement>('[data-search-result]');
+const emptyArt = searchRoot?.querySelector<HTMLElement>('[data-search-empty-art]')
+    ?? document.querySelector<HTMLElement>('[data-search-empty-art]');
 const resultTitle = document.querySelector<HTMLElement>('[data-search-title]');
 const resultList = document.querySelector<HTMLElement>('[data-search-results]');
 const resultTemplate = document.querySelector<HTMLTemplateElement>('#search-result-template');
 const markTemplate = document.querySelector<HTMLTemplateElement>('#search-mark-template');
 
 let indexPromise: Promise<SearchIndexItem[]> | null = null;
-let composing = false;
+let hasIntroducedResults = false;
+
+const stateClasses: Array<`is-search-${SearchState}`> = [
+    'is-search-empty',
+    'is-search-ready',
+    'is-search-has-results',
+    'is-search-no-results',
+    'is-search-error',
+];
 
 function normalize(value: string): string {
     return value.toLocaleLowerCase().replace(/\s+/g, ' ').trim();
@@ -110,7 +125,7 @@ function appendHighlightedText(
     if (end < value.length) target.append(document.createTextNode('…'));
 }
 
-function renderResult(item: SearchResult, keywords: string[]): HTMLElement | null {
+function renderResult(item: SearchResult, keywords: string[], index: number): HTMLElement | null {
     const source = resultTemplate?.content.firstElementChild;
     if (!source) return null;
 
@@ -124,6 +139,7 @@ function renderResult(item: SearchResult, keywords: string[]): HTMLElement | nul
     link.href = item.permalink;
     appendHighlightedText(title, item.title, keywords);
     appendHighlightedText(preview, item.content.replace(/\s+/g, ' ').trim(), keywords, true);
+    article.style.setProperty('--search-result-delay', `${Math.min(index, 10) * 32}ms`);
     return article;
 }
 
@@ -140,9 +156,31 @@ async function loadIndex(): Promise<SearchIndexItem[]> {
     return indexPromise;
 }
 
-function clearResults(): void {
+function setSearchState(state: SearchState, intro = false): void {
+    for (const element of [searchRoot, resultRegion]) {
+        if (!element) continue;
+        element.classList.remove(...stateClasses);
+        element.classList.add(`is-search-${state}`);
+        element.classList.toggle('is-search-intro', intro);
+        element.dataset.searchState = state;
+    }
+
+    if (resultList) resultList.hidden = state !== 'has-results';
+    if (emptyArt) emptyArt.hidden = false;
+}
+
+function clearResults(state: SearchState = 'empty'): void {
     resultList?.replaceChildren();
     if (resultTitle) resultTitle.textContent = '';
+    setSearchState(state);
+}
+
+function prepareForNextSearch(): void {
+    const currentState = resultRegion?.dataset.searchState;
+    if (!currentState || currentState === 'empty' || currentState === 'ready') return;
+
+    hasIntroducedResults = false;
+    clearResults('ready');
 }
 
 async function search(value: string): Promise<void> {
@@ -170,18 +208,25 @@ async function search(value: string): Promise<void> {
             .sort((a, b) => b.matchCount - a.matchCount || a.title.localeCompare(b.title));
 
         const fragment = document.createDocumentFragment();
-        for (const item of results) {
-            const rendered = renderResult(item, keywords);
+        for (const [index, item] of results.entries()) {
+            const rendered = renderResult(item, keywords, index);
             if (rendered) fragment.append(rendered);
         }
 
         resultList.replaceChildren(fragment);
-        resultTitle.textContent = results.length > 0
-            ? `找到 ${results.length} 篇文章`
-            : '没有找到相关文章';
+        if (results.length > 0) {
+            const shouldIntroduceResults = !hasIntroducedResults;
+            hasIntroducedResults = true;
+            resultTitle.textContent = `找到 ${results.length} 篇文章`;
+            setSearchState('has-results', shouldIntroduceResults);
+        } else {
+            resultTitle.textContent = '没有找到相关文章';
+            setSearchState('no-results');
+        }
     } catch (error) {
-        clearResults();
+        resultList.replaceChildren();
         resultTitle.textContent = '搜索暂时不可用';
+        setSearchState('error');
         console.error(error);
     }
 }
@@ -223,16 +268,7 @@ if (form && input) {
         event.preventDefault();
         runSearch();
     });
-    input.addEventListener('compositionstart', () => {
-        composing = true;
-    });
-    input.addEventListener('compositionend', () => {
-        composing = false;
-        runSearch();
-    });
-    input.addEventListener('input', () => {
-        if (!composing) runSearch();
-    });
+    input.addEventListener('focus', prepareForNextSearch);
     window.addEventListener('popstate', () => {
         input.value = new URL(window.location.href).searchParams.get('keyword') ?? '';
         void search(input.value);

@@ -48,6 +48,8 @@ assert_contains '.home-profile__prose{position:relative;width:100%;margin-top:va
     'Home prose should span the reading column so the hourglass can align with the post dates'
 assert_contains '.home-hourglass{--home-hourglass-image-size:clamp(118px, 9vw, 158px);position:absolute;top:-61px;right:0;display:grid;width:calc(var(--home-hourglass-image-size) + 36px);padding:18px;place-items:center;border-radius:16px;background:#cbcadb;pointer-events:none' public/css \
     'Hourglass color block should align to the reading column edge without reserving a right column'
+assert_contains ':root[data-scheme=dark] .home-hourglass{background:#6e7781}' public/css \
+    'Hourglass color block should use the requested dark-mode color'
 assert_contains '.home-hourglass__image{width:var(--home-hourglass-image-size);height:auto;object-fit:contain' public/css \
     'Hourglass image should keep its display size and natural proportions'
 assert_not_contains '.home-profile-shell' public/css \

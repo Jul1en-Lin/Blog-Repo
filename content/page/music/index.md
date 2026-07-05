@@ -29,14 +29,6 @@ layout = "standard"
 themeColor = "#84413e"
 
 [[albums]]
-title = "生活麻辣烫"
-artist = "王齐铭WatchMe"
-image = "netease-life-spicy-hotpot.jpg"
-alt = "生活麻辣烫 album cover"
-layout = "standard"
-themeColor = "#9e8a87"
-
-[[albums]]
 title = "to be honest"
 artist = "Gareth.T"
 image = "netease-to-be-honest.jpg"

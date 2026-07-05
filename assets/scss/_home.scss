@@ -40,6 +40,10 @@ body.template-home .main-content {
   object-fit: contain;
 }
 
+:root[data-scheme="dark"] .home-hourglass {
+  background: #6e7781;
+}
+
 body.template-home .home-profile__title {
   margin: 0 0 var(--space-5);
   color: var(--color-text);

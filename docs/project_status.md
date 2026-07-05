@@ -13,6 +13,14 @@ Last updated: 2026-07-05
 
 ## Recent Notes
 
+### 2026-07-05 Home Hourglass Illustration
+
+- Created `feat/home-hourglass-illustration` after committing and pushing the prior Home social hover polish on `main`.
+- Added the provided hourglass PNG to the Home page beside the lyric lines, with its color block restored, top-aligned to the clover line, and right-aligned with the reading column/date edge.
+- Removed the two standalone Home divider lines, then restored the old divider-height spacing between the lyric, recent posts, and social sections.
+- Removed the Home blog archive prompt below the social links.
+- Added `tests/home-hourglass.sh` for generated HTML/CSS coverage.
+
 ### 2026-07-05 Home Social Hover Polish
 
 - Updated the Home `Find me on` social links so hover/focus uses a left-to-right underline reveal matching the primary navigation.

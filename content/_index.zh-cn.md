@@ -9,6 +9,5 @@ homeProfile:
     - Don’t gotta worry bout tomorrow cuz I
   recentLabel: Recently written
   socialLabel: Find me on
-  contactLine: Or keep reading through the blog archive.
   closingNote: Build quietly. Think clearly. Leave useful notes.
 ---

@@ -20,6 +20,26 @@ body.template-home .main-content {
   line-height: 1.82;
 }
 
+.home-hourglass {
+  --home-hourglass-image-size: clamp(118px, 9vw, 158px);
+  position: absolute;
+  top: -61px;
+  right: 0;
+  display: grid;
+  width: unquote("calc(var(--home-hourglass-image-size) + 36px)");
+  padding: 18px;
+  place-items: center;
+  border-radius: 16px;
+  background: #cbcadb;
+  pointer-events: none;
+}
+
+.home-hourglass__image {
+  width: var(--home-hourglass-image-size);
+  height: auto;
+  object-fit: contain;
+}
+
 body.template-home .home-profile__title {
   margin: 0 0 var(--space-5);
   color: var(--color-text);
@@ -89,6 +109,8 @@ body.template-home .home-profile__line {
 }
 
 .home-profile__prose {
+  position: relative;
+  width: 100%;
   margin-top: var(--space-6);
 }
 
@@ -115,6 +137,11 @@ body.template-home .home-profile__contact a {
 body.template-home .home-profile__section-label {
   margin: 0 0 var(--space-3);
   color: var(--color-text-secondary);
+}
+
+body.template-home .home-profile__recent,
+body.template-home .home-profile__find {
+  margin-top: unquote("calc(var(--space-7) * 2 + 1px)");
 }
 
 .home-profile__recent-list {
@@ -267,6 +294,10 @@ body.template-home .home-profile__closing {
   body.template-home .main-content {
     width: unquote("min(100% - 56px, 656px)");
     padding-top: clamp(72px, 14vw, 104px);
+  }
+
+  .home-hourglass {
+    display: none;
   }
 
   .home-profile {

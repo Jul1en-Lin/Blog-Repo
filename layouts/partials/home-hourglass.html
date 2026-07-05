@@ -1,0 +1,6 @@
+{{- $image := resources.Get "images/home-hourglass.png" -}}
+{{- with $image -}}
+<aside class="home-hourglass" aria-hidden="true">
+    <img class="home-hourglass__image" src="{{ .RelPermalink }}" width="{{ .Width }}" height="{{ .Height }}" alt="" loading="eager" decoding="async">
+</aside>
+{{- end -}}

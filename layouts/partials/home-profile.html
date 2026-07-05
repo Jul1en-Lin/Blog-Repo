@@ -43,11 +43,11 @@
         {{- range . -}}
         <p>{{ . | markdownify }}</p>
         {{- end -}}
+        {{ partial "home-hourglass.html" $ctx }}
     </div>
     {{- end -}}
 
     {{- if $posts -}}
-    <hr class="home-profile__divider">
     <section class="home-profile__recent" aria-labelledby="home-recent-title">
         <p id="home-recent-title" class="home-profile__section-label">{{ $recentLabel }}</p>
         <div class="home-profile__recent-list">
@@ -64,7 +64,6 @@
     {{- end -}}
 
     {{- with $ctx.Site.Menus.social -}}
-    <hr class="home-profile__divider">
     <section class="home-profile__find" aria-labelledby="home-social-title">
         <p id="home-social-title" class="home-profile__section-label">{{ $socialLabel }}</p>
         <p class="home-profile__social">

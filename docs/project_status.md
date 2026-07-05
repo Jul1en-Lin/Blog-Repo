@@ -13,10 +13,26 @@ Last updated: 2026-07-05
 
 ## Recent Notes
 
+### 2026-07-05 Search Anthropic Illustration
+
+- Added the provided magnifier PNG to the Search page bundle and rendered it inside an Anthropic-style `16:9` rounded color block using `#ebcece`.
+- Set the Search illustration color block to `#ccc9dc` in dark mode.
+- Changed Search page interaction from live input search to submit-triggered search, with explicit empty/result/no-result/error states and a one-time result intro animation.
+- Added a ready-for-next-search state: focusing the input after a search hides the previous result list, animates the illustration back to full size, and lets the next submit replay the intro animation.
+- Centered the Search page input placeholder/text and removed the right-side search icon button; 404 keeps its search button.
+- Kept 404 on the shared search script with state hooks, but without rendering the Search page illustration.
+- Added `tests/search-illustration.sh` for generated HTML/CSS/JS coverage.
+
+### 2026-07-05 Music Album Cleanup
+
+- Removed the `生活麻辣烫` album from the Music page album list.
+- Added regression coverage to `tests/music-album-flip.sh` so the removed album does not return to the generated Music page.
+
 ### 2026-07-05 Home Hourglass Illustration
 
 - Created `feat/home-hourglass-illustration` after committing and pushing the prior Home social hover polish on `main`.
 - Added the provided hourglass PNG to the Home page beside the lyric lines, with its color block restored, top-aligned to the clover line, and right-aligned with the reading column/date edge.
+- Set the Home hourglass color block to `#6e7781` in dark mode.
 - Removed the two standalone Home divider lines, then restored the old divider-height spacing between the lyric, recent posts, and social sections.
 - Removed the Home blog archive prompt below the social links.
 - Added `tests/home-hourglass.sh` for generated HTML/CSS coverage.
@@ -133,5 +149,6 @@ Last updated: 2026-07-05
 ## Latest Checks
 
 - Preferred local build command: `hugo -D --cleanDestinationDir --printI18nWarnings --printPathWarnings`.
+- 2026-07-05 Home/Search/Music checks: `hugo -D --cleanDestinationDir --printI18nWarnings --printPathWarnings`, `bash tests/home-hourglass.sh`, `bash tests/search-illustration.sh`, `bash tests/music-album-flip.sh`, `bash tests/theme-independence.sh`, `git diff --check`, and Playwright browser checks for desktop/mobile Search states plus the ready-for-next-search focus flow.
 - Recent passing checks included the Hugo command above, `tests/theme-independence.sh`, `tests/music-album-flip.sh`, `tests/scroll-reveal.sh`, and `git diff --check`.
 - Recent browser checks covered Home, Blog, article detail, Music, Search, Archives, and 404 on desktop and mobile.

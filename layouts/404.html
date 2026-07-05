@@ -1,7 +1,7 @@
 {{ define "body-class" }}template-not-found{{ end }}
 
 {{ define "main" }}
-<section class="not-found-card" aria-labelledby="not-found-title">
+<section class="not-found-card" aria-labelledby="not-found-title" data-search-root>
     <p class="not-found-card__code">404</p>
     <h1 id="not-found-title">这个页面不存在</h1>
     <p>地址可能写错了，也可能已经被移走。</p>
@@ -9,20 +9,21 @@
     {{- $searchPages := first 1 (where .Site.RegularPages "Layout" "search") -}}
     {{- if $searchPages -}}
         {{- range $searchPages }}
-        <form action="{{ .RelPermalink }}" class="search-form" data-search-form data-prefill-path
+        <form action="{{ .RelPermalink }}" class="search-form" data-search-form data-prefill-path role="search"
             {{- with .OutputFormats.Get "json" }} data-json="{{ .RelPermalink }}"{{ end }}>
             <p>
                 <label for="search-input">试着搜一下</label>
-                <input id="search-input" type="search" name="keyword" placeholder="搜索文章" autocomplete="off">
+                <input id="search-input" type="search" name="keyword" placeholder="搜索文章" autocomplete="off"
+                    aria-controls="not-found-search-results" aria-describedby="not-found-search-status">
             </p>
             <button type="submit" title="搜索" aria-label="搜索">
                 {{ partial "media/icon.html" "search-line" }}
             </button>
         </form>
 
-        <div class="search-result" aria-live="polite">
-            <h2 class="search-result--title section-title" data-search-title></h2>
-            <div class="search-result--list article-list--compact" data-search-results></div>
+        <div class="search-result is-search-empty" data-search-result data-search-state="empty" aria-live="polite" aria-atomic="true">
+            <h2 id="not-found-search-status" class="search-result--title section-title" data-search-title></h2>
+            <div id="not-found-search-results" class="search-result--list article-list--compact" data-search-results hidden></div>
         </div>
 
         <template id="search-result-template">

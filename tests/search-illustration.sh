@@ -66,7 +66,7 @@ assert_contains 'border-radius:24px' public/css \
     'Search illustration frame should use the Anthropic rounded corners'
 assert_contains 'background:#ebcece' public/css \
     'Search illustration frame should use the requested Anthropic color'
-assert_contains ':root[data-scheme=dark] .search-illustration__frame{background:#ccc9dc' public/css \
+assert_contains ':root[data-scheme=dark] .search-illustration__frame{background:#b8607e' public/css \
     'Search illustration frame should use the requested dark-mode color'
 assert_contains '.template-search .search-form input{text-align:center}' public/css \
     'Search page input placeholder should be centered'

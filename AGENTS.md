@@ -15,7 +15,7 @@
   - `content/categories/`: taxonomy landing content.
   - `static/`: passthrough files such as favicons.
   - `tests/`: shell regression checks for generated output and browser-facing behavior.
-  - `docs/`: current status, decisions, plans, specs, and changelog. Read `docs/project_status.md` first when it exists.
+  - `docs/`: setup-light workflow notes. `docs/project_status.md` is the current snapshot; `docs/agent_workflow.md` is the process guide; `docs/archive/` keeps historical notes.
   - `public/` and `resources/`: generated output and Hugo caches; do not edit them by hand.
 - Preserve the quiet, minimal, editorial music visual direction documented in `docs/archive/blog-refactor-plan.md` and the current notes in `docs/project_status.md`.
 - For future design work, reference the mature existing project at `/Users/lien/GitRepo/hugo-antfustyle` first; adapt its proven patterns while preserving this blog's own content, colors, and editorial music direction.
@@ -37,19 +37,22 @@
 
 ## Lightweight agent workflow
 
-This repository uses a small project memory setup for short-lived projects, scripts, demos, and experiments.
+This repository uses a setup-light workflow: enough continuity for future agents, without turning docs into a task log.
 
 ### Documentation sources of truth
 
-- `docs/project_status.md`: current goal, progress, blockers, checks, and next actions.
-- `docs/agent_workflow.md`: lightweight status, commit, and handoff workflow.
+- `AGENTS.md`: agent instructions and repo-specific rules.
+- `docs/project_status.md`: current snapshot, open blocker, and handoff note.
+- `docs/agent_workflow.md`: status, commit, and handoff workflow.
+- `docs/archive/`: historical notes and older plans. Do not treat archived files as current unless the active docs point there.
 
 ### Required rules
 
-- Read `docs/project_status.md` before making changes when it exists.
-- Update `docs/project_status.md` when meaningful progress is made, a blocker appears or is resolved, the next action changes, or work should be resumable later.
-- Keep updates short. Do not create extra planning documents unless the user asks.
-- Before any git commit, check whether `docs/project_status.md` should be updated.
+- Read `docs/project_status.md` before making code, content, or workflow changes when it exists.
+- Do not update `docs/project_status.md` for routine same-turn edits that are already explained in the final reply.
+- Update `docs/project_status.md` only when the current goal, branch, blocker, next action, or handoff state changes in a way a future agent needs to know.
+- Keep updates short. Do not add architecture, planning, spec, decision, changelog, or bug-report files unless the user asks.
+- Before any git commit, decide whether `docs/project_status.md` actually needs an update; default to no for finished small edits.
 - Commit only files related to the current work. Do not sweep unrelated files into commits.
 - Do not push unless the user explicitly asks or the current task grants push/publish authorization.
 - Summarize changed files, checks run, and remaining risks.

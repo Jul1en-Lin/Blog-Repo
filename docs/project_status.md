@@ -1,6 +1,6 @@
 # Project Status
 
-Last updated: 2026-07-05
+Last updated: 2026-07-07
 
 ## Current Snapshot
 
@@ -12,6 +12,10 @@ Last updated: 2026-07-05
 - Generated files live under `public/` and `resources/`; do not edit them by hand.
 
 ## Recent Notes
+
+### 2026-07-07 Home Hourglass Image Swap
+
+- Replaced `assets/images/home-hourglass.png` with the latest provided hand-drawn PNG while keeping the existing Home layout and color block styles unchanged.
 
 ### 2026-07-05 Search Anthropic Illustration
 

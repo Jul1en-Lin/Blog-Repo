@@ -238,53 +238,347 @@ function initCodeCopyButtons() {
     });
 }
 
-function initMusicAlbumFlips() {
-    const gallery = document.querySelector<HTMLElement>('.music-album-gallery');
-    if (!gallery || gallery.dataset.albumFlipsReady === 'true') return;
+function initMusicGallery() {
+    const root = document.querySelector<HTMLElement>('[data-music-experience]');
+    if (!root || root.dataset.musicGalleryReady === 'true') return;
 
-    gallery.dataset.albumFlipsReady = 'true';
+    const viewport = root.querySelector<HTMLElement>('[data-music-viewport]');
+    const track = root.querySelector<HTMLElement>('[data-music-track]');
+    const detail = root.querySelector<HTMLElement>('[data-music-detail]');
+    const detailPanel = root.querySelector<HTMLElement>('[data-music-detail-panel]');
+    const closeButton = root.querySelector<HTMLButtonElement>('[data-music-detail-close]');
+    const counter = root.querySelector<HTMLElement>('[data-music-counter]');
+    const detailIndex = root.querySelector<HTMLElement>('[data-music-detail-index]');
+    const detailArtist = root.querySelector<HTMLElement>('[data-music-detail-artist]');
+    const detailTitle = root.querySelector<HTMLElement>('[data-music-detail-title]');
+    const detailImage = root.querySelector<HTMLImageElement>('[data-music-detail-image]');
+    const detailFallback = root.querySelector<HTMLElement>('[data-music-detail-fallback]');
+    const detailFallbackArtist = root.querySelector<HTMLElement>('[data-music-detail-fallback-artist]');
+    const detailFallbackTitle = root.querySelector<HTMLElement>('[data-music-detail-fallback-title]');
+    const cards = Array.from(root.querySelectorAll<HTMLButtonElement>('[data-music-album]'));
+    const backgroundRegions = Array.from(root.querySelectorAll<HTMLElement>('.music-topline, .music-intro, .music-gallery'));
 
-    const cards = Array.from(document.querySelectorAll<HTMLElement>('[data-album-card]'));
-    if (!cards.length) return;
+    if (!viewport || !track || !detail || !detailPanel || !closeButton || !cards.length) return;
+    root.dataset.musicGalleryReady = 'true';
 
-    const entries = cards.flatMap((card) => {
-        const toggle = card.querySelector<HTMLButtonElement>('[data-album-toggle]');
-        const front = card.querySelector<HTMLElement>('[data-album-front]');
-        const back = card.querySelector<HTMLElement>('[data-album-back]');
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const clamp = (value: number, minimum: number, maximum: number) =>
+        Math.min(Math.max(value, minimum), maximum);
 
-        if (!toggle || !front || !back) return [];
+    let targetOffset = 0;
+    let currentOffset = 0;
+    let limit = 0;
+    let activeIndex = 0;
+    let navigationIndex = 0;
+    let entered = false;
+    let selectedCard: HTMLButtonElement | null = null;
+    let returnOffset: { offset: number; activeIndex: number; navigationIndex: number } | null = null;
+    let suppressFocusNavigation = false;
+    let closeTimer: number | undefined;
+    let animationFrame: number | undefined;
 
-        return [{
-            card,
-            toggle,
-            front,
-            back,
-            title: toggle.dataset.albumTitle || ''
-        }];
-    });
-
-    function setFlipped(entry: typeof entries[number], flipped: boolean) {
-        entry.card.classList.toggle('is-flipped', flipped);
-        entry.toggle.setAttribute('aria-pressed', flipped ? 'true' : 'false');
-        entry.toggle.setAttribute('aria-label', `${flipped ? 'Hide' : 'Show'} details for ${entry.title}`);
-        entry.front.setAttribute('aria-hidden', flipped ? 'true' : 'false');
-        entry.back.setAttribute('aria-hidden', flipped ? 'false' : 'true');
+    function getCardTarget(index: number) {
+        const card = cards[clamp(index, 0, cards.length - 1)];
+        const centeredOffset = card.offsetLeft + card.offsetWidth / 2 - viewport.clientWidth / 2;
+        return clamp(centeredOffset, 0, limit);
     }
 
-    function closeAll() {
-        entries.forEach((entry) => setFlipped(entry, false));
+    function measure() {
+        limit = Math.max(0, track.scrollWidth - viewport.clientWidth);
+        targetOffset = clamp(targetOffset, 0, limit);
+        currentOffset = clamp(currentOffset, 0, limit);
+        scheduleMusicFrame();
     }
 
-    entries.forEach((entry) => {
-        entry.toggle.addEventListener('click', () => {
-            const willFlip = !entry.card.classList.contains('is-flipped');
-            closeAll();
-            if (willFlip) setFlipped(entry, true);
+    function enterGallery() {
+        if (entered) return;
+        entered = true;
+        root.classList.remove('is-intro');
+        root.classList.add('is-entered');
+        root.querySelector<HTMLElement>('[data-music-intro]')?.setAttribute('aria-hidden', 'true');
+    }
+
+    function setActiveIndex(index: number) {
+        const nextIndex = clamp(index, 0, cards.length - 1);
+        if (nextIndex === activeIndex && cards[nextIndex].classList.contains('is-active')) return;
+
+        activeIndex = nextIndex;
+        cards.forEach((card, cardIndex) => card.classList.toggle('is-active', cardIndex === activeIndex));
+        if (counter) counter.textContent = String(activeIndex + 1).padStart(2, '0');
+    }
+
+    function findNearestCard(offset = currentOffset) {
+        let nearestIndex = 0;
+        let nearestDistance = Number.POSITIVE_INFINITY;
+
+        cards.forEach((_card, index) => {
+            const distance = Math.abs(getCardTarget(index) - offset);
+            if (distance < nearestDistance) {
+                nearestIndex = index;
+                nearestDistance = distance;
+            }
+        });
+
+        return nearestIndex;
+    }
+
+    function moveToIndex(index: number) {
+        const nextIndex = clamp(index, 0, cards.length - 1);
+        navigationIndex = nextIndex;
+        setActiveIndex(nextIndex);
+        targetOffset = getCardTarget(nextIndex);
+        scheduleMusicFrame();
+    }
+
+    function openDetail(card: HTMLButtonElement) {
+        if (!detail.hidden) return;
+        window.clearTimeout(closeTimer);
+        enterGallery();
+        selectedCard = card;
+        returnOffset = { offset: currentOffset, activeIndex, navigationIndex };
+
+        const index = Number(card.dataset.index || 0);
+        const title = card.dataset.title || '';
+        const artist = card.dataset.artist || '';
+        const cardImage = card.querySelector<HTMLImageElement>('.music-cover-image');
+
+        moveToIndex(index);
+        if (detailIndex) detailIndex.textContent = String(index + 1).padStart(2, '0');
+        if (detailArtist) detailArtist.textContent = artist;
+        if (detailTitle) detailTitle.textContent = title;
+        if (detailFallbackArtist) detailFallbackArtist.textContent = artist;
+        if (detailFallbackTitle) detailFallbackTitle.textContent = title;
+
+        if (detailImage && cardImage?.src) {
+            detailImage.src = cardImage.src;
+            detailImage.alt = cardImage.alt;
+            detailImage.hidden = false;
+            detailFallback?.setAttribute('aria-hidden', 'true');
+        } else if (detailImage) {
+            detailImage.hidden = true;
+            detailImage.removeAttribute('src');
+            detailFallback?.removeAttribute('aria-hidden');
+        }
+        if (detailFallback) detailFallback.hidden = false;
+
+        detail.setAttribute('aria-label', `${title} by ${artist}`);
+        detail.hidden = false;
+        backgroundRegions.forEach((region) => region.setAttribute('inert', ''));
+        document.body.classList.add('music-detail-open');
+        window.requestAnimationFrame(() => {
+            detail.classList.add('is-open');
+            window.setTimeout(() => closeButton.focus({ preventScroll: true }), 20);
+        });
+    }
+
+    function closeDetail() {
+        if (detail.hidden) return;
+        detail.classList.remove('is-open');
+        document.body.classList.remove('music-detail-open');
+
+        const cardToRestore = selectedCard;
+        const galleryStateToRestore = returnOffset;
+        selectedCard = null;
+        returnOffset = null;
+        if (galleryStateToRestore) {
+            targetOffset = galleryStateToRestore.offset;
+            navigationIndex = galleryStateToRestore.navigationIndex;
+            if (reducedMotion.matches) currentOffset = targetOffset;
+            scheduleMusicFrame();
+        }
+        const finishClose = () => {
+            detail.hidden = true;
+            if (detailImage) {
+                detailImage.hidden = true;
+                detailImage.removeAttribute('src');
+            }
+            backgroundRegions.forEach((region) => region.removeAttribute('inert'));
+            if (galleryStateToRestore) {
+                targetOffset = galleryStateToRestore.offset;
+                currentOffset = galleryStateToRestore.offset;
+                navigationIndex = galleryStateToRestore.navigationIndex;
+                setActiveIndex(galleryStateToRestore.activeIndex);
+                renderMusicFrame();
+            }
+            if (cardToRestore) {
+                suppressFocusNavigation = true;
+                cardToRestore.focus({ preventScroll: true });
+            }
+        };
+
+        if (reducedMotion.matches) {
+            finishClose();
+            return;
+        }
+        closeTimer = window.setTimeout(finishClose, 650);
+    }
+
+    function updatePointer(event: PointerEvent) {
+        if (reducedMotion.matches || window.innerWidth < 1024) return;
+
+        const normalizedX = clamp((event.clientX / window.innerWidth - 0.5) * 2, -1, 1);
+        const normalizedY = clamp((event.clientY / window.innerHeight - 0.5) * 2, -1, 1);
+        root.style.setProperty('--pointer-x', `${event.clientX}px`);
+        root.style.setProperty('--pointer-y', `${event.clientY}px`);
+
+        cards.forEach((card) => {
+            const rect = card.getBoundingClientRect();
+            const distance = Math.hypot(
+                event.clientX - (rect.left + rect.width / 2),
+                event.clientY - (rect.top + rect.height / 2)
+            );
+            const influence = clamp(1 - distance / Math.max(window.innerWidth * 0.48, 520), 0.08, 1);
+            const localX = clamp((event.clientX - (rect.left + rect.width / 2)) / rect.width, -1, 1);
+            const localY = clamp((event.clientY - (rect.top + rect.height / 2)) / rect.height, -1, 1);
+            card.style.setProperty('--pointer-influence', influence.toFixed(3));
+            card.style.setProperty('--card-z', `${(influence * 18).toFixed(1)}px`);
+            card.style.setProperty('--local-tilt-x', `${(-normalizedY * influence * 5).toFixed(2)}deg`);
+            card.style.setProperty('--local-tilt-y', `${(normalizedX * influence * 5).toFixed(2)}deg`);
+            card.style.setProperty('--caption-x', `${(localX * influence * 5).toFixed(1)}px`);
+            card.style.setProperty('--caption-y', `${(localY * influence * 4).toFixed(1)}px`);
+            card.style.setProperty('--shadow-x', `${(-localX * influence * 10).toFixed(1)}px`);
+            card.style.setProperty('--shadow-shift-y', `${(-localY * influence * 8).toFixed(1)}px`);
+        });
+    }
+
+    function resetPointerEffects() {
+        root.style.setProperty('--pointer-x', '50vw');
+        root.style.setProperty('--pointer-y', '50vh');
+        cards.forEach((card) => {
+            card.style.setProperty('--pointer-influence', '0');
+            card.style.setProperty('--card-z', '0px');
+            card.style.setProperty('--local-tilt-x', '0deg');
+            card.style.setProperty('--local-tilt-y', '0deg');
+            card.style.setProperty('--caption-x', '0px');
+            card.style.setProperty('--caption-y', '0px');
+            card.style.setProperty('--shadow-x', '0px');
+            card.style.setProperty('--shadow-shift-y', '0px');
+        });
+    }
+
+    function renderMusicFrame() {
+        track.style.transform = `translate3d(${-currentOffset}px, 0, 0)`;
+        setActiveIndex(findNearestCard());
+        root.style.setProperty('--gallery-progress', limit ? String(currentOffset / limit) : '0');
+    }
+
+    function scheduleMusicFrame() {
+        if (animationFrame !== undefined || window.innerWidth < 1024) return;
+        animationFrame = window.requestAnimationFrame(tick);
+    }
+
+    function tick() {
+        animationFrame = undefined;
+        const difference = targetOffset - currentOffset;
+        currentOffset = reducedMotion.matches
+            ? targetOffset
+            : currentOffset + difference * 0.075;
+        if (Math.abs(difference) < 0.08) currentOffset = targetOffset;
+
+        renderMusicFrame();
+        if (!reducedMotion.matches && currentOffset !== targetOffset) scheduleMusicFrame();
+    }
+
+    cards.forEach((card, index) => {
+        card.addEventListener('click', () => openDetail(card));
+        card.addEventListener('keydown', (event) => {
+            if (event.key !== 'Enter') return;
+            event.preventDefault();
+            event.stopPropagation();
+            openDetail(card);
+        });
+        card.addEventListener('focus', () => {
+            if (suppressFocusNavigation) {
+                suppressFocusNavigation = false;
+                return;
+            }
+            if (!card.matches(':focus-visible')) return;
+            enterGallery();
+            moveToIndex(index);
+        });
+        card.querySelector<HTMLImageElement>('.music-cover-image')?.addEventListener('error', (event) => {
+            const image = event.currentTarget as HTMLImageElement;
+            const fallback = image.previousElementSibling as HTMLElement | null;
+            image.hidden = true;
+            if (fallback?.classList.contains('music-cover-fallback')) {
+                fallback.removeAttribute('aria-hidden');
+                fallback.setAttribute('role', 'img');
+                fallback.setAttribute('aria-label', image.alt);
+            }
         });
     });
 
-    document.addEventListener('keydown', (event) => {
-        if (event.key === 'Escape') closeAll();
+    detailImage?.addEventListener('error', () => {
+        detailImage.hidden = true;
+        detailFallback?.removeAttribute('aria-hidden');
+        detailFallback?.setAttribute('role', 'img');
+        detailFallback?.setAttribute('aria-label', detailImage.alt);
+    });
+
+    window.addEventListener('wheel', (event) => {
+        if (window.innerWidth < 1024 || !detail.hidden) return;
+        event.preventDefault();
+        if (!entered) {
+            enterGallery();
+            return;
+        }
+        targetOffset = clamp(targetOffset + event.deltaY * 1.15 + event.deltaX, 0, limit);
+        navigationIndex = findNearestCard(targetOffset);
+        scheduleMusicFrame();
+    }, { passive: false });
+
+    window.addEventListener('pointermove', updatePointer, { passive: true });
+    addMediaQueryChangeListener(reducedMotion, () => {
+        if (reducedMotion.matches) resetPointerEffects();
+    });
+    window.addEventListener('keydown', (event) => {
+        if (event.key === 'Tab' && !detail.hidden) {
+            event.preventDefault();
+            closeButton.focus({ preventScroll: true });
+            return;
+        }
+        if (event.key === 'Escape' && !detail.hidden) {
+            event.preventDefault();
+            closeDetail();
+            return;
+        }
+        if (!detail.hidden) return;
+        if (window.innerWidth < 1024) return;
+
+        if (event.key === 'ArrowRight' || event.key === 'ArrowLeft') {
+            event.preventDefault();
+            enterGallery();
+            const nextIndex = clamp(navigationIndex + (event.key === 'ArrowRight' ? 1 : -1), 0, cards.length - 1);
+            moveToIndex(nextIndex);
+            cards[nextIndex].focus({ preventScroll: true });
+        }
+        if (event.key === 'Enter') {
+            if (event.target instanceof HTMLElement && event.target.closest('[data-music-album]')) return;
+            event.preventDefault();
+            openDetail(cards[navigationIndex]);
+        }
+    });
+
+    closeButton.addEventListener('click', closeDetail);
+    detail.addEventListener('click', closeDetail);
+    detailPanel.addEventListener('click', (event) => event.stopPropagation());
+
+    measure();
+    if ('ResizeObserver' in window) {
+        const resizeObserver = new ResizeObserver(measure);
+        resizeObserver.observe(viewport);
+        resizeObserver.observe(track);
+    }
+    window.addEventListener('resize', measure);
+    scheduleMusicFrame();
+
+    window.addEventListener('pagehide', () => {
+        if (animationFrame !== undefined) window.cancelAnimationFrame(animationFrame);
+        animationFrame = undefined;
+    });
+    window.addEventListener('pageshow', () => {
+        measure();
+        scheduleMusicFrame();
     });
 }
 
@@ -735,8 +1029,7 @@ function initRevealOnScroll() {
         '.article-detail__content > figure',
         '.article-detail__content > details',
         '.article-detail__content > hr',
-        '.article-detail__footer',
-        '.music-album-card'
+        '.article-detail__footer'
     ];
 
     const targets = selectors.flatMap((selector) =>
@@ -1017,7 +1310,7 @@ function initCustomScripts() {
         initRevealOnScroll,
         initThemeToggle,
         initCodeCopyButtons,
-        initMusicAlbumFlips,
+        initMusicGallery,
         initPlumBackground,
         initImageLightbox
     ].forEach((init) => {

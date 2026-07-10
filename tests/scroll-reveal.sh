@@ -14,10 +14,21 @@ assert_contains() {
     fi
 }
 
+assert_not_contains() {
+    local pattern="$1"
+    local path="$2"
+    local description="$3"
+
+    if rg -Fq -- "$pattern" "$path"; then
+        printf 'FAIL: %s\n' "$description" >&2
+        exit 1
+    fi
+}
+
 assert_contains '.article-detail__content > blockquote' 'public' 'Article reveal targets blockquotes instead of every body child'
 assert_contains '.article-detail__content > .table-wrapper' 'public' 'Article reveal targets table wrappers as stable content blocks'
 assert_contains '.article-detail__content > .highlight' 'public' 'Article reveal targets code blocks'
-assert_contains '.music-album-card' 'public' 'Music album cards remain scroll-reveal targets'
+assert_not_contains '.music-album-card' 'public/css' 'Legacy Music cards no longer receive generic scroll-reveal transforms'
 assert_contains 'IntersectionObserver' 'public' 'Scroll reveal uses intersection observation'
 assert_contains 'article-detail__content .reveal-on-scroll' 'public/css' 'Article content reveal has a quieter motion treatment'
 

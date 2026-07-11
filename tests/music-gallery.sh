@@ -32,10 +32,24 @@ assert_contains 'data-music-intro' "$music_html" 'Music page renders the exhibit
 assert_contains 'Scroll to enter' "$music_html" 'The prologue explains how to enter the gallery'
 assert_contains 'data-music-viewport' "$music_html" 'Music page renders a horizontal gallery viewport'
 assert_contains 'data-music-track' "$music_html" 'Music page renders a transformable gallery track'
+assert_not_contains 'Use the wheel or arrow keys to move through the room.' "$music_html" 'Gallery omits the movement hint below the albums'
+assert_not_contains 'Album artwork © respective rights holders. Personal, non-commercial exhibition demo.' "$music_html" 'Gallery omits the artwork notice below the albums'
 assert_contains 'data-music-detail' "$music_html" 'Music page renders the fullscreen album detail layer'
 assert_contains 'role="dialog"' "$music_html" 'Album details use dialog semantics'
 assert_contains 'aria-modal="true"' "$music_html" 'Album details announce modal behavior'
-assert_contains 'data-music-detail-close' "$music_html" 'Album details provide a close control'
+assert_not_contains 'data-music-detail-close' "$music_html" 'Album details omit the visible Return control'
+assert_not_contains 'data-music-detail-return' "$music_html" 'Album details omit the visible Return label'
+assert_contains 'tabindex="-1"' "$music_html" 'The dialog itself receives keyboard focus without a visible close control'
+assert_contains 'data-music-detail-tracks' "$music_html" 'Album details render a dedicated track list'
+assert_not_contains 'data-music-detail-track-count' "$music_html" 'Track rows begin directly without a detached heading bar'
+assert_not_contains '>Track list</span>' "$music_html" 'The reference-style lower-left table does not add a title above the rows'
+assert_contains 'data-music-detail-meta' "$music_html" 'Album details render verified release metadata'
+assert_not_contains 'data-music-detail-index' "$music_html" 'Detail view omits the redundant selected-album number'
+assert_not_contains 'Selected work' "$music_html" 'Detail view omits the redundant Selected work label'
+assert_contains 'data-music-detail-stage' "$music_html" 'Album details expose the centered FLIP destination'
+assert_contains 'data-music-album-data' "$music_html" 'Each album ships its static detail payload with the page'
+assert_contains 'loading="lazy"' "$music_html" 'Album covers remain lazy-loaded in the delivered HTML'
+assert_not_contains 'loading="eager"' "$music_html" 'Album cover eager loading stays scoped to runtime warmup'
 assert_contains 'class="site-header"' "$music_html" 'Music page keeps the shared site header visible in the document'
 assert_contains 'aria-current="page"' "$music_html" 'Music is marked as the active primary navigation item'
 assert_contains 'id="dark-mode-toggle"' "$music_html" 'Music page exposes the shared color-scheme toggle'
@@ -47,7 +61,7 @@ assert_not_contains 'class="music-paper-grain"' "$music_html" 'The standalone pa
 assert_not_contains 'class="music-topline"' "$music_html" 'The duplicate full-width exhibition bar is removed'
 assert_not_contains '>Listen</span>' "$music_html" 'Album hover captions no longer show the Listen label'
 
-album_count="$(rg -o 'data-music-album' "$music_html" | wc -l | tr -d ' ')"
+album_count="$(rg -o 'data-title=' "$music_html" | wc -l | tr -d ' ')"
 if [[ "$album_count" != "15" ]]; then
     printf 'FAIL: expected 15 albums, found %s\n' "$album_count" >&2
     exit 1
@@ -61,9 +75,30 @@ assert_contains 'ArrowLeft' 'public/js' 'Keyboard navigation supports the left a
 assert_contains 'Enter' 'public/js' 'Keyboard navigation can open album details'
 assert_contains 'Escape' 'public/js' 'Keyboard navigation can close album details'
 assert_contains 'Tab' 'public/js' 'Keyboard focus remains inside the album dialog'
+assert_contains 'detail.focus({ preventScroll: true });' 'assets/ts/site.ts' 'The buttonless detail dialog receives focus after opening'
 assert_contains 'inert' 'public/js' 'Background gallery controls are disabled while details are open'
 assert_contains 'navigationIndex' 'assets/ts/site.ts' 'Keyboard navigation is independent from the in-flight visual index'
 assert_contains 'returnOffset' 'assets/ts/site.ts' 'Closing details restores the previous gallery position'
+assert_contains 'MusicGalleryState' 'assets/ts/site.ts' 'Gallery detail motion uses an explicit state machine'
+assert_contains "'gallery' | 'preparing' | 'opening' | 'detail' | 'closing'" 'assets/ts/site.ts' 'Gallery state includes a cancellable cover preparation phase'
+assert_contains 'new WeakMap<HTMLImageElement, Promise<void>>()' 'assets/ts/site.ts' 'Decoded covers are cached per image element'
+assert_contains 'const albumDecodeRadius = 2;' 'assets/ts/site.ts' 'Cover warmup is limited to the selected album and two neighbors per side'
+assert_contains 'const detailDecodeWaitMs = 100;' 'assets/ts/site.ts' 'Opening waits no more than 100ms for cover decoding'
+assert_contains "image.loading = 'eager';" 'assets/ts/site.ts' 'Only runtime warmup candidates opt into eager loading'
+assert_contains 'image.decode().catch(() => undefined)' 'assets/ts/site.ts' 'Cover decode failures fall back without blocking the gallery'
+assert_contains 'requestIdleCallback' 'assets/ts/site.ts' 'Background cover warmup waits for browser idle time when available'
+assert_contains 'detailRequestId' 'assets/ts/site.ts' 'Stale asynchronous open requests cannot reveal an old album'
+assert_contains "card.addEventListener('pointerenter'" 'assets/ts/site.ts' 'Hovering an album warms its nearby covers'
+assert_contains 'createFlightCover' 'assets/ts/site.ts' 'Opening details creates a FLIP cover layer'
+assert_contains 'playbackRate' 'assets/ts/site.ts' 'Opening motion can reverse from its current progress'
+assert_contains 'const detailClosePlaybackRate = 1.1;' 'assets/ts/site.ts' 'Detail exit uses a slightly faster response than entry'
+assert_contains 'animation.playbackRate = -detailClosePlaybackRate;' 'assets/ts/site.ts' 'Detail exit reverses the same timeline at the tuned rate'
+assert_contains 'reduceDetailMotion' 'assets/ts/site.ts' 'Keyboard-opened details use the short non-spatial transition'
+assert_contains 'openDetail(card, true)' 'assets/ts/site.ts' 'Enter avoids the long exhibition motion'
+assert_contains 'getComputedStyle(galleryCard).opacity' 'assets/ts/site.ts' 'Cards leave from their actual corridor opacity without flashing'
+assert_contains 'detailBackdropRevealOffset' 'assets/ts/site.ts' 'The detail background waits for corridor cards to leave the canvas'
+assert_contains "closest('.music-detail__tracks, .music-detail__stage, .music-detail__artist, .music-detail__copy h2, .music-detail__meta')" 'assets/ts/site.ts' 'Only rendered detail content blocks clicks from reaching the blank backdrop'
+assert_not_contains "closest('.music-detail__tracks, .music-detail__stage, .music-detail__copy')" 'assets/ts/site.ts' 'The full-height copy column does not swallow clicks on its blank lower area'
 assert_contains 'scheduleMusicFrame' 'assets/ts/site.ts' 'Gallery animation wakes only when work is pending'
 assert_contains 'pageshow' 'assets/ts/site.ts' 'Gallery animation resumes after browser back-forward cache restoration'
 assert_contains "'.site-header, .music-intro, .music-gallery'" 'assets/ts/site.ts' 'The shared header becomes inert while album details are open'
@@ -78,11 +113,16 @@ assert_contains 'font-family:var(--font-body)' 'public/css' 'Music utility copy 
 assert_contains 'font-family:var(--font-display)' 'public/css' 'Music display copy uses the shared display font'
 assert_contains ':root[data-scheme=dark] body.template-music' 'public/css' 'Music provides a color-scheme-specific dark treatment'
 assert_contains 'background:var(--music-detail-bg)' 'public/css' 'Album details use the theme-aware shared site background'
+assert_contains 'music-flight-cover' 'public/css' 'Compiled styles include the temporary FLIP cover layer'
+assert_contains 'music-detail__tracks' 'public/css' 'Compiled styles include the bounded track list column'
+assert_contains 'align-self:end' 'public/css' 'The track table is anchored to the lower-left of the detail canvas'
 
 assert_not_contains 'body.template-music .site-header,' 'assets/scss/_music.scss' 'Music no longer hides the shared site header'
 assert_not_contains 'body.template-music .plum-background,' 'assets/scss/_music.scss' 'Music no longer hides the shared plum background'
 assert_not_contains 'border-top: 1px solid transparent;' 'assets/scss/_music.scss' 'Album hover captions no longer reserve a separator line'
 assert_not_contains 'border-color: var(--music-line);' 'assets/scss/_music.scss' 'Album hover captions no longer reveal a separator line'
+assert_not_contains '.music-detail__kicker' 'assets/scss/_music.scss' 'Detail view omits the upper-right kicker separator'
+assert_not_contains '.music-detail__return' 'assets/scss/_music.scss' 'Detail view omits the upper-left Return control styles'
 assert_not_contains 'family=Manrope' 'layouts/partials/head/resources.html' 'The removed Music body font is no longer downloaded'
 assert_not_contains 'family=Newsreader' 'layouts/partials/head/resources.html' 'The removed Music display font is no longer downloaded'
 
@@ -94,5 +134,18 @@ assert_not_contains 'rotateY(180deg)' 'public/css' 'The old card flip is removed
 assert_not_contains '[data-album-toggle]' 'public/js' 'The old flip controller is removed from JavaScript'
 assert_not_contains 'themeColor' 'content/page/music/index.md' 'Per-album theme colors are removed from content'
 assert_not_contains 'layout = "standard"' 'content/page/music/index.md' 'Legacy album layout fields are removed from content'
+
+release_count="$(rg -c '^releaseDate = ' content/page/music/index.md)"
+type_count="$(rg -c '^releaseType = ' content/page/music/index.md)"
+genre_count="$(rg -c '^genres = ' content/page/music/index.md)"
+track_count="$(rg -c '^\[\[albums\.tracks\]\]' content/page/music/index.md)"
+if [[ "$release_count" != "15" || "$type_count" != "15" || "$genre_count" != "15" ]]; then
+    printf 'FAIL: every Music entry must include releaseDate, releaseType, and genres\n' >&2
+    exit 1
+fi
+if (( track_count < 15 )); then
+    printf 'FAIL: every Music entry must include at least one verified track\n' >&2
+    exit 1
+fi
 
 printf 'PASS: Music exhibition structure and behavior are present\n'

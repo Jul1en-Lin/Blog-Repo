@@ -58,14 +58,26 @@
                             </span>
                         </span>
                     </button>
+                    <template
+                        data-music-album-data
+                        data-index="{{ $index }}"
+                        data-release-date="{{ $album.releaseDate | default "—" }}"
+                        data-release-type="{{ $album.releaseType | default "—" }}"
+                        data-genres="{{ delimit ($album.genres | default slice) ", " }}"
+                    >
+                        {{ range $trackIndex, $track := ($album.tracks | default slice) }}
+                            <li>
+                                <span>{{ printf "%02d" (add $trackIndex 1) }}</span>
+                                <strong>{{ $track.title }}</strong>
+                            </li>
+                        {{ end }}
+                    </template>
                 {{ end }}
             </div>
         </div>
 
         <footer class="music-gallery__footer">
             <div class="music-gallery__progress" aria-hidden="true"><span></span></div>
-            <p>Use the wheel or arrow keys to move through the room.</p>
-            <p>Album artwork © respective rights holders. Personal, non-commercial exhibition demo.</p>
         </footer>
     </section>
 
@@ -75,46 +87,47 @@
         role="dialog"
         aria-modal="true"
         aria-label="Selected album"
+        tabindex="-1"
         hidden
     >
         <div class="music-detail__wash" aria-hidden="true"></div>
         <div class="music-detail__panel" data-music-detail-panel>
-            <div class="music-detail__cover-wrap">
-                <span class="music-detail__fallback" data-music-detail-fallback aria-hidden="true">
-                    <span data-music-detail-fallback-artist>Artist</span>
-                    <strong data-music-detail-fallback-title>Album</strong>
-                </span>
-                <img class="music-detail__cover" data-music-detail-image alt="" hidden>
+            <section class="music-detail__tracks" data-music-detail-tracks>
+                <ol data-music-detail-track-list></ol>
+            </section>
+
+            <div class="music-detail__stage" data-music-detail-stage aria-hidden="true">
+                <div class="music-detail__cover-wrap">
+                    <span class="music-detail__fallback" data-music-detail-fallback aria-hidden="true">
+                        <span data-music-detail-fallback-artist>Artist</span>
+                        <strong data-music-detail-fallback-title>Album</strong>
+                    </span>
+                    <img class="music-detail__cover" data-music-detail-image alt="" hidden>
+                </div>
             </div>
 
-            <section class="music-detail__copy">
-                <div class="music-detail__kicker">
-                    <span data-music-detail-index>01</span>
-                    <span>Selected work</span>
-                </div>
+            <section class="music-detail__copy" data-music-detail-meta>
                 <p class="music-detail__artist" data-music-detail-artist></p>
                 <h2 data-music-detail-title></h2>
-                <p class="music-detail__note">A record kept close, returned to through time.</p>
                 <dl class="music-detail__meta">
                     <div>
-                        <dt>Collection</dt>
-                        <dd>Personal archive</dd>
+                        <dt>Release</dt>
+                        <dd data-music-detail-release-date>—</dd>
                     </div>
                     <div>
-                        <dt>Language</dt>
-                        <dd>Sound</dd>
+                        <dt>Format</dt>
+                        <dd data-music-detail-release-type>—</dd>
                     </div>
                     <div>
-                        <dt>Field</dt>
-                        <dd>Favorite album</dd>
+                        <dt>Tracks</dt>
+                        <dd data-music-detail-track-total>—</dd>
+                    </div>
+                    <div>
+                        <dt>Genre</dt>
+                        <dd data-music-detail-genres>—</dd>
                     </div>
                 </dl>
             </section>
-
-            <button class="music-detail__close" type="button" data-music-detail-close>
-                <span>Return to gallery</span>
-                <span aria-hidden="true">Esc</span>
-            </button>
         </div>
     </section>
 

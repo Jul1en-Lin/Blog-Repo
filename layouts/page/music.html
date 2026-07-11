@@ -5,19 +5,17 @@
 {{- $albumCount := len $albums -}}
 
 <section class="music-experience is-intro" data-music-experience data-album-count="{{ $albumCount }}">
-    <div class="music-paper-grain" aria-hidden="true"></div>
     <div class="music-ambient-light" aria-hidden="true"></div>
 
-    <header class="music-topline" aria-label="Exhibition information">
-        <span>Still Listening</span>
-        <span>Private exhibition · {{ now.Year }}</span>
-        <span><b data-music-counter>01</b> / {{ printf "%02d" $albumCount }}</span>
-    </header>
+    <p class="music-counter" aria-label="Current album in collection">
+        <span>Collection</span>
+        <b data-music-counter>01</b> / {{ printf "%02d" $albumCount }}
+    </p>
 
     <section class="music-intro" data-music-intro aria-hidden="false">
         <p class="music-intro__index">An exhibition of records kept close</p>
         <div class="music-intro__title-wrap">
-            <p class="music-eyebrow">A personal study in sound and memory</p>
+            <p class="music-eyebrow">A personal study in sound and memory · {{ now.Year }}</p>
             <h1>Still<br>Listening</h1>
             <p class="music-intro__subtitle">{{ $albumCount }} records, held in motion.</p>
         </div>
@@ -58,7 +56,6 @@
                                 <strong>{{ $album.title }}</strong>
                                 <em>{{ $album.artist }}</em>
                             </span>
-                            <span>Listen</span>
                         </span>
                     </button>
                 {{ end }}

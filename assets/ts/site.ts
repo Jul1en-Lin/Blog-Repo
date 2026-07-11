@@ -256,7 +256,7 @@ function initMusicGallery() {
     const detailFallbackArtist = root.querySelector<HTMLElement>('[data-music-detail-fallback-artist]');
     const detailFallbackTitle = root.querySelector<HTMLElement>('[data-music-detail-fallback-title]');
     const cards = Array.from(root.querySelectorAll<HTMLButtonElement>('[data-music-album]'));
-    const backgroundRegions = Array.from(root.querySelectorAll<HTMLElement>('.music-topline, .music-intro, .music-gallery'));
+    const backgroundRegions = Array.from(document.querySelectorAll<HTMLElement>('.site-header, .music-intro, .music-gallery'));
 
     if (!viewport || !track || !detail || !detailPanel || !closeButton || !cards.length) return;
     root.dataset.musicGalleryReady = 'true';

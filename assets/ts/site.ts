@@ -261,10 +261,12 @@ function initMusicGallery() {
     const detailFallback = root.querySelector<HTMLElement>('[data-music-detail-fallback]');
     const detailFallbackArtist = root.querySelector<HTMLElement>('[data-music-detail-fallback-artist]');
     const detailFallbackTitle = root.querySelector<HTMLElement>('[data-music-detail-fallback-title]');
+    const groove = root.querySelector<SVGSVGElement>('[data-music-groove]');
+    const grooveAccent = root.querySelector<SVGUseElement>('[data-music-groove-accent]');
     const cards = Array.from(root.querySelectorAll<HTMLButtonElement>('[data-music-album]'));
     const albumData = Array.from(root.querySelectorAll<HTMLTemplateElement>('[data-music-album-data]'));
     const backgroundRegions = Array.from(document.querySelectorAll<HTMLElement>('.site-header, .music-intro, .music-gallery'));
-    const galleryChrome = Array.from(document.querySelectorAll<HTMLElement>('.site-header, .music-counter, .music-gallery__footer'));
+    const galleryChrome = Array.from(document.querySelectorAll<HTMLElement>('.site-header, .music-counter, .music-gallery__footer, .music-groove'));
 
     if (
         !viewport || !track || !detail || !detailPanel || !detailStage
@@ -277,6 +279,9 @@ function initMusicGallery() {
     const clamp = (value: number, minimum: number, maximum: number) =>
         Math.min(Math.max(value, minimum), maximum);
     const detailClosePlaybackRate = 1.1;
+    const grooveParallaxRatio = 0.32;
+    const grooveAccentLength = 0.18;
+    const grooveMaxDrift = 6;
     const albumDecodeRadius = 2;
     const detailDecodeWaitMs = 100;
     const decodedCovers = new WeakMap<HTMLImageElement, Promise<void>>();
@@ -371,6 +376,7 @@ function initMusicGallery() {
         limit = Math.max(0, track.scrollWidth - viewport.clientWidth);
         targetOffset = clamp(targetOffset, 0, limit);
         currentOffset = clamp(currentOffset, 0, limit);
+        if (groove) groove.style.width = `${viewport.clientWidth + limit * grooveParallaxRatio}px`;
         if (flightCover && flightAnimation && selectedCoverFrame && detailState !== 'gallery') {
             updateFlightGeometry();
         }
@@ -723,7 +729,21 @@ function initMusicGallery() {
     function renderMusicFrame() {
         track.style.transform = `translate3d(${-currentOffset}px, 0, 0)`;
         setActiveIndex(findNearestCard());
-        root.style.setProperty('--gallery-progress', limit ? String(currentOffset / limit) : '0');
+        const galleryProgress = limit ? currentOffset / limit : 0;
+        root.style.setProperty('--gallery-progress', String(galleryProgress));
+
+        if (groove) {
+            if (reducedMotion.matches) {
+                groove.style.removeProperty('transform');
+                grooveAccent?.style.removeProperty('stroke-dashoffset');
+            } else {
+                const drift = clamp((targetOffset - currentOffset) * 0.015, -grooveMaxDrift, grooveMaxDrift);
+                groove.style.transform = `translate3d(${-currentOffset * grooveParallaxRatio}px, ${drift}px, 0)`;
+                if (grooveAccent) {
+                    grooveAccent.style.strokeDashoffset = String(-galleryProgress * (1 - grooveAccentLength));
+                }
+            }
+        }
     }
 
     function scheduleMusicFrame() {
@@ -796,6 +816,7 @@ function initMusicGallery() {
     window.addEventListener('pointermove', updatePointer, { passive: true });
     addMediaQueryChangeListener(reducedMotion, () => {
         if (reducedMotion.matches) resetPointerEffects();
+        renderMusicFrame();
     });
     window.addEventListener('keydown', (event) => {
         if (event.key === 'Tab' && detailState !== 'gallery') {

@@ -21,9 +21,12 @@
                 pathLength="1"
                 d="M -40 300 C 150 80, 320 420, 500 260 C 620 150, 590 60, 710 78 C 850 98, 860 300, 720 340 C 585 378, 510 230, 595 130 C 690 28, 885 112, 880 290 C 875 420, 1050 420, 1240 220"
             ></path>
+            <clipPath id="music-groove-accent-clip" clipPathUnits="userSpaceOnUse">
+                <rect data-music-groove-window x="0" y="0" width="0" height="520"></rect>
+            </clipPath>
         </defs>
         <use class="music-groove__base" href="#music-groove-path"></use>
-        <use class="music-groove__accent" data-music-groove-accent href="#music-groove-path"></use>
+        <use class="music-groove__accent" href="#music-groove-path" clip-path="url(#music-groove-accent-clip)"></use>
     </svg>
 
     <p class="music-counter" aria-label="Current album in collection">

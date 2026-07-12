@@ -262,7 +262,7 @@ function initMusicGallery() {
     const detailFallbackArtist = root.querySelector<HTMLElement>('[data-music-detail-fallback-artist]');
     const detailFallbackTitle = root.querySelector<HTMLElement>('[data-music-detail-fallback-title]');
     const groove = root.querySelector<SVGSVGElement>('[data-music-groove]');
-    const grooveAccent = root.querySelector<SVGUseElement>('[data-music-groove-accent]');
+    const grooveWindow = root.querySelector<SVGRectElement>('[data-music-groove-window]');
     const cards = Array.from(root.querySelectorAll<HTMLButtonElement>('[data-music-album]'));
     const albumData = Array.from(root.querySelectorAll<HTMLTemplateElement>('[data-music-album-data]'));
     const backgroundRegions = Array.from(document.querySelectorAll<HTMLElement>('.site-header, .music-intro, .music-gallery'));
@@ -280,7 +280,9 @@ function initMusicGallery() {
         Math.min(Math.max(value, minimum), maximum);
     const detailClosePlaybackRate = 1.1;
     const grooveParallaxRatio = 0.32;
-    const grooveAccentLength = 0.18;
+    const grooveViewBoxWidth = 1200;
+    const grooveWindowViewportRatio = 0.38;
+    const grooveWindowMaxWidth = 520;
     const grooveMaxDrift = 6;
     const albumDecodeRadius = 2;
     const detailDecodeWaitMs = 100;
@@ -293,6 +295,7 @@ function initMusicGallery() {
     let targetOffset = 0;
     let currentOffset = 0;
     let limit = 0;
+    let grooveLeftInset = 0;
     let activeIndex = 0;
     let navigationIndex = 0;
     let entered = false;
@@ -376,7 +379,10 @@ function initMusicGallery() {
         limit = Math.max(0, track.scrollWidth - viewport.clientWidth);
         targetOffset = clamp(targetOffset, 0, limit);
         currentOffset = clamp(currentOffset, 0, limit);
-        if (groove) groove.style.width = `${viewport.clientWidth + limit * grooveParallaxRatio}px`;
+        if (groove) {
+            groove.style.width = `${viewport.clientWidth + limit * grooveParallaxRatio}px`;
+            grooveLeftInset = Number.parseFloat(getComputedStyle(groove).left) || 0;
+        }
         if (flightCover && flightAnimation && selectedCoverFrame && detailState !== 'gallery') {
             updateFlightGeometry();
         }
@@ -735,12 +741,23 @@ function initMusicGallery() {
         if (groove) {
             if (reducedMotion.matches) {
                 groove.style.removeProperty('transform');
-                grooveAccent?.style.removeProperty('stroke-dashoffset');
             } else {
                 const drift = clamp((targetOffset - currentOffset) * 0.015, -grooveMaxDrift, grooveMaxDrift);
                 groove.style.transform = `translate3d(${-currentOffset * grooveParallaxRatio}px, ${drift}px, 0)`;
-                if (grooveAccent) {
-                    grooveAccent.style.strokeDashoffset = String(-galleryProgress * (1 - grooveAccentLength));
+                if (grooveWindow) {
+                    const grooveWidth = viewport.clientWidth + limit * grooveParallaxRatio;
+                    const grooveWindowCenter = (
+                        currentOffset * grooveParallaxRatio + viewport.clientWidth / 2 - grooveLeftInset
+                    );
+                    const grooveWindowWidth = Math.min(
+                        viewport.clientWidth * grooveWindowViewportRatio,
+                        grooveWindowMaxWidth
+                    );
+                    const grooveUnitScale = grooveViewBoxWidth / Math.max(grooveWidth, 1);
+                    grooveWindow.setAttribute('x', String(
+                        (grooveWindowCenter - grooveWindowWidth / 2) * grooveUnitScale
+                    ));
+                    grooveWindow.setAttribute('width', String(grooveWindowWidth * grooveUnitScale));
                 }
             }
         }

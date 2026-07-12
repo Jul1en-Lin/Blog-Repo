@@ -7,6 +7,25 @@
 <section class="music-experience is-intro" data-music-experience data-album-count="{{ $albumCount }}">
     <div class="music-ambient-light" aria-hidden="true"></div>
 
+    <svg
+        class="music-groove"
+        data-music-groove
+        viewBox="0 0 1200 520"
+        preserveAspectRatio="none"
+        aria-hidden="true"
+        focusable="false"
+    >
+        <defs>
+            <path
+                id="music-groove-path"
+                pathLength="1"
+                d="M -40 300 C 150 80, 320 420, 500 260 C 620 150, 590 60, 710 78 C 850 98, 860 300, 720 340 C 585 378, 510 230, 595 130 C 690 28, 885 112, 880 290 C 875 420, 1050 420, 1240 220"
+            ></path>
+        </defs>
+        <use class="music-groove__base" href="#music-groove-path"></use>
+        <use class="music-groove__accent" data-music-groove-accent href="#music-groove-path"></use>
+    </svg>
+
     <p class="music-counter" aria-label="Current album in collection">
         <span>Collection</span>
         <b data-music-counter>01</b> / {{ printf "%02d" $albumCount }}

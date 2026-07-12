@@ -27,11 +27,28 @@ assert_not_contains() {
     fi
 }
 
+assert_matches() {
+    local pattern="$1"
+    local path="$2"
+    local description="$3"
+
+    if ! rg -Uq -- "$pattern" "$path"; then
+        printf 'FAIL: %s\n' "$description" >&2
+        exit 1
+    fi
+}
+
 assert_contains 'data-music-experience' "$music_html" 'Music page exposes the gallery controller root'
 assert_contains 'data-music-intro' "$music_html" 'Music page renders the exhibition prologue'
 assert_contains 'Scroll to enter' "$music_html" 'The prologue explains how to enter the gallery'
 assert_contains 'data-music-viewport' "$music_html" 'Music page renders a horizontal gallery viewport'
 assert_contains 'data-music-track' "$music_html" 'Music page renders a transformable gallery track'
+assert_contains 'data-music-groove' "$music_html" 'Music page renders the vinyl groove line'
+assert_contains 'class="music-groove__base"' "$music_html" 'Music groove includes a quiet base line'
+assert_contains 'class="music-groove__accent"' "$music_html" 'Music groove includes a scroll-driven accent segment'
+assert_contains 'pathLength="1"' "$music_html" 'Music groove normalizes its path length for progress control'
+assert_contains 'aria-hidden="true"' "$music_html" 'Music groove remains decorative for assistive technology'
+assert_not_contains 'music-score' "$music_html" 'The old five-line score markup is removed'
 assert_not_contains 'Use the wheel or arrow keys to move through the room.' "$music_html" 'Gallery omits the movement hint below the albums'
 assert_not_contains 'Album artwork © respective rights holders. Personal, non-commercial exhibition demo.' "$music_html" 'Gallery omits the artwork notice below the albums'
 assert_contains 'data-music-detail' "$music_html" 'Music page renders the fullscreen album detail layer'
@@ -64,6 +81,13 @@ assert_not_contains '>Listen</span>' "$music_html" 'Album hover captions no long
 album_count="$(rg -o 'data-title=' "$music_html" | wc -l | tr -d ' ')"
 if [[ "$album_count" != "15" ]]; then
     printf 'FAIL: expected 15 albums, found %s\n' "$album_count" >&2
+    exit 1
+fi
+
+groove_path_count="$(rg -o 'id="music-groove-path"' "$music_html" | wc -l | tr -d ' ')"
+groove_use_count="$(rg -o 'href="#music-groove-path"' "$music_html" | wc -l | tr -d ' ')"
+if [[ "$groove_path_count" != "1" || "$groove_use_count" != "2" ]]; then
+    printf 'FAIL: Music groove must use one path definition with base and accent references\n' >&2
     exit 1
 fi
 
@@ -100,6 +124,10 @@ assert_contains 'detailBackdropRevealOffset' 'assets/ts/site.ts' 'The detail bac
 assert_contains "closest('.music-detail__tracks, .music-detail__stage, .music-detail__artist, .music-detail__copy h2, .music-detail__meta')" 'assets/ts/site.ts' 'Only rendered detail content blocks clicks from reaching the blank backdrop'
 assert_not_contains "closest('.music-detail__tracks, .music-detail__stage, .music-detail__copy')" 'assets/ts/site.ts' 'The full-height copy column does not swallow clicks on its blank lower area'
 assert_contains 'scheduleMusicFrame' 'assets/ts/site.ts' 'Gallery animation wakes only when work is pending'
+assert_contains "'[data-music-groove]'" 'assets/ts/site.ts' 'Gallery controller discovers the groove line'
+assert_contains 'grooveParallaxRatio = 0.32' 'assets/ts/site.ts' 'Groove line uses the planned restrained parallax ratio'
+assert_contains 'strokeDashoffset' 'assets/ts/site.ts' 'Gallery progress drives the groove accent segment'
+assert_not_contains 'music-score' 'assets/ts/site.ts' 'Gallery controller removes the old score hooks'
 assert_contains 'pageshow' 'assets/ts/site.ts' 'Gallery animation resumes after browser back-forward cache restoration'
 assert_contains "'.site-header, .music-intro, .music-gallery'" 'assets/ts/site.ts' 'The shared header becomes inert while album details are open'
 
@@ -116,6 +144,11 @@ assert_contains 'background:var(--music-detail-bg)' 'public/css' 'Album details 
 assert_contains 'music-flight-cover' 'public/css' 'Compiled styles include the temporary FLIP cover layer'
 assert_contains 'music-detail__tracks' 'public/css' 'Compiled styles include the bounded track list column'
 assert_contains 'align-self:end' 'public/css' 'The track table is anchored to the lower-left of the detail canvas'
+assert_contains '.music-groove' 'public/css' 'Compiled styles include the vinyl groove line'
+assert_contains '.music-groove__accent' 'public/css' 'Compiled styles include the groove progress segment'
+assert_contains 'pointer-events:none' 'public/css' 'The decorative groove cannot intercept gallery interaction'
+assert_matches '\.music-groove \{[^}]*max-width: none;' 'assets/scss/_music.scss' 'The groove line can extend beyond the global responsive SVG width cap'
+assert_not_contains '.music-score' 'assets/scss/_music.scss' 'The old five-line score styles are removed'
 
 assert_not_contains 'body.template-music .site-header,' 'assets/scss/_music.scss' 'Music no longer hides the shared site header'
 assert_not_contains 'body.template-music .plum-background,' 'assets/scss/_music.scss' 'Music no longer hides the shared plum background'

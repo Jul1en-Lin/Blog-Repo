@@ -50,18 +50,6 @@
     transform: translate(2px, -2px) rotate(-10deg);
   }
 
-  .music-album-card {
-    transition:
-      border-color var(--duration-normal) var(--ease-out),
-      box-shadow var(--duration-normal) var(--ease-out),
-      opacity var(--duration-fast) var(--ease-out),
-      transform var(--duration-normal) var(--ease-out);
-  }
-
-  .music-album-card:hover {
-    transform: translateY(-2px);
-  }
-
   :is(
     .site-action-link,
     #dark-mode-toggle.theme-toggle,

@@ -2,99 +2,157 @@
 
 {{ define "main" }}
 {{- $albums := .Params.albums | default slice -}}
+{{- $albumCount := len $albums -}}
 
-<section class="phase4-page music-page">
-    <header class="music-gallery-hero" aria-labelledby="music-title">
-        <h1 id="music-title">
-            <span>Music</span>
-            <span class="music-gallery-hero__wave" aria-hidden="true">
-                <i></i>
-                <i></i>
-                <i></i>
-                <i></i>
-                <i></i>
-            </span>
-        </h1>
-        <p>My favorite albums, songs, and the music that inspires me.</p>
-    </header>
+<section class="music-experience is-intro" data-music-experience data-album-count="{{ $albumCount }}">
+    <div class="music-ambient-light" aria-hidden="true"></div>
 
-    <section class="music-album-gallery" aria-label="Favorite albums">
-        {{ range $index, $album := $albums }}
-            {{- $layout := $album.layout | default "standard" -}}
-            {{- $themeColor := $album.themeColor | default "#c46786" -}}
-            {{- $coverImage := "" -}}
-            {{- with $album.image -}}
-                {{- with $.Resources.GetMatch . -}}
-                    {{- $coverImage = (.Fill "700x700 webp q80 Smart").RelPermalink -}}
-                {{- end -}}
-            {{- end -}}
-            {{- $cardStyle := printf "--album-accent: %s;" $themeColor -}}
-            {{- with $coverImage -}}
-                {{- $cardStyle = printf "%s --album-image: url('%s');" $cardStyle . -}}
-            {{- end -}}
-            {{- $detailsID := printf "album-details-%d" $index -}}
-            <article class="music-album-card music-album-card--{{ $layout }}" style="{{ $cardStyle | safeCSS }}" data-album-card>
-                <div class="music-album-card__inner">
-                    <div class="music-album-card__face music-album-card__face--front" data-album-front>
-                        {{ partial "music-cover.html" (dict
-                            "page" $
-                            "image" $album.image
-                            "size" "900x900"
-                            "alt" $album.alt
-                            "title" $album.title
-                            "artist" $album.artist
-                        ) }}
-                    </div>
+    <svg
+        class="music-groove"
+        data-music-groove
+        viewBox="0 0 1200 520"
+        preserveAspectRatio="none"
+        aria-hidden="true"
+        focusable="false"
+    >
+        <defs>
+            <path
+                id="music-groove-path"
+                pathLength="1"
+                d="M -40 300 C 150 80, 320 420, 500 260 C 620 150, 590 60, 710 78 C 850 98, 860 300, 720 340 C 585 378, 510 230, 595 130 C 690 28, 885 112, 880 290 C 875 420, 1050 420, 1240 220"
+            ></path>
+            <clipPath id="music-groove-accent-clip" clipPathUnits="userSpaceOnUse">
+                <rect data-music-groove-window x="0" y="0" width="0" height="520"></rect>
+            </clipPath>
+        </defs>
+        <use class="music-groove__base" href="#music-groove-path"></use>
+        <use class="music-groove__accent" href="#music-groove-path" clip-path="url(#music-groove-accent-clip)"></use>
+    </svg>
 
-                    <div class="music-album-card__face music-album-card__face--back" id="{{ $detailsID }}" data-album-back aria-hidden="true">
-                        <div>
-                            <span class="music-album-card__eyebrow">Album details</span>
-                            <h2>{{ $album.title }}</h2>
-                            <p class="music-album-card__artist">{{ $album.artist }}</p>
-                        </div>
+    <p class="music-counter" aria-label="Current album in collection">
+        <span>Collection</span>
+        <b data-music-counter>01</b> / {{ printf "%02d" $albumCount }}
+    </p>
 
-                        {{- if or $album.year $album.genre $album.label -}}
-                        <dl class="music-album-card__meta">
-                            {{- with $album.year -}}
-                            <div>
-                                <dt>Year</dt>
-                                <dd>{{ . }}</dd>
-                            </div>
-                            {{- end -}}
-                            {{- with $album.genre -}}
-                            <div>
-                                <dt>Genre</dt>
-                                <dd>{{ . }}</dd>
-                            </div>
-                            {{- end -}}
-                            {{- with $album.label -}}
-                            <div>
-                                <dt>Label</dt>
-                                <dd>{{ . }}</dd>
-                            </div>
-                            {{- end -}}
-                        </dl>
-                        {{- end -}}
-
-                        {{- with $album.note -}}
-                        <p class="music-album-card__note">{{ . }}</p>
-                        {{- end -}}
-
-                        <span class="music-album-card__hint">Click to return</span>
-                    </div>
-                </div>
-
-                <button
-                    class="music-album-card__toggle"
-                    type="button"
-                    data-album-toggle
-                    data-album-title="{{ $album.title }}"
-                    aria-controls="{{ $detailsID }}"
-                    aria-pressed="false"
-                    aria-label="Show details for {{ $album.title }}"
-                ></button>
-            </article>
-        {{ end }}
+    <section class="music-intro" data-music-intro aria-hidden="false">
+        <p class="music-intro__index">An exhibition of records kept close</p>
+        <div class="music-intro__title-wrap">
+            <p class="music-eyebrow">A personal study in sound and memory · {{ now.Year }}</p>
+            <h1>Still<br>Listening</h1>
+            <p class="music-intro__subtitle">{{ $albumCount }} records, held in motion.</p>
+        </div>
+        <div class="music-scroll-cue">
+            <span class="music-scroll-cue__line" aria-hidden="true"></span>
+            <span>Scroll to enter</span>
+            <span>Move slowly. Look closely.</span>
+        </div>
     </section>
+
+    <section class="music-gallery" aria-label="Album exhibition">
+        <div class="music-gallery__viewport" data-music-viewport>
+            <div class="music-gallery__track" data-music-track>
+                {{ range $index, $album := $albums }}
+                    <button
+                        class="music-album{{ if eq $index 0 }} is-active{{ end }}"
+                        type="button"
+                        data-music-album
+                        data-index="{{ $index }}"
+                        data-title="{{ $album.title }}"
+                        data-artist="{{ $album.artist }}"
+                        aria-label="Open {{ $album.title }} by {{ $album.artist }}"
+                    >
+                        <span class="music-album__number" aria-hidden="true">{{ printf "%02d" (add $index 1) }}</span>
+                        <span class="music-album__cover-frame">
+                            {{ partial "music-cover.html" (dict
+                                "page" $
+                                "image" $album.image
+                                "size" "900x900"
+                                "alt" $album.alt
+                                "title" $album.title
+                                "artist" $album.artist
+                            ) }}
+                            <span class="music-album__sheen" aria-hidden="true"></span>
+                        </span>
+                        <span class="music-album__caption">
+                            <span>
+                                <strong>{{ $album.title }}</strong>
+                                <em>{{ $album.artist }}</em>
+                            </span>
+                        </span>
+                    </button>
+                    <template
+                        data-music-album-data
+                        data-index="{{ $index }}"
+                        data-release-date="{{ $album.releaseDate | default "—" }}"
+                        data-release-type="{{ $album.releaseType | default "—" }}"
+                        data-genres="{{ delimit ($album.genres | default slice) ", " }}"
+                    >
+                        {{ range $trackIndex, $track := ($album.tracks | default slice) }}
+                            <li>
+                                <span>{{ printf "%02d" (add $trackIndex 1) }}</span>
+                                <strong>{{ $track.title }}</strong>
+                            </li>
+                        {{ end }}
+                    </template>
+                {{ end }}
+            </div>
+        </div>
+
+        <footer class="music-gallery__footer">
+            <div class="music-gallery__progress" aria-hidden="true"><span></span></div>
+        </footer>
+    </section>
+
+    <section
+        class="music-detail"
+        data-music-detail
+        role="dialog"
+        aria-modal="true"
+        aria-label="Selected album"
+        tabindex="-1"
+        hidden
+    >
+        <div class="music-detail__wash" aria-hidden="true"></div>
+        <div class="music-detail__panel" data-music-detail-panel>
+            <section class="music-detail__tracks" data-music-detail-tracks>
+                <ol data-music-detail-track-list></ol>
+            </section>
+
+            <div class="music-detail__stage" data-music-detail-stage aria-hidden="true">
+                <div class="music-detail__cover-wrap">
+                    <span class="music-detail__fallback" data-music-detail-fallback aria-hidden="true">
+                        <span data-music-detail-fallback-artist>Artist</span>
+                        <strong data-music-detail-fallback-title>Album</strong>
+                    </span>
+                    <img class="music-detail__cover" data-music-detail-image alt="" hidden>
+                </div>
+            </div>
+
+            <section class="music-detail__copy" data-music-detail-meta>
+                <p class="music-detail__artist" data-music-detail-artist></p>
+                <h2 data-music-detail-title></h2>
+                <dl class="music-detail__meta">
+                    <div>
+                        <dt>Release</dt>
+                        <dd data-music-detail-release-date>—</dd>
+                    </div>
+                    <div>
+                        <dt>Format</dt>
+                        <dd data-music-detail-release-type>—</dd>
+                    </div>
+                    <div>
+                        <dt>Tracks</dt>
+                        <dd data-music-detail-track-total>—</dd>
+                    </div>
+                    <div>
+                        <dt>Genre</dt>
+                        <dd data-music-detail-genres>—</dd>
+                    </div>
+                </dl>
+            </section>
+        </div>
+    </section>
+
+    <p class="music-desktop-note">Still Listening is a desktop exhibition. Please return on a larger screen.</p>
 </section>
 {{ end }}

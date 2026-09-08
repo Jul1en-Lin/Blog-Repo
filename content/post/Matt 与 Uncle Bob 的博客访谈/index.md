@@ -12,7 +12,7 @@ obsidian_path = "/AI/Matt 与 Uncle Bob 的博客访谈"
 # Matt 与 Uncle Bob 的博客访谈
 
 在油管上看到最喜欢的 Skill 博主 Matt 发布了跟元老级的人物 Uncle Bob 的播客访谈，个人觉得非常高质量，遂记录。
-![访谈截图](assets/Pasted%20image%2020260908195909.png)
+![访谈截图](assets/interview.png)
 （前面是一些寒暄，然后 Matt 引入了大模型 Agent 的一些东西，同时问 Bob 对这些的看法....）
 Bob：
 > 我就想，这东西快是快，但恼火的是它把我拖慢了。嗯。
@@ -152,10 +152,10 @@ Bob：
 > 抽象层每升一级，底下一层的人都会抱怨："我们饭碗都没了，sth like that..."，每一次都是这样。现在又到新的阶段，下面的人又喊："完了全完了！"，这显然是不会的。
 
 后面是 Bob 的最后的几句，我觉得应该贴上原字幕印象会更加深刻～
-![字幕截图](assets/Pasted%20image%2020260908195652.png)
-![字幕截图](assets/Pasted%20image%2020260907234323.png)
-![字幕截图](assets/Pasted%20image%2020260908195708.png)
-![字幕截图](assets/Pasted%20image%2020260908195716.png)
+![字幕截图](assets/subtitle-1.png)
+![字幕截图](assets/subtitle-2.png)
+![字幕截图](assets/subtitle-3.png)
+![字幕截图](assets/subtitle-4.png)
 我把最精简的部分都总结出来了，如果对此播客感兴趣的，地址在👇
 [LIVE: Uncle Bob on Software Fundamentals in the Age of AI](https://www.youtube.com/watch?v=zcLPGC-tvgk)
 

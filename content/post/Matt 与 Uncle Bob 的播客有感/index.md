@@ -1,6 +1,6 @@
 +++
-title = "Matt 与 Uncle Bob 的博客访谈"
-slug = "Matt-与-Uncle-Bob-的博客访谈"
+title = "Matt 与 Uncle Bob 的播客有感"
+slug = "Matt-与-Uncle-Bob-的播客有感"
 date = "2026-09-08T20:00:00+08:00"
 lastmod = "2026-09-08T20:00:00+08:00"
 draft = false
@@ -9,7 +9,7 @@ categories = ["AI"]
 tags = ["AI", "Agent", "Matt Pocock", "Uncle Bob", "软件工程"]
 obsidian_path = "/AI/Matt 与 Uncle Bob 的博客访谈"
 +++
-# Matt 与 Uncle Bob 的博客访谈
+# Matt 与 Uncle Bob 的播客有感
 
 在油管上看到最喜欢的 Skill 博主 Matt 发布了跟元老级的人物 Uncle Bob 的播客访谈，个人觉得非常高质量，遂记录。
 ![访谈截图](assets/interview.png)

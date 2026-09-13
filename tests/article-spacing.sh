@@ -30,8 +30,10 @@ assert_contains '.article-detail__content h3,.article-detail__content h4{margin:
     'Article lower heading spacing should be tighter'
 assert_contains '.article-detail__content ul,.article-detail__content ol{margin:0 0 var(--space-5);padding-left:var(--space-6)}' public/css \
     'Article lists should keep their indent while tightening bottom spacing'
-assert_contains '.article-detail__content img{height:auto;margin:28px auto;border-radius:var(--radius-sm)' public/css \
-    'Article images should only tighten their outer vertical margin'
+assert_contains '.article-detail__content img{height:auto;margin:28px auto;border-radius:24px' public/css \
+    'Article images should match the Search illustration corner radius'
+assert_contains '.article-closing{color:var(--color-text-muted);font-family:var(--font-display),noto sans sc,serif' public/css \
+    'Article closing links should use the same display font as the article body'
 assert_contains '.article-content.article-detail__content pre,.article-content.article-detail__content .highlight{' public/css \
     'Article code block styles should still be present'
 assert_contains 'margin:28px 0;padding:0;border:1px solid var(--code-border)' public/css \

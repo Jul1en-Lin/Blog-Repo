@@ -4,6 +4,12 @@ body.template-article-detail .main-content {
   padding: 0;
 }
 
+@media (max-width: 1399px) {
+  body.template-article-detail .site-header {
+    position: relative;
+  }
+}
+
 .article-detail {
   position: relative;
   min-height: 100vh;
@@ -453,7 +459,7 @@ body.is-article-toc-visible .article-detail__toc-panel,
 .article-detail__content img {
   height: auto;
   margin: 28px auto;
-  border-radius: var(--radius-sm);
+  border-radius: 24px;
   transition: filter var(--duration-normal) var(--ease-out);
 }
 
@@ -941,7 +947,7 @@ body.is-article-toc-visible .article-detail__toc-panel,
 
 .article-closing {
   color: var(--color-text-muted);
-  font-family: var(--font-body);
+  font-family: var(--font-display), "Noto Sans SC", serif;
   font-size: 15px;
   line-height: 1.8;
 }

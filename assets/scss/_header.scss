@@ -31,6 +31,7 @@
   width: clamp(110px, 9vw, 132px);
   height: clamp(54px, 4.5vw, 66px);
   align-items: center;
+  transform: translateY(4px);
   color: var(--color-text);
   mix-blend-mode: normal;
 }
@@ -63,6 +64,13 @@
   gap: clamp(var(--space-4), 2.2vw, var(--space-6));
   min-width: 0;
   margin-left: auto;
+}
+
+@media (min-width: 1400px) {
+  .site-header__right {
+    // Keep navigation aligned across pages, with room at the screen edge.
+    transform: translateX(clamp(0px, calc(var(--layout-header-left) - 32px), 56px));
+  }
 }
 
 .site-brand__mark {

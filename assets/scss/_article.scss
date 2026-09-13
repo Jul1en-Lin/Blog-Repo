@@ -4,6 +4,12 @@ body.template-article-detail .main-content {
   padding: 0;
 }
 
+@media (max-width: 1399px) {
+  body.template-article-detail .site-header {
+    position: relative;
+  }
+}
+
 .article-detail {
   position: relative;
   min-height: 100vh;
